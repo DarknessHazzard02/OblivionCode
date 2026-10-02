@@ -1,0 +1,12 @@
+# Python
+__pycache__/
+*.pyc
+
+# Virtual Environment
+.venv/
+
+# Outputs
+Output/*.parquet
+
+# Logs
+Logs/*.log
