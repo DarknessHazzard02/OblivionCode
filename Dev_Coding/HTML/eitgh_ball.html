@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Magic 8 Ball</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(to bottom right, #282c34, #444);
+      color: white;
+      text-align: center;
+      padding: 50px;
+    }
+
+    input[type="text"] {
+      padding: 10px;
+      width: 300px;
+      font-size: 16px;
+      border-radius: 10px;
+      border: none;
+      margin-bottom: 20px;
+    }
+
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      border: none;
+      border-radius: 10px;
+      background-color: #61dafb;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #21a1f1;
+    }
+
+    #response {
+      margin-top: 30px;
+      font-size: 20px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Ask the Magic 8 Ball</h1>
+  <input type="text" id="question" placeholder="Type your question here...">
+  <br>
+  <button onclick="getAnswer()">Ask</button>
+  <div id="response"></div>
+
+  <script>
+    function getAnswer() {
+      const responses = [
+        "Yes - definitely",
+        "It is decidedly so",
+        "Without a doubt",
+        "Reply hazy, try again",
+        "Ask again later",
+        "Better not tell you now",
+        "My sources say no",
+        "Very doubtful",
+        "Outlook not so good"
+      ];
+
+      const question = document.getElementById('question').value;
+      if (!question.trim()) {
+        document.getElementById('response').textContent = "Please enter a question!";
+        return;
+      }
+
+      const randomIndex = Math.floor(Math.random() * 9);
+      document.getElementById('response').textContent = responses[randomIndex];
+    }
+  </script>
+
+</body>
+</html>
