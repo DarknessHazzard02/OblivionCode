@@ -1,31 +1,58 @@
+
 # OblivionCode
 
-Personal technology portfolio featuring full-stack applications, data solutions, automation tools, and experimental projects. Built to learn, create, and forge new ideas into reality.
+Welcome to OblivionCode, my personal software development portfolio.
 
-Welcome to OblivionCode, my personal coding portfolio and learning repository.
+This repository contains coding exercises, technical examples, automation scripts, and learning projects focused on Software Engineering and Full Stack Development.
 
-This repository contains:
+My goal is to continuously improve my programming skills while building practical solutions through code, automation, and modern development practices.
 
-- SQL Scripts
-- Python Projects
-- Java Applications
-- JavaScript Exercises
-- HTML Examples
-- VBA Automations
+---
 
-As an engineer and BI Analyst, I use this space to document my journey toward Full Stack Development while building practical solutions through data, automation, and software engineering.
+## Technologies
 
-## Current Focus
+### Frontend
 
-- Full Stack Development
-- Python
+- HTML
+- CSS
 - JavaScript
+- TypeScript
+
+### Backend
+
+- Python
+- Java
+- C#
+
+### Data & Automation
+
 - SQL
-- Data Engineering
-- Automation
+- PowerShell
+- VBA
 
-## Author
+### Supporting Technologies
 
-Hazziel "Hazzard" Acosta
+- JSON
+- YAML
+- Bash
 
-Forging ideas into reality through code.
+---
+
+## Repository Structure
+
+```text
+Dev_Coding
+├── Bash
+├── CSS
+├── CSharp
+├── HTML
+├── Java
+├── JavaScript
+├── JSON
+├── PowerShell
+├── Python
+├── SQL
+├── TypeScript
+├── VBA
+└── YAML
+```
