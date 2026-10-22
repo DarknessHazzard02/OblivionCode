@@ -34,7 +34,7 @@ Su ruta: (1) SQL, Power BI, Power Query, modelado en estrella, DAX → (2) KPIs 
 
 ## Prioridad en sesiones laborales
 
-En repos de `SRVC-ADMON`, en N: o en cualquier entregable del equipo, **`REGLAS-EQUIPO.md` gana sobre esta skill**:
+En repos de `<org>`, en <unidad-compartida> o en cualquier entregable del equipo, **`las reglas de seguridad` gana sobre esta skill**:
 - Regla 1 (respuestas cortas) recorta el formato de arriba.
 - Regla 2: cerrar con `Lo que tienes que hacer`.
 - Sin firmas ni alias en código o documentos.

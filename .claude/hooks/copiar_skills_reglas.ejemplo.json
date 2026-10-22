@@ -1,0 +1,21 @@
+{
+ "_nota": "Ejemplo de las reglas de copiar_skills.py. Renombrar a copiar_skills_reglas.json y llenar con lo que de verdad hay que quitar. Ese archivo NO se sube a ningun repo.",
+ "excluir": ["estandar-laboral"],
+ "reglas": [
+  ["\\bNombre Apellido\\b", "Haz"],
+  ["\\bEmpresa SA de CV\\b", "la empresa"],
+  ["mi-org/mi-repo-interno", "<org>/<repo>"],
+  ["\\b[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}\\b", "<GUID>"],
+  ["(?i)\\bZ:[\\\\/]+[^`\"\\n|)]*", "<carpeta-compartida>"],
+  ["(?i)C:\\\\Users\\\\miusuario", "C:\\\\Users\\\\<usuario>"]
+ ],
+ "prohibido": {
+  "nombre de persona": "(?i)\\b(nombre|apellido)\\b",
+  "empresa": "(?i)\\bempresa sa\\b",
+  "ID (GUID)": "\\b[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}\\b",
+  "correo real": "[\\w.+-]+@(?!example\\.com)[A-Za-z0-9-]+\\.[A-Za-z.]{2,}"
+ },
+ "correo_ok": "@(example\\.com|types\\b|dataclass|property|staticmethod|app\\.route)",
+ "parrafo_caso": "^\\s*(?:>\\s*)*\\*\\*(?:El caso|Lo que cost[oó] aprenderlo)",
+ "titulo_caso": "(?im)^(#+ .*?)(?:,? con el caso)\\s*$"
+}

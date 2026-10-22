@@ -1,0 +1,28 @@
+{
+ "cola": [
+  "ajustesDetail",
+  "catDetail",
+  "respDetail"
+ ],
+ "frase": [
+  "bridgeManual",
+  "ajustesTitle",
+  "catTitle",
+  "respTitle",
+  "faltaManual",
+  "noHist"
+ ],
+ "igual": [
+  "k_lineas",
+  "lineas",
+  "p_buyDet",
+  "p_custDet",
+  "k_del"
+ ],
+ "valores": {
+  "manualTitle": {
+   "es": "Captura Manual",
+   "en": "Manual Capture"
+  }
+ }
+}

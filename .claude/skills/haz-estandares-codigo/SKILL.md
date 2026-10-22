@@ -12,11 +12,32 @@ Corre `git remote -v` (o mira la ruta).
 | Contexto | Cómo se reconoce | Firma / autor |
 |---|---|---|
 | **Personal** | remote `HazielA-Dev/*` o `DarknessHazzard02/*` (BI_DataNexus, OblivionCode) | **Sí**: firma y `Author: Haz` según el lenguaje |
-| **Laboral** | remote `SRVC-ADMON/*`, carpeta de N:, cualquier entregable del equipo, o sin git y sin certeza | **No**: ni firma, ni `Author`, ni alias. Ver `portal-seguridad` y `validar-antes-de-entregar` |
+| **Laboral** | remote `<org>/*`, carpeta de <unidad-compartida>, cualquier entregable del equipo, o sin git y sin certeza | **No**: ni firma, ni `Author`, ni alias. Ver `portal-seguridad` y `validar-antes-de-entregar` |
 
 En duda, **sin firma**. En trabajo del equipo mandan además `fabric-sap-ingesta`, `dashboard-standards`, `apps-base-datos` y `apps-estandar`; estas reglas solo rellenan lo que ellas no dicen.
 
 Lo que sí aplica en ambos: todo lo demás de este archivo.
+
+### Firma por lenguaje (solo personal)
+
+| Lenguaje | Firma | Dónde |
+|---|---|---|
+| VBA | `'Made by: Hazzard` | **última** línea, después de `End Sub` |
+| Power Query (M) | `// Made by: Hazzard` + una línea de descripción | **primera** línea |
+| Python | banner con `# Author: Haz` | encabezado (ver §5) |
+| SQL (genérico, SQL Server) | `-- Made by: Hazzard` | primera línea |
+| Oracle (EBS, Blitz Report) | `-- Made by: Hazzard` | **dentro** de la consulta, después del `SELECT`/`WITH`: un comentario al inicio da `ORA-24374` |
+| DAX | `// Made by: Hazzard` | primera línea de la medida, antes de `VAR` |
+| JavaScript / TypeScript / C# / Java | `// Made by: Hazzard` | primera línea (después de `"use strict";` o de los `using`/`package`/`import` si el lenguaje los exige arriba) |
+| CSS | `/* Made by: Hazzard */` | primera línea |
+| HTML | `<!-- Made by: Hazzard -->` | después de `<!DOCTYPE html>`: el doctype va primero o el navegador entra en modo quirks |
+| YAML / Bash / PowerShell | `# Made by: Hazzard` | primera línea (después del shebang `#!` si lo hay) |
+| JSON | — | JSON no admite comentarios: sin firma |
+
+**Al modificar código que no es tuyo** (de otra persona o de una librería) la firma original se queda y se
+agrega `Updated by Haz` con el mismo formato de comentario del lenguaje, junto a la original.
+
+En laboral nada de esta tabla aplica: ni firma, ni `Author`, ni `Updated by`.
 
 ## 1. Principios
 

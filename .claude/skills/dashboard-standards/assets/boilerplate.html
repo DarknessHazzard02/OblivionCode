@@ -1,0 +1,883 @@
+<!DOCTYPE html>
+<!-- ============================================================
+     BOILERPLATE — equipo de BI
+     Punto de partida obligatorio. Ya implementa: cross-filter,
+     panel colapsado, ⓘ por visual, i18n, frescura, paginación
+     de 10 filas, sort, export CSV/Excel, documentación, footer,
+     y la banda de modo degradado (secciones 13-15 de la skill).
+     Reemplazar los bloques marcados con >>> <<<
+     ============================================================ -->
+<html lang="es" data-theme="corporativo">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dashboard — equipo de BI</title>
+<script src="/shared/js/seguro.js"></script>                  <!-- esc(): portal-seguridad § 5 bis -->
+<script src="/shared/js/csv.js"></script>                     <!-- csvCelda(): export CSV sin fórmulas -->
+<script src="/shared/vendor/xlsx/xlsx.full.min.js"></script>  <!-- local, sin CDN: portal-seguridad § 4 -->
+<style>
+/* >>> PEGAR AQUÍ EL CONTENIDO COMPLETO DE assets/theme.css <<< */
+</style>
+</head>
+<body>
+
+<div class="app">
+  <!-- ===== BANDA DE MODO DEGRADADO — solo aparece si algo falta ===== -->
+  <div class="banner" id="banner" role="alert" hidden></div>
+
+  <!-- ===================== HEADER ===================== -->
+  <header class="hdr">
+    <a class="btn-portal" id="btnPortal" href="#">← <span data-i18n="backToPortal"></span></a>
+    <h1 class="hdr__title" data-i18n="pageTitle"></h1>
+    <div class="hdr__chips" id="chips"></div>
+    <div class="hdr__meta">
+      <span><span data-i18n="updated"></span>: <b id="metaUpdated"></b></span>
+      <span class="freshness" id="metaFreshness" title=""></span>
+    </div>
+    <div class="lang-toggle" id="langToggle">
+      <button data-lang="es">ES</button><button data-lang="en">EN</button>
+    </div>
+  </header>
+
+  <!-- >>> Si hay pestañas, van aquí: <nav class="tabs">…</nav> <<< -->
+
+  <div class="app__body">
+    <!-- ===================== FILTROS (colapsado por default) ===== -->
+    <aside class="filter-panel" id="filterPanel">
+      <div class="filter-panel__rail">
+        <button class="filter-panel__toggle rail__btn" id="btnFilterOpen">
+          <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
+            <path d="M3 5.5h18a1 1 0 0 1 .8 1.6l-6.3 8v5.2a1 1 0 0 1-1.45.9l-3.5-1.75a1 1 0 0 1-.55-.9v-3.45l-6.3-8A1 1 0 0 1 3 5.5z"
+                  fill="currentColor"/>
+          </svg>
+          <span class="rail__txt" data-i18n="filters"></span>
+        </button>
+        <span class="filter-badge" id="filterBadge" hidden>0</span>
+      </div>
+      <div class="filter-panel__body">
+        <div class="card__header">
+          <strong data-i18n="filters"></strong>
+          <button class="filter-panel__toggle" id="btnFilterClose">✕</button>
+        </div>
+        <!-- Un <div> por filtro; construirFiltros() los llena solos desde los
+             datos. data-field es el campo del dataset y f_<campo> su etiqueta
+             en el diccionario.
+             Orden: Alcance → Periodo → categorías cortas → las largas al final. -->
+        <div class="filter-group" data-field="division"></div>
+        <div class="filter-group" data-field="planta"></div>
+        <div class="filter-clear">
+          <button class="btn-export" id="btnClear" style="width:100%">
+            <span data-i18n="clearFilters"></span>
+          </button>
+        </div>
+      </div>
+    </aside>
+
+    <!-- ===================== MAIN ===================== -->
+    <main class="app__main">
+      <!-- KPIs (máx 5) -->
+      <section class="grid" id="kpiRow" style="margin-bottom:var(--grid-gap)"></section>
+
+      <!-- Visuales -->
+      <section class="grid" id="visuals"></section>
+
+      <!-- Tabla de detalle -->
+      <section class="card" id="detailCard" style="margin-top:var(--grid-gap)">
+        <div class="card__header">
+          <h3 class="card__title" data-i18n="detail"></h3>
+          <div class="export-group">
+            <span class="btn-export__count" id="rowCount"></span>
+            <button class="btn-export" id="btnCsv">⤓ CSV</button>
+            <button class="btn-export" id="btnXlsx">⤓ Excel</button>
+          </div>
+        </div>
+        <table class="tbl" id="detailTable">
+          <thead><tr id="detailHead"></tr></thead>
+          <tbody id="detailBody"></tbody>
+          <tfoot id="detailFoot"></tfoot>
+        </table>
+        <div class="pager">
+          <span id="pagerRange"></span>
+          <div class="pager__pages" id="pagerPages"></div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- ===================== FOOTER ===================== -->
+  <footer class="ftr">
+    <span class="ftr__credit">equipo de BI · la empresa</span>
+    <span>
+      <span data-i18n="source"></span>: <span id="ftrSources"></span> ·
+      <span data-i18n="updated"></span>: <span id="ftrUpdated"></span>
+    </span>
+    <button class="btn-export" id="btnDoc">📖 <span data-i18n="documentation"></span></button>
+  </footer>
+</div>
+
+<!-- Panel de documentación -->
+<div class="doc-overlay" id="docOverlay" hidden></div>
+<aside class="doc-panel" id="docPanel">
+  <div class="doc-panel__hdr">
+    <strong data-i18n="documentation"></strong>
+    <button class="filter-panel__toggle" id="btnDocClose" style="color:inherit">✕</button>
+  </div>
+  <div class="doc-panel__body" id="docBody"></div>
+</aside>
+
+<script>
+/* ============================================================
+   CONFIG — todo lo editable vive aquí. No tocar la lógica abajo.
+   ============================================================ */
+const CONFIG = {
+  dashboardName: "nombre-dashboard",
+  portalUrl: "/logistics/",   // relativa: "/logistics/" o "/sop/" (portal-seguridad; el App Service de Azure ya no existe)
+
+  lang: { enabled: ["es","en"], default: "es" },   // ["es"] o ["en"] si es monolingüe
+
+  freshness: { warnDays: 1, criticalDays: 3 },     // >>> AJUSTAR POR DASHBOARD <<<
+
+  lastRefresh: "2026-07-28T06:00:00",              // cuándo corrió el proceso
+
+  sources: [                                        // >>> archivos estáticos <<<
+    { name: "ZFLETES_EXTRA.xlsx", system: "SAP",       path: "…", asOf: "2026-07-27" },
+    { name: "OpenOrders.csv",     system: "Fabric",    path: "…", asOf: "2026-07-25" }
+  ],
+
+  detail: { pageSize: 10, columns: [
+    { field: "fecha",   type: "date" },
+    { field: "planta",  type: "text" },
+    { field: "costo",   type: "num", total: true }
+  ]},
+
+  visuals: {
+    v1: { info: {
+      es: { medida:"Costo de flete extraordinario",
+            calculo:"SUM(costo_flete) donde tipo = 'Extraordinario'",
+            filtros:"Excluye embarques cancelados",
+            granularidad:"Por planta y mes" },
+      en: { medida:"Extraordinary freight cost",
+            calculo:"SUM(freight_cost) where type = 'Extraordinary'",
+            filtros:"Excludes cancelled shipments",
+            granularidad:"By plant and month" }
+    }}
+  },
+
+  documentation: {
+    es: { purpose:"…", transformations:"…", measures:"…", rules:"…", limitations:"…" },
+    en: { purpose:"…", transformations:"…", measures:"…", rules:"…", limitations:"…" }
+  }
+};
+
+const I18N = {
+  es: { backToPortal:"Volver al Portal", updated:"Actualizado", dataAsOf:"Datos al",
+        filters:"Filtros", clearFilters:"Limpiar filtros", detail:"Detalle",
+        documentation:"Documentación", source:"Fuente", rows:"filas",
+        showing:"Mostrando", of:"de", noData:"Sin datos para los filtros seleccionados",
+        f_periodo:"Periodo", f_division:"División", f_planta:"Planta",
+        search:"Buscar…", seleccionarTodo:"Seleccionar todo", seleccionados:"seleccionados",
+        sinValor:"(sin dato)", seleccionadaOculta:"seleccionada no se ve con esta búsqueda",
+        seleccionadasOcultas:"seleccionadas no se ven con esta búsqueda",
+        purpose:"Propósito", sources:"Fuentes de datos", transformations:"Transformaciones",
+        measures:"Diccionario de medidas", rules:"Reglas de negocio",
+        limitations:"Limitaciones conocidas", contact:"Contacto",
+        degradedTitle:"Datos incompletos — el tablero está en modo degradado",
+        degradedStructure:"No llegó la estructura de categorías. Las gráficas se dibujan en orden alfabético y sin color por severidad. Los totales y la tabla de detalle SÍ son confiables.",
+        staleTitle:"Hay pestañas que no se actualizaron hoy",
+        staleDetail:"El resto del tablero está al día." },
+  en: { backToPortal:"Back to the Portal", updated:"Updated", dataAsOf:"Data as of",
+        filters:"Filters", clearFilters:"Clear filters", detail:"Detail",
+        documentation:"Documentation", source:"Source", rows:"rows",
+        showing:"Showing", of:"of", noData:"No data for the selected filters",
+        f_periodo:"Period", f_division:"Division", f_planta:"Plant",
+        search:"Search…", seleccionarTodo:"Select all", seleccionados:"selected",
+        sinValor:"(no value)", seleccionadaOculta:"selected item is hidden by this search",
+        seleccionadasOcultas:"selected are hidden by this search",
+        purpose:"Purpose", sources:"Data sources", transformations:"Transformations",
+        measures:"Measure dictionary", rules:"Business rules",
+        limitations:"Known limitations", contact:"Contact",
+        degradedTitle:"Incomplete data — this dashboard is running degraded",
+        degradedStructure:"The category structure did not arrive. Charts are drawn alphabetically and without severity colors. Totals and the detail table ARE reliable.",
+        staleTitle:"Some tabs were not refreshed today",
+        staleDetail:"The rest of the dashboard is up to date." }
+};
+
+/* ============================================================
+   META — lo que produce el pipeline (meta.json). NO se escribe a mano.
+   De aquí salen las categorías, su orden, sus colores y el aviso.
+   Ver secciones 13-15 de la skill.
+   ============================================================ */
+const META = {
+  generated_at: null,          // ""
+  fuente: null,                // qué notebook lo produjo
+  categorias: [],              // [{ nombre, nombre_en, rol }] — el orden es este
+  pestanas_sin_actualizar: {}  // { "tab2": "2026-08-09" } — vacío = todo bien
+};
+
+/* >>> DATOS — reemplazar por el dataset real <<< */
+const rawData = [];
+
+/* ============================================================
+   ESTADO
+   ============================================================ */
+// localStorage puede no existir o tronar (navegador bloqueado, modo privado): try/catch.
+function leerLS(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
+function guardarLS(k, v) { try { localStorage.setItem(k, v); } catch (e) { /* sin storage */ } }
+let lang = leerLS("dash_lang") || CONFIG.lang.default;
+const filterState = { panel: {}, crossfilter: null };
+const sortState = [];              // [{field, dir}] — shift+click apila
+let currentPage = 1;
+const charts = [];                 // cada chart expone .update(data)
+
+const t = k => (I18N[lang] && I18N[lang][k]) || k;
+
+/* ============================================================
+   FILTRADO — única puerta de redibujo
+   ============================================================ */
+function matchesPanel(r) {
+  return Object.entries(filterState.panel).every(([f, vals]) =>
+    !vals || !vals.length || vals.includes(r[f]));
+}
+function matchesCrossfilter(r) {
+  const cf = filterState.crossfilter;
+  return !cf || cf.values.includes(r[cf.field]);
+}
+function getFilteredData() {
+  return rawData.filter(r => matchesPanel(r) && matchesCrossfilter(r));
+}
+function getSortedData() {
+  const d = getFilteredData().slice();
+  if (!sortState.length) return d;
+  return d.sort((a, b) => {
+    for (const { field, dir } of sortState) {
+      const va = a[field], vb = b[field];
+      if (va < vb) return dir === "asc" ? -1 : 1;
+      if (va > vb) return dir === "asc" ? 1 : -1;
+    }
+    return 0;
+  });
+}
+function applyFilters() {
+  const data = getFilteredData();
+  renderKPIs(data);
+  charts.forEach(c => c.update(data));
+  renderTable();
+  renderChips();
+  updateFilterBadge();
+  syncURL();
+}
+
+/* Cross-filter desde una gráfica */
+function setCrossfilter(field, value) {
+  const cf = filterState.crossfilter;
+  if (cf && cf.field === field && cf.values.length === 1 && cf.values[0] === value) {
+    filterState.crossfilter = null;              // segundo click deselecciona
+  } else {
+    filterState.crossfilter = { field, values: [value] };
+  }
+  currentPage = 1;
+  applyFilters();
+}
+
+/* ============================================================
+   PANEL DE FILTROS
+   ============================================================ */
+const panelEl = document.getElementById("filterPanel");
+document.getElementById("btnFilterOpen").onclick  = () => panelEl.classList.add("is-open");
+document.getElementById("btnFilterClose").onclick = () => panelEl.classList.remove("is-open");
+document.addEventListener("keydown", e => {
+  if (e.key === "Escape") panelEl.classList.remove("is-open");
+});
+document.getElementById("btnClear").onclick = () => {
+  filterState.panel = {}; filterState.crossfilter = null; currentPage = 1;
+  construirFiltros();          // repinta conteos y casillas
+  applyFilters();
+};
+function countActiveFilters() {
+  // Cuenta FILTROS puestos, no valores: un grupo con tres plantas marcadas es
+  // UN filtro. Sumando valores, "Seleccionar todo" dejaba el badge en 561.
+  const n = Object.values(filterState.panel).filter(v => v && v.length).length;
+  return n + (filterState.crossfilter ? 1 : 0);
+}
+function updateFilterBadge() {
+  const n = countActiveFilters(), b = document.getElementById("filterBadge");
+  b.textContent = n; b.hidden = n === 0;
+}
+function renderChips() {
+  const box = document.getElementById("chips"); box.innerHTML = "";
+  const add = (label, onX) => {
+    const c = document.createElement("span");
+    c.className = "chip";
+    c.textContent = label + " ";   // el label trae valores de los datos/URL: nunca innerHTML (portal-seguridad § 5 bis)
+    const x = document.createElement("span"); x.className = "chip__x"; x.textContent = "✕"; c.appendChild(x);
+    c.querySelector(".chip__x").onclick = onX;
+    box.appendChild(c);
+  };
+  Object.entries(filterState.panel).forEach(([f, vals]) => {
+    if (!vals || !vals.length) return;
+    // Más de tres: un solo chip que resume. Uno por valor tapaba el encabezado
+    // completo en cuanto alguien usaba "Seleccionar todo".
+    if (vals.length > 3) {
+      add(`${t("f_" + f) || f}: ${vals.length} ${t("seleccionados")}`, () => {
+        delete filterState.panel[f];
+        currentPage = 1; construirFiltros(); applyFilters();
+      });
+      return;
+    }
+    vals.forEach(v => add(`${t("f_" + f) || f}: ${etiquetaValor(f, v)}`, () => {
+      filterState.panel[f] = filterState.panel[f].filter(x => x !== v);
+      if (!filterState.panel[f].length) delete filterState.panel[f];
+      currentPage = 1; construirFiltros(); applyFilters();
+    }));
+  });
+  if (filterState.crossfilter) {
+    const cf = filterState.crossfilter;
+    add(`${cf.field}: ${cf.values.join(", ")}`,
+        () => { filterState.crossfilter = null; currentPage = 1; applyFilters(); });
+  }
+}
+function syncURL() {
+  const p = new URLSearchParams();
+  Object.entries(filterState.panel).forEach(([f, v]) => v && v.length && p.set(f, v.join("|")));
+  history.replaceState(null, "", p.toString() ? "?" + p : location.pathname);
+}
+function readURL() {
+  // Lista blanca: SOLO los campos que existen como filtro. Sin esto, cualquier
+  // parámetro ajeno (?utm_source=..., un cache-buster, un typo) se toma como
+  // filtro y vacía el tablero sin decir nada.
+  const validos = new Set([...document.querySelectorAll(".filter-group[data-field]")]
+    .map(g => g.dataset.field));
+  new URLSearchParams(location.search).forEach((v, k) => {
+    if (validos.has(k)) filterState.panel[k] = v.split("|");
+  });
+}
+
+/* ============================================================
+   PANEL DE FILTROS — implementación completa. Ver sección 5.
+
+   Llena cada `.filter-group[data-field]` del HTML. Las opciones salen del
+   catálogo del meta si lo hay (conserva SU orden, el del proceso) y si no, de
+   los datos, en alfabético.
+
+   Lo que resuelve, y que cuesta caro descubrir a mano:
+     · cada opción es una fila de 26 px, no texto corrido
+     · más de 5 opciones -> buscador y "Seleccionar todo"
+     · más de 12 -> además arranca plegado, con la lista topada a ~7 filas
+     · el buscador va FUERA del cuerpo plegable: si no, no se descubre
+     · el orden NO se mueve al seleccionar
+     · se filtra por el VALOR crudo, se muestra la etiqueta
+   ============================================================ */
+const FILTRO_SELECT_ALL = 5;    // más de esto: buscador y "Seleccionar todo"
+const FILTRO_PLEGABLE   = 12;   // más de esto: además arranca plegado
+
+/* Solo se recuerda lo que el usuario abre o cierra a mano; el default se
+   recalcula en cada pintada. Guardar el default hacía que un grupo que dejaba
+   de ser corto siguiera abierto para siempre. */
+const panelUI = { tocado: {}, busca: {} };
+
+/* null y undefined son el mismo "sin valor" que "". Se normaliza para que el
+   filtro los trate igual. */
+const valorCrudo = v => (v === null || v === undefined) ? "" : v;
+
+/* Etiqueta visible de un valor. El vacío se pinta con nombre —un chip que dice
+   "Planta: " no le dice nada a nadie— y los espacios de más se limpian SOLO
+   para mostrar: lo que filtra sigue siendo el valor original. */
+function etiquetaValor(campo, valor) {
+  if (valorCrudo(valor) === "") return t("sinValor");
+  const cat = (CONFIG.filtros && CONFIG.filtros.catalogos && CONFIG.filtros.catalogos[campo]) || null;
+  const e = cat && cat.find(x => x.clave === valor);
+  if (e) return (lang === "en" && e.clave_en) ? e.clave_en : e.clave;
+  return String(valor).replace(/\s+/g, " ").trim() || String(valor);
+}
+
+/* Opciones de un campo. Se calculan sobre rawData COMPLETO, nunca sobre lo
+   filtrado: si las opciones se encogieran con la selección, no habría forma de
+   ampliarla. */
+function opcionesDe(campo) {
+  const cat = (CONFIG.filtros && CONFIG.filtros.catalogos && CONFIG.filtros.catalogos[campo]) || null;
+  const cuenta = new Map();
+  rawData.forEach(r => {
+    const v = valorCrudo(r[campo]);
+    if (v === "") return;
+    cuenta.set(v, (cuenta.get(v) || 0) + 1);
+  });
+  if (cat && cat.length) {
+    return cat.map(e => ({ v: e.clave, txt: etiquetaValor(campo, e.clave), <unidad-compartida> cuenta.get(e.clave) || 0 }));
+  }
+  return [...cuenta.keys()]
+    .map(v => ({ v, txt: etiquetaValor(campo, v), <unidad-compartida> cuenta.get(v) }))
+    .sort((a, b) => a.txt.localeCompare(b.txt, lang === "en" ? "en" : "es"));
+}
+
+function construirFiltros() {
+  document.querySelectorAll(".filter-group[data-field]").forEach(g => {
+    const campo = g.dataset.field;
+    const ops = opcionesDe(campo);
+    const sel = filterState.panel[campo] || [];
+    const plegable = ops.length > FILTRO_PLEGABLE;
+    const buscable = ops.length > FILTRO_SELECT_ALL;
+
+    // Plegado arranca cerrado, salvo que traiga algo seleccionado: un filtro
+    // activo escondido detrás de un click es uno que el usuario no sabe que
+    // tiene puesto.
+    const abierto = panelUI.tocado[campo] === undefined
+      ? (!plegable || sel.length > 0)
+      : panelUI.tocado[campo];
+
+    g.classList.toggle("filter-group--plegable", plegable);
+    g.classList.toggle("filter-group--abierto", abierto);
+    g.innerHTML = "";
+
+    const cab = document.createElement("div");
+    cab.className = "filter-group__label";
+    cab.innerHTML =
+      (plegable ? '<span class="filter-group__chev">▶</span>' : "") +
+      `<span>${t("f_" + campo) || campo}</span>` +
+      `<span class="filter-group__n${sel.length ? " filter-group__n--activo" : ""}">${
+        sel.length ? sel.length + "/" + ops.length : ops.length}</span>`;
+    if (plegable) cab.onclick = () => {
+      panelUI.tocado[campo] = !g.classList.contains("filter-group--abierto");
+      g.classList.toggle("filter-group--abierto", panelUI.tocado[campo]);
+    };
+    g.appendChild(cab);
+
+    // FUERA del cuerpo plegable: si vive adentro, para buscar hay que adivinar
+    // primero que el encabezado se despliega.
+    if (buscable) {
+      const b = document.createElement("input");
+      b.type = "search";
+      b.className = "filter-buscar";
+      b.placeholder = `${t("search").replace("…", "")} ${(t("f_" + campo) || campo).toLowerCase()}…`;
+      b.value = panelUI.busca[campo] || "";
+      b.oninput = () => {
+        panelUI.busca[campo] = b.value;
+        if (b.value) { panelUI.tocado[campo] = true; g.classList.add("filter-group--abierto"); }
+        pintar();
+      };
+      g.appendChild(b);
+    }
+
+    const cuerpo = document.createElement("div");
+    cuerpo.className = "filter-group__cuerpo";
+    g.appendChild(cuerpo);
+    const caja = document.createElement("div");
+    caja.className = "filter-opts";
+    cuerpo.appendChild(caja);
+    const pie = document.createElement("div");
+    cuerpo.appendChild(pie);
+
+    function marcar(valores, prender) {
+      const ahora = new Set(filterState.panel[campo] || []);
+      valores.forEach(v => prender ? ahora.add(v) : ahora.delete(v));
+      if (ahora.size) filterState.panel[campo] = [...ahora];
+      else delete filterState.panel[campo];
+      currentPage = 1;
+      construirFiltros();
+      applyFilters();
+    }
+
+    function pintar() {
+      // El buscador filtra la MISMA lista, en su lugar: no recorta ni reordena.
+      const q = (panelUI.busca[campo] || "").trim().toLowerCase();
+      const lista = q ? ops.filter(o => o.txt.toLowerCase().includes(q)) : ops;
+
+      caja.innerHTML = "";
+      if (!lista.length) caja.innerHTML = `<div class="filter-vacio">${t("noData")}</div>`;
+
+      if (ops.length > FILTRO_SELECT_ALL && lista.length) {
+        const marcadas = lista.filter(o => sel.includes(o.v)).length;
+        const l = document.createElement("label");
+        l.className = "filter-opt filter-opt--todos";
+        const i = document.createElement("input");
+        i.type = "checkbox";
+        i.checked = marcadas === lista.length;
+        i.indeterminate = marcadas > 0 && marcadas < lista.length;
+        // Con búsqueda puesta aplica a lo VISIBLE: marcar en silencio lo que no
+        // cabe en pantalla es la forma rápida de filtrar algo que no querías.
+        i.onchange = () => marcar(lista.map(o => o.v), i.checked);
+        const sp = document.createElement("span");
+        sp.textContent = q ? `${t("seleccionarTodo")} (${lista.length})` : t("seleccionarTodo");
+        l.append(i, sp);
+        caja.appendChild(l);
+      }
+
+      lista.forEach(o => {
+        const l = document.createElement("label");
+        l.className = "filter-opt";
+        l.title = o.txt;                        // el nombre completo, sin truncar
+        const i = document.createElement("input");
+        i.type = "checkbox";
+        i.checked = sel.includes(o.v);
+        i.onchange = () => marcar([o.v], i.checked);
+        const s = document.createElement("span");
+        s.textContent = o.txt;
+        const n = document.createElement("span");
+        n.className = "filter-opt__n";
+        n.textContent = o.n.toLocaleString("en-US");
+        l.append(i, s, n);
+        caja.appendChild(l);
+      });
+
+      // Si la búsqueda esconde algo marcado hay que decirlo: un filtro puesto
+      // que no se ve en ningún lado es peor que no tenerlo.
+      const ocultas = sel.filter(v => !lista.some(o => o.v === v)).length;
+      pie.innerHTML = ocultas
+        ? `<div class="filter-vacio">${ocultas} ${t(ocultas === 1 ? "seleccionadaOculta" : "seleccionadasOcultas")}</div>`
+        : "";
+    }
+    pintar();
+  });
+}
+
+/* ============================================================
+   TABLA DE DETALLE — 10 filas, paginada, ordenable
+   ============================================================ */
+function renderTable() {
+  const cols = CONFIG.detail.columns;
+  const data = getSortedData();
+  const size = CONFIG.detail.pageSize;
+  const pages = Math.max(1, Math.ceil(data.length / size));
+  currentPage = Math.min(currentPage, pages);
+  const slice = data.slice((currentPage - 1) * size, currentPage * size);
+
+  // Header ordenable
+  const head = document.getElementById("detailHead"); head.innerHTML = "";
+  cols.forEach(c => {
+    const th = document.createElement("th");
+    const s = sortState.find(s => s.field === c.field);
+    th.innerHTML = `${t(c.field) || c.field}<span class="sort-ind">${
+      s ? (s.dir === "asc" ? "▲" : "▼") : "▲"}</span>`;
+    if (s) th.classList.add("is-sorted");
+    th.onclick = e => { toggleSort(c.field, e.shiftKey); renderTable(); };
+    head.appendChild(th);
+  });
+
+  // Cuerpo
+  const body = document.getElementById("detailBody"); body.innerHTML = "";
+  if (!data.length) {
+    body.innerHTML = `<tr><td colspan="${cols.length}" class="empty-state">${t("noData")}</td></tr>`;
+  } else {
+    slice.forEach(r => {
+      const tr = document.createElement("tr");
+      cols.forEach(c => {
+        const td = document.createElement("td");
+        td.className = c.type === "num" ? "num" : c.type === "date" ? "date" : "";
+        if (c.type === "num" && r[c.field] < 0) td.classList.add("neg");
+        td.textContent = fmt(r[c.field], c.type);
+        tr.appendChild(td);
+      });
+      body.appendChild(tr);
+    });
+  }
+
+  // Totales sobre TODO el conjunto filtrado, no la página
+  const foot = document.getElementById("detailFoot"); foot.innerHTML = "";
+  if (cols.some(c => c.total) && data.length) {
+    const tr = document.createElement("tr");
+    cols.forEach(c => {
+      const td = document.createElement("td");
+      if (c.total) {
+        td.className = "num";
+        td.textContent = fmt(data.reduce((s, r) => s + (+r[c.field] || 0), 0), "num");
+      }
+      tr.appendChild(td);
+    });
+    foot.appendChild(tr);
+  }
+
+  renderPager(data.length, pages);
+  document.getElementById("rowCount").textContent =
+    `${data.length.toLocaleString("en-US")} ${t("rows")}`;
+}
+function toggleSort(field, shift) {
+  const i = sortState.findIndex(s => s.field === field);
+  if (!shift) { const keep = i >= 0 ? sortState[i] : null; sortState.length = 0;
+                if (keep) sortState.push(keep); }
+  const j = sortState.findIndex(s => s.field === field);
+  if (j < 0) sortState.push({ field, dir: "asc" });
+  else if (sortState[j].dir === "asc") sortState[j].dir = "desc";
+  else sortState.splice(j, 1);                 // asc → desc → sin orden
+}
+function renderPager(total, pages) {
+  const size = CONFIG.detail.pageSize;
+  const from = total ? (currentPage - 1) * size + 1 : 0;
+  const to = Math.min(currentPage * size, total);
+  document.getElementById("pagerRange").textContent =
+    `${t("showing")} ${from}–${to} ${t("of")} ${total.toLocaleString("en-US")}`;
+  const box = document.getElementById("pagerPages"); box.innerHTML = "";
+  const btn = (label, page, disabled, active) => {
+    const b = document.createElement("button");
+    b.textContent = label; b.disabled = !!disabled;
+    if (active) b.classList.add("is-active");
+    b.onclick = () => { currentPage = page; renderTable(); };
+    box.appendChild(b);
+  };
+  btn("‹", currentPage - 1, currentPage === 1);
+  const win = [];
+  for (let p = 1; p <= pages; p++)
+    if (p === 1 || p === pages || Math.abs(p - currentPage) <= 1) win.push(p);
+  win.forEach((p, i) => {
+    if (i && p - win[i - 1] > 1) { const s = document.createElement("span");
+      s.textContent = "…"; box.appendChild(s); }
+    btn(p, p, false, p === currentPage);
+  });
+  btn("›", currentPage + 1, currentPage === pages);
+}
+
+/* ============================================================
+   FORMATO
+   ============================================================ */
+function fmt(v, type) {
+  if (v === null || v === undefined || v === "") return "–";
+  if (type === "num") {
+    const n = +v;
+    const s = Math.abs(n).toLocaleString("en-US", { maximumFractionDigits: 0 });
+    return n < 0 ? `(${s})` : s;
+  }
+  if (type === "date") {
+    // NO new Date("YYYY-MM-DD"): lo lee como medianoche UTC y en México pinta el
+    // día anterior. Se arma del texto.
+    const m = /^(\d{4})-(\d{2})-(\d{2})/.exec(String(v));
+    if (!m) return "–";
+    return lang === "es" ? `${m[3]}/${m[2]}/${m[1]}` : `${m[2]}/${m[3]}/${m[1]}`;
+  }
+  return v;
+}
+function abbr(n) {
+  const a = Math.abs(n);
+  if (a >= 1e9) return (n / 1e9).toFixed(1) + "B";
+  if (a >= 1e6) return (n / 1e6).toFixed(1) + "M";
+  if (a >= 1e3) return (n / 1e3).toFixed(1) + "K";
+  return n.toLocaleString("en-US");
+}
+
+/* ============================================================
+   EXPORTACIÓN — exportan el conjunto filtrado completo y ordenado
+   ============================================================ */
+function exportRows() {
+  const cols = CONFIG.detail.columns;
+  return getSortedData().map(r => {
+    const o = {};
+    cols.forEach(c => {
+      o[t(c.field) || c.field] = c.type === "date"
+        ? new Date(r[c.field]).toISOString().slice(0, 10)   // YYYY-MM-DD
+        : r[c.field];                                        // números sin formato
+    });
+    return o;
+  });
+}
+function stamp() {
+  const d = new Date(), p = n => String(n).padStart(2, "0");
+  return `${d.getFullYear()}${p(d.getMonth()+1)}${p(d.getDate())}-${p(d.getHours())}${p(d.getMinutes())}`;
+}
+document.getElementById("btnCsv").onclick = () => {
+  const rows = exportRows();
+  if (!rows.length) return;
+  const headers = Object.keys(rows[0]);
+  // csvCelda (/shared/js/csv.js) neutraliza = + - @ al inicio: sin eso Excel
+  // ejecuta como fórmula un texto que llegó de SAP (portal-seguridad § 5 bis).
+  const csv = [headers.map(csvCelda).join(","),
+    ...rows.map(r => headers.map(h => csvCelda(r[h])).join(","))].join("\r\n");
+  const blob = new Blob(["\uFEFF" + csv], { type: "text/csv;charset=utf-8;" }); // BOM
+  download(blob, `${CONFIG.dashboardName}_${stamp()}.csv`);
+};
+document.getElementById("btnXlsx").onclick = () => {
+  const rows = exportRows();
+  if (!rows.length) return;
+  const wb = XLSX.utils.book_new();
+  const ws = XLSX.utils.json_to_sheet(rows);
+  ws["!freeze"] = { xSplit: 0, ySplit: 1 };
+  ws["!autofilter"] = { ref: ws["!ref"] };
+  ws["!cols"] = Object.keys(rows[0]).map(h => ({
+    wch: Math.min(40, Math.max(h.length + 2,
+      ...rows.slice(0, 200).map(r => String(r[h] ?? "").length + 2))) }));
+  XLSX.utils.book_append_sheet(wb, ws, "Data");
+
+  const meta = [
+    ["Dashboard", CONFIG.dashboardName],
+    ["Generado", new Date().toLocaleString()],
+    ["Filas", rows.length],
+    ["Filtros", JSON.stringify(filterState)],
+    [], ["Fuente", "Sistema", "Fecha de corte"],
+    ...CONFIG.sources.map(s => [s.name, s.system, s.asOf])
+  ];
+  XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(meta), "Metadata");
+  XLSX.writeFile(wb, `${CONFIG.dashboardName}_${stamp()}.xlsx`);
+};
+function download(blob, name) {
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob); a.download = name; a.click();
+  URL.revokeObjectURL(a.href);
+}
+
+/* ============================================================
+   FRESCURA — "Actualizado" vs "Datos al" (el más ANTIGUO)
+   ============================================================ */
+function renderFreshness() {
+  document.getElementById("metaUpdated").textContent =
+    new Date(CONFIG.lastRefresh).toLocaleString(lang === "es" ? "es-MX" : "en-US");
+  document.getElementById("ftrUpdated").textContent =
+    new Date(CONFIG.lastRefresh).toLocaleDateString(lang === "es" ? "es-MX" : "en-US");
+
+  const el = document.getElementById("metaFreshness");
+  if (!CONFIG.sources || !CONFIG.sources.length) { el.hidden = true; return; }
+
+  const oldest = CONFIG.sources.reduce((a, b) => new Date(a.asOf) < new Date(b.asOf) ? a : b);
+  const days = Math.floor((Date.now() - new Date(oldest.asOf)) / 864e5);
+  const lvl = days > CONFIG.freshness.criticalDays ? "critical"
+            : days > CONFIG.freshness.warnDays ? "warn" : "ok";
+  el.className = `freshness freshness--${lvl}`;
+  el.innerHTML = `${lvl === "critical" ? "⚠ " : ""}${t("dataAsOf")}: <b>${oldest.asOf}</b>`;
+  el.title = CONFIG.sources.map(s =>
+    `${s.name}: ${s.asOf} (${Math.floor((Date.now()-new Date(s.asOf))/864e5)}d)`).join("\n");
+  document.getElementById("ftrSources").textContent =
+    CONFIG.sources.map(s => s.name).join(", ");
+}
+
+/* ============================================================
+   CATEGORÍAS Y MODO DEGRADADO
+   El orden, los nombres y el color salen de META. Si META no trae
+   la estructura, se deduce de los datos y se AVISA — pero el
+   tablero sigue dibujando. Ver secciones 13-14 de la skill.
+   ============================================================ */
+const CAT = { lista: [], orden: [], rolDe: {}, colorDe: {}, degradado: false };
+
+function initCategorias(campo) {
+  const desdeMeta = (META.categorias || []).length;
+  const fuente = desdeMeta
+    ? META.categorias
+    : [...new Set(rawData.map(r => r[campo]).filter(Boolean))]
+        .sort((a, b) => String(a).localeCompare(String(b)))
+        .map(n => ({ nombre: n, nombre_en: n, rol: null }));
+
+  CAT.degradado = !desdeMeta && fuente.length > 0;
+  CAT.lista = fuente;
+  CAT.orden = fuente.map(c => c.nombre);
+  fuente.forEach((c, i) => {
+    CAT.rolDe[c.nombre]   = c.rol;
+    // Sin estructura no hay color por severidad: se reparte la paleta categórica
+    CAT.colorDe[c.nombre] = `var(--c-cat-${Math.min(i + 1, 5)})`;
+  });
+}
+
+/* Nombre visible según idioma; la LÓGICA nunca compara contra esto */
+const nombreCat = c => (lang === "en" && c.nombre_en) ? c.nombre_en : c.nombre;
+
+function renderBanner() {
+  const el = document.getElementById("banner");
+  const viejas = Object.entries(META.pestanas_sin_actualizar || {});
+
+  // Rojo gana: se perdió la estructura misma
+  const nivel = CAT.degradado ? "critical" : viejas.length ? "warn" : null;
+  if (!nivel) { el.hidden = true; el.className = "banner"; return; }
+
+  const titulo = nivel === "critical" ? t("degradedTitle") : t("staleTitle");
+  const detalle = nivel === "critical"
+    ? t("degradedStructure")
+    : viejas.map(([p, f]) => `${p}: ${f}`).join(" · ") + " — " + t("staleDetail");
+
+  // `detalle` trae nombres y fechas del meta.json (datos): textContent, nunca innerHTML.
+  el.className = `banner banner--${nivel}`;
+  el.textContent = "";
+  const ic = document.createElement("span"); ic.className = "banner__icon"; ic.textContent = "⚠";
+  const body = document.createElement("div"); body.className = "banner__body";
+  const ti = document.createElement("span"); ti.className = "banner__title"; ti.textContent = titulo;
+  const de = document.createElement("span"); de.className = "banner__detail"; de.textContent = detalle;
+  body.append(ti, de); el.append(ic, body);
+  el.hidden = false;
+}
+
+/* ============================================================
+   ÍCONO ⓘ POR VISUAL
+   ============================================================ */
+function attachInfo(cardEl, visualId) {
+  const info = CONFIG.visuals[visualId] && CONFIG.visuals[visualId].info[lang];
+  if (!info) return;
+  const btn = document.createElement("button");
+  btn.className = "info-btn"; btn.innerHTML = "ⓘ"; btn.setAttribute("aria-label", "Info");
+  const pop = document.createElement("div");
+  pop.className = "info-popover"; pop.hidden = true;
+  pop.innerHTML = `
+    <button class="info-popover__close">✕</button>
+    <div class="info-popover__row"><div class="info-popover__key">Medida</div>${info.medida}</div>
+    <div class="info-popover__row"><div class="info-popover__key">Cálculo</div>
+      <span class="info-popover__formula">${info.calculo}</span></div>
+    <div class="info-popover__row"><div class="info-popover__key">Filtros</div>${info.filtros}</div>
+    <div class="info-popover__row"><div class="info-popover__key">Granularidad</div>${info.granularidad}</div>`;
+  btn.onclick = e => { e.stopPropagation(); pop.hidden = !pop.hidden; };
+  pop.querySelector(".info-popover__close").onclick = () => pop.hidden = true;
+  document.addEventListener("click", e => {
+    if (!pop.contains(e.target) && e.target !== btn) pop.hidden = true;
+  });
+  document.addEventListener("keydown", e => { if (e.key === "Escape") pop.hidden = true; });
+  cardEl.querySelector(".card__header").appendChild(btn);
+  cardEl.appendChild(pop);
+}
+
+/* ============================================================
+   DOCUMENTACIÓN
+   ============================================================ */
+function renderDoc() {
+  const d = CONFIG.documentation[lang] || {};
+  document.getElementById("docBody").innerHTML = `
+    <h3>${t("purpose")}</h3><p>${d.purpose || ""}</p>
+    <h3>${t("sources")}</h3>
+    <table class="tbl"><thead><tr><th>Fuente</th><th>Sistema</th><th>Ruta</th><th>Corte</th></tr></thead>
+    <tbody>${CONFIG.sources.map(s =>
+      `<tr><td>${s.name}</td><td>${s.system}</td><td>${s.path}</td><td class="date">${s.asOf}</td></tr>`
+    ).join("")}</tbody></table>
+    <h3>${t("transformations")}</h3><p>${d.transformations || ""}</p>
+    <h3>${t("measures")}</h3><p>${d.measures || ""}</p>
+    <h3>${t("rules")}</h3><p>${d.rules || ""}</p>
+    <h3>${t("limitations")}</h3><p>${d.limitations || ""}</p>
+    <h3>${t("contact")}</h3><p>equipo de BI · la empresa</p>`;
+}
+const docPanel = document.getElementById("docPanel"), docOv = document.getElementById("docOverlay");
+const openDoc  = () => { renderDoc(); docPanel.classList.add("is-open"); docOv.hidden = false; };
+const closeDoc = () => { docPanel.classList.remove("is-open"); docOv.hidden = true; };
+document.getElementById("btnDoc").onclick = openDoc;
+document.getElementById("btnDocClose").onclick = closeDoc;
+docOv.onclick = closeDoc;
+
+/* ============================================================
+   IDIOMA — no resetea filtros ni selecciones
+   ============================================================ */
+function applyLang() {
+  document.documentElement.lang = lang;
+  document.querySelectorAll("[data-i18n]").forEach(el =>
+    el.textContent = t(el.dataset.i18n));
+  document.querySelectorAll("#langToggle button").forEach(b =>
+    b.classList.toggle("is-active", b.dataset.lang === lang));
+  if (rawData.length) construirFiltros();     // las etiquetas también se traducen
+  renderFreshness(); renderBanner(); renderTable(); renderChips();
+  charts.forEach(c => c.update(getFilteredData()));
+}
+document.getElementById("langToggle").onclick = e => {
+  const b = e.target.closest("button"); if (!b) return;
+  lang = b.dataset.lang; guardarLS("dash_lang", lang); applyLang();
+};
+if (CONFIG.lang.enabled.length < 2) document.getElementById("langToggle").hidden = true;
+
+/* ============================================================
+   RENDER DE VISUALES — >>> IMPLEMENTAR <<<
+   Cada chart debe: exponer .update(data), llamar setCrossfilter()
+   en click, mostrar data labels, tooltip, y estado vacío.
+   ============================================================ */
+function renderKPIs(data) { /* >>> máx 5 tarjetas .kpi con valor, label y delta <<< */ }
+
+/* ============================================================
+   INIT
+   ============================================================ */
+document.getElementById("btnPortal").href = CONFIG.portalUrl;
+initCategorias("categoria");   // >>> el campo de categoría de este dataset <<<
+readURL();
+construirFiltros();
+applyLang();                   // applyLang ya llama renderBanner()
+applyFilters();
+
+let rt; addEventListener("resize", () => {
+  clearTimeout(rt); rt = setTimeout(() => charts.forEach(c => c.update(getFilteredData())), 150);
+});
+</script>
+</body>
+</html>
