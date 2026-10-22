@@ -1,0 +1,17 @@
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash|PowerShell",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python -I \"$CLAUDE_PROJECT_DIR/.claude/hooks/exigir_antes_de_commit.py\"",
+            "timeout": 30,
+            "statusMessage": "Revisando sellos antes del commit"
+          }
+        ]
+      }
+    ]
+  }
+}

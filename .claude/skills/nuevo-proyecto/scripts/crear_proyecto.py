@@ -483,6 +483,16 @@ def buscar_estilos(repo):
             return e
     return candidatos[0] if candidatos else None
 
+def plantilla_prd(repo, nombre):
+    """La plantilla del PRD sale de la skill escribir-prd del repo, para no tener dos copias que se separen."""
+    skill = repo / '.claude' / 'skills' / 'escribir-prd' / 'SKILL.md'
+    if skill.is_file():
+        m = re.search(r'```markdown\n(.*?)\n```', skill.read_text(encoding='utf-8'), re.S)
+        if m:
+            texto = m.group(1).replace('<Proyecto>', nombre).replace('<AAAA-MM-DD>', HOY)
+            return texto.replace('Estado: borrador | aprobado', 'Estado: borrador') + '\n'
+    return None
+
 def escribir(ruta, texto):
     ruta.parent.mkdir(parents=True, exist_ok=True)
     ruta.write_text(texto, encoding='utf-8', newline='\n')
@@ -561,7 +571,12 @@ def main():
         escribir(dst / f'NB_{nombre}.py', NOTEBOOK.format(**f))
         escribir(dst / 'demo' / 'source' / 'ejemplo.csv', 'id,categoria,fecha,valor\nEJ-00001,A,2026-01-01,100.5\nEJ-00002,B,2026-01-02,\n')
         (dst / 'Output').mkdir(exist_ok=True)
-    tabla = '\n'.join(f'| {x.format(**f)} | {y} |' for x, y in TABLAS[a.tipo])
+    prd = plantilla_prd(repo, nombre)
+    if prd:
+        escribir(dst / 'docs' / 'PRD.md', prd)
+    else:
+        avisos.append('no encontré la skill escribir-prd en el repo: docs/PRD.md no se creó')
+    tabla = '\n'.join(f'| {x.format(**f)} | {y} |' for x, y in TABLAS[a.tipo] + [('`docs/PRD.md`', 'objetivo, KPIs y criterios de aceptación (borrador; lo llena `escribir-prd`)')])
     escribir(dst / 'README.md', README.format(tabla=tabla, correr=CORRER[a.tipo].format(**f), **f))
 
     print(f'Creado: {dst}')

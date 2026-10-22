@@ -31,6 +31,18 @@ Los repos personales están fuera del candado del equipo (`includeIf` → `~/.gi
 Primer renglón del archivo: `personal` o `hibrido`, con un comentario opcional después de `#`.
 - Los marcadores no cuentan como secreto (`"<tu-contraseña>"`, `changeme`, `xxx`, `Password=;`).
 
+### Con el hook del asistente
+
+En los commits que hace el asistente, antes del candado corre `exigir_antes_de_commit.py` (hook de la
+sesión, en `.claude/settings.json` del repo): pide los sellos de revisión y de prueba. No se pisan:
+
+| Orden | Quién | Revisa | Cuándo corre |
+|---|---|---|---|
+| 1 | hook del asistente | que el diff en stage se revisó y que el tablero tocado se probó | solo en commits del asistente |
+| 2 | este candado (git) | secretos, datos, tamaño, material de la empresa, firma | en **todo** commit, también los hechos a mano |
+
+Pasar el hook no salta el candado, y el candado no reemplaza la revisión: uno ve calidad y el otro, fugas.
+
 ## Instalar
 
 ```bash

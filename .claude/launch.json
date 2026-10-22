@@ -2,12 +2,6 @@
   "version": "0.0.1",
   "configurations": [
     {
-      "name": "tableros",
-      "runtimeExecutable": "python",
-      "runtimeArgs": ["-m", "http.server", "8765", "--bind", "127.0.0.1", "--directory", "Main_Dev_Projects"],
-      "port": 8765
-    },
-    {
       "name": "portal-local",
       "url": "http://127.0.0.1:8080"
     }

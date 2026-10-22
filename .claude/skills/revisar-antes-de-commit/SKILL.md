@@ -1,6 +1,6 @@
 ---
 name: revisar-antes-de-commit
-description: Revisión de seguridad y de código del diff en stage antes de un commit en los repos personales (BI_DataNexus, OblivionCode) - lanza en paralelo los agentes revisor-seguridad-personal y revisor-codigo-personal, junta solo hallazgos con confianza de 80 o más, y si no hay bloqueantes sella la revisión para que el commit pase. Úsala SIEMPRE antes de un git commit en un repo personal, cuando el hook exigir_revision_commit niegue un commit, o cuando se pida "revisa antes de commitear", "revisa el diff" o "revisa lo que voy a subir". También sirve sobre archivos completos (modo archivos) para validar un tablero o un proyecto que no tiene diff. No reemplaza al revisor-seguridad del equipo en repos de la empresa.
+description: Revisión de seguridad y de código del diff en stage antes de un commit en los repos personales (BI_DataNexus, OblivionCode) - lanza en paralelo los agentes revisor-seguridad-personal y revisor-codigo-personal, junta solo hallazgos con confianza de 80 o más, y si no hay bloqueantes sella la revisión para que el commit pase. Úsala SIEMPRE antes de un git commit en un repo personal, cuando el hook exigir_antes_de_commit niegue un commit por falta de revisión, o cuando se pida "revisa antes de commitear", "revisa el diff" o "revisa lo que voy a subir". También sirve sobre archivos completos (modo archivos) para validar un tablero o un proyecto que no tiene diff. No reemplaza al revisor-seguridad del equipo en repos de la empresa.
 ---
 
 # Revisar antes de commit
@@ -15,7 +15,8 @@ positivos) y el plugin `code-review` (pasadas en paralelo, solo hallazgos con co
 | `stage` (default) | `git diff --cached` + los archivos completos que toca | antes de commit |
 | `archivos` | una lista de archivos o carpetas, completos | validar algo que no tiene diff (un tablero ya hecho, una copia sin git) |
 
-**Se salta** (y se dice) si el stage es solo `.md`, `.txt` o imágenes: no hay código que revisar.
+**Se salta** (y se dice) si el stage es solo `.md`, `.txt`, imágenes o `.pdf` **fuera de `.claude/`**: no hay
+código que revisar. Lo de `.claude/` (skills, agentes) sí se revisa: son instrucciones del asistente.
 Si el diff tiene menos de 50 líneas, A2 hace una sola pasada en vez de tres.
 
 ## 2. Lanzar los dos agentes en paralelo
@@ -56,3 +57,12 @@ arreglan, se vuelve a hacer `git add` y se revisa otra vez (el sello es del diff
 No se sella "para que pase". Se le dice a Haz cuál es; si confirma que es falso positivo, se anota
 en `.claude/revision/falsos_positivos.md` con fecha, patrón y motivo, y se vuelve a correr.
 El commit manual en su terminal siempre está disponible: el hook es solo del asistente.
+
+## 6. Orden con el hook y el candado
+
+`git add` → esta skill (sella) → `probar-tablero` si el stage toca un tablero (sella) → `git commit -m`
+**en un comando aparte**. El hook niega `git add … && git commit`, `-a`, `-i`, `-o`, `-p` y rutas sueltas:
+todos commitean algo distinto del stage sellado.
+El hook `exigir_antes_de_commit.py` compara los sellos con el stage **antes** de que corra git; luego
+el `candado-personal` revisa secretos y datos. Si cambias algo después de sellar, el sello ya no vale:
+`git add` otra vez y se vuelve a revisar. `python .claude/hooks/sellar.py estado` dice qué sigue valiendo.

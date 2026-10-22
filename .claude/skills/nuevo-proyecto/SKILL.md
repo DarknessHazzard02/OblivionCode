@@ -18,12 +18,15 @@ python ~/.claude/skills/nuevo-proyecto/scripts/crear_proyecto.py <Nombre> --tipo
 - `<Nombre>` en el estilo de las carpetas que ya hay: letras, números y `_` (`Y_Meadows`, `BOM_Join_Project`).
 - Repo por default: BI_DataNexus. **Nunca sobreescribe**: si la carpeta existe, se detiene.
 - Pregunta antes de crear: el tipo, el repo y una descripción de una línea. Lo demás tiene default.
+- **Antes de crear**, si la idea todavía no está clara, ofrece `entrevista-prd`. Con lo decidido,
+  `escribir-prd` llena el `docs/PRD.md` que deja esta skill.
 
 ## Qué arma cada tipo
 
 Común a los tres: `README.md` (qué es, archivos, cómo se corre, de dónde salen los datos, pendientes),
 `.gitignore` (`data_real/`, `config.local.json`, `Output/`, Excel/CSV/parquet salvo `demo/source/`),
-`config.local.ejemplo.json` y `demo/CONTRATO.md` con `datos: inventados`. Todo el código va firmado.
+`config.local.ejemplo.json`, `demo/CONTRATO.md` con `datos: inventados` y `docs/PRD.md` (plantilla de
+`escribir-prd` en estado borrador). Todo el código va firmado.
 
 | Tipo | Archivos | Se parece a |
 |---|---|---|
@@ -43,7 +46,10 @@ reglas privadas del hook de copia (`copiar_skills_reglas.json`), para que no tra
    `Main_Dev_Projects/_semi/` (forma real, identidades inventadas) y validar valor por valor.
 4. El tablero crece siguiendo `dashboard-standards` (filtros, cross-filter, export, bilingüe) y el texto
    con `formato-textos`.
-5. Commit: el `candado-personal` revisa que no entren datos reales ni secretos.
+5. Llenar `docs/PRD.md` (con `escribir-prd`): sus criterios de aceptación son lo que audita `auditar-entrega`.
+6. Commit: `git add` → `revisar-antes-de-commit` → `probar-tablero` (si es tablero; lo sirve
+   `.claude/launch.json` → `tablero-<Proyecto>`, que la skill agrega si falta) → `git commit`. El hook `exigir_antes_de_commit` lo pide y el
+   `candado-personal` revisa que no entren datos reales ni secretos.
 
 ## Cómo se comprobó
 

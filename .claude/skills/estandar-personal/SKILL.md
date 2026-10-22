@@ -66,16 +66,25 @@ Código ajeno: la firma original se queda y se agrega `Updated by Haz`. Detalle 
 ```
 <repo>/
   .claude/skills/        copias limpias de las skills (las pone el hook; no se editan aquí)
+                         + las 5 del flujo de 4 pasos, que viven solo aquí (ver abajo)
+  .claude/agents/        revisor-seguridad-personal, revisor-codigo-personal, auditor
   .claude/hooks/         hooks que se pueden compartir (ver abajo)
+  .claude/settings.json  registra exigir_antes_de_commit.py (solo para sesiones en este repo)
+  .claude/launch.json    servidores para probar tableros (tableros, portal-local)
+  .claude/estado/        sellos y evidencia de revisión y pruebas; ignorada por git
   Dev_Coding/<Lenguaje>/ snippets y consultas sueltas, uno por archivo, con su firma
   Main_Dev_Projects/<Proyecto>/
     README.md            qué es, de dónde lee, cómo se corre, avisos
+    docs/PRD.md          objetivo, KPIs, criterios de aceptación (escribir-prd); lo lee el auditor
     .gitignore           data_real/, config.local.json, *.csv/*.xlsx salvo demo/
     data/CONTRATO.md     dice que los datos son inventados o semi-ficticios
     demo/source/         fuentes inventadas o semi-ficticias, con la forma de las reales
 ```
 
 - **Las skills se editan en `~/.claude/skills`, nunca en la copia del repo:** el hook la sobreescribe.
+  **Excepción:** las piezas del flujo de 4 pasos (skills, agentes y hooks de abajo) viven solo en los
+  repos. Se editan en BI_DataNexus y se espejan a OblivionCode con
+  `python .claude/hooks/sincronizar_repo.py` (`--revisar` para ver qué difiere).
 - Commits en español, en imperativo y con el qué: `Y_Meadows: tablero de control de órdenes`.
 
 ## Skills que viven en el repo
@@ -92,6 +101,25 @@ Código ajeno: la firma original se queda y se agrega `Updated by Haz`. Detalle 
 
 `estandar-laboral` **no** está aquí a propósito: nombra personas y sistemas de la empresa.
 
+## Flujo de 4 pasos (solo en los repos)
+
+| Paso | Skill | Agente | Qué deja |
+|---|---|---|---|
+| 1. PRD | `entrevista-prd` → `escribir-prd` | — | `docs/PRD.md` con criterios de aceptación |
+| 2. Revisión | `revisar-antes-de-commit` | `revisor-seguridad-personal` + `revisor-codigo-personal` en paralelo | sello `revision.json` del diff en stage |
+| 3. Auditor | `auditar-entrega` | `auditor` (Sonnet, sin la conversación) | PASA / FALLA / SIN EVIDENCIA por criterio |
+| 4. Pruebas | `probar-tablero` | — (navegador integrado) | sello `pruebas.json` con la huella del tablero |
+
+Orden de un commit: `git add` → revisión → prueba (si toca un tablero) → `git commit`. El hook
+`exigir_antes_de_commit.py` niega el commit del asistente si falta un sello o ya no coincide con el stage.
+
+**Costo** (medido sobre dos tableros completos del portal: revisión 270 k, auditor 88 k,
+prueba ~70 k). Sobre un diff normal es bastante menos. Para no gastar de más:
+- los commits solo de docs (`.md`, `.txt`, imágenes) no piden nada;
+- con un diff de menos de 50 líneas, el revisor de código hace una sola pasada;
+- la prueba se exige al commitear un tablero, no en cada turno;
+- el auditor se corre al cerrar una entrega, no en cada commit.
+
 ## Hooks
 
 | Hook | ¿En el repo? | Qué hace |
@@ -100,6 +128,9 @@ Código ajeno: la firma original se queda y se agrega `Updated by Haz`. Detalle 
 | `copiar_skills_reglas.json` | **no** | sus reglas de limpieza; nombran justo lo que hay que quitar. En el repo va `copiar_skills_reglas.ejemplo.json` con la forma |
 | `avisar_skills_equipo.py` | **sí**, `.claude/hooks/` (copia genérica) | SessionStart: `git pull` del clon del repo de skills del equipo y aviso de qué skill cambió desde la última marca. **No copia**: las skills locales son copias corregidas y se llevan los cambios a mano (`--marcar <skill>` al terminar). Cada corrida deja `skills_equipo_ultima.json` (fecha, resultado del pull, commit, qué encontró) y `--estado` lo muestra: así se sabe si corrió aunque no haya avisado nada. El clon se apunta con `SKILLS_EQUIPO_CLON` |
 | `candado-personal` (pre-commit y commit-msg) | **sí**, en la skill `candado-personal` | git, en cada commit: detiene secretos, datos reales sin `CONTRATO.md`, `data_real/`, archivos de más de 10 MB, material de la empresa y firmas de IA en el mensaje; avisa de código sin firma. Se instala por máquina con `instalar.py` |
+| `exigir_antes_de_commit.py` | **sí**, `.claude/hooks/` + `.claude/settings.json` | PreToolUse (Bash/PowerShell): si el asistente hace `git commit` en este repo, pide el sello de revisión del diff en stage y, si toca un tablero, el de prueba. Niega también lo que commitea algo distinto del stage sellado (`git add … && git commit`, `-a`, `-i`, `-o`, `-p`, rutas sueltas) y, si algo truena al revisar un commit de este repo, niega en vez de dejar pasar. Lee `cd`/`Set-Location`, `git -C`, rutas `/c/…`, `bash -c`, prefijos (`VAR=x`, `time`, `if … then`), redirecciones y alias; si dice `git … commit` y no lo puede leer, niega. Sale en la primera línea si el comando no dice commit. El commit a mano en la terminal no pasa por aquí. Pruebas: `--self-test` (57 casos) |
+| `sellar.py` | **sí**, `.claude/hooks/` | lo llaman `revisar-antes-de-commit` (`revision`) y `probar-tablero` (`pruebas <carpeta>`); `estado` dice qué sello sigue valiendo |
+| `sincronizar_repo.py` | **sí**, `.claude/hooks/` | espeja las piezas del flujo de BI_DataNexus a OblivionCode |
 | hooks del estándar laboral | **no** | se quedan en la máquina |
 
 Instalarlo en otra máquina: copiar los dos archivos a `~/.claude/hooks/`, renombrar el ejemplo a

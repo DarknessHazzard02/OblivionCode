@@ -1,6 +1,6 @@
 ---
 name: probar-tablero
-description: Prueba un tablero en el navegador integrado de la app (sin instalar nada) con una lista fija - consola sin errores, red sin 404, banda de frescura y de datos inventados o semi-ficticios, KPIs con número, cross-filter, filtros, tabla paginada, export CSV y Excel, ES/EN, botón de copiar, ancho de celular y tema oscuro - y deja evidencia (texto y capturas) y el sello de prueba. Úsala SIEMPRE que se edite un tablero de Main_Dev_Projects (index.html, app.js, estilos.css, data*/), cuando el hook exigir_pruebas_tablero lo pida, antes de auditar-entrega, y cuando se diga "pruébalo", "ábrelo en el navegador", "valida el tablero", "¿funciona?" o "revisa que no falle en silencio". También sirve para validar un tablero del Portal en su copia local (portal-local).
+description: Prueba un tablero en el navegador integrado de la app (sin instalar nada) con una lista fija - consola sin errores, red sin 404, banda de frescura y de datos inventados o semi-ficticios, KPIs con número, cross-filter, filtros, tabla paginada, export CSV y Excel, ES/EN, botón de copiar, ancho de celular y tema oscuro - y deja evidencia (texto y capturas) y el sello de prueba. Úsala SIEMPRE que se edite un tablero de Main_Dev_Projects (index.html, app.js, estilos.css, data*/), cuando el hook exigir_antes_de_commit niegue un commit por falta de prueba, antes de auditar-entrega, y cuando se diga "pruébalo", "ábrelo en el navegador", "valida el tablero", "¿funciona?" o "revisa que no falle en silencio". También sirve para validar un tablero del Portal en su copia local (portal-local).
 ---
 
 # Probar tablero
@@ -12,7 +12,7 @@ Inspirada en `playwright-cli` (snapshot con referencias, consola, red, capturas)
 
 | Dónde vive el tablero | Cómo se sirve |
 |---|---|
-| `Main_Dev_Projects/<Proyecto>/` | `preview_start` con `name: "tableros"` de `.claude/launch.json` (`python -m http.server 8765` en `Main_Dev_Projects`); URL `http://127.0.0.1:8765/<Proyecto>/index.html` |
+| `Main_Dev_Projects/<Proyecto>/` | `preview_start` con `name: "tablero-<Proyecto>"` de `.claude/launch.json` (`python -m http.server <puerto> --directory Main_Dev_Projects/<Proyecto>`); URL `http://127.0.0.1:<puerto>/`. La raíz es la carpeta del proyecto porque los tableros piden `/shared/...` con ruta absoluta. Si falta la entrada, se agrega con el siguiente puerto libre desde 8761 |
 | El Portal (copia local) | skill `portal-local` → `iniciar_portal.cmd` en 8080; `preview_start` con `name: "portal-local"`. Así pasan la lista blanca y las rutas reales, que `http.server` no prueba |
 
 Si `launch.json` no tiene la entrada, se agrega (no se borra ninguna que ya exista).
@@ -53,5 +53,9 @@ Al terminar: `resize_window` preset `desktop` y `preview_stop` si el servidor lo
 - Tabla P01-P14 en `.claude/estado/pruebas-<Proyecto>.md` (o en el chat si no es repo de git).
 - Capturas: se describen en la tabla; no se guardan archivos de imagen en el repo.
 - Si todo es PASA o N/A y es repo de git:
-  `python .claude/hooks/sellar.py pruebas <index.html> <app.js> <estilos.css>`
+  `python .claude/hooks/sellar.py pruebas Main_Dev_Projects/<Proyecto> --evidencia .claude/estado/pruebas-<Proyecto>.md`
+  El sello es la huella de html/js/css, `data*/` y `shared/` del tablero. Si después cambia uno de esos
+  archivos (también los datos), el hook pide probar otra vez antes del commit.
+- **Cuándo se exige:** solo al hacer commit de cambios de un tablero, no en cada turno. Mientras se
+  trabaja, se prueba cuando tenga sentido; no hace falta repetir la lista entera por cada ajuste chico.
 - Una FALLA **no se sella**. Se reporta con el dato que la prueba y la ruta para reproducirla.
