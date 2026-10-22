@@ -98,6 +98,7 @@ Código ajeno: la firma original se queda y se agrega `Updated by Haz`. Detalle 
 |---|---|---|
 | `copiar_skills.py` | **sí**, `.claude/hooks/` | PostToolUse: al crear o editar una skill en `~/.claude/skills`, la copia limpia a BI_DataNexus y OblivionCode; si queda algo que no debe salir, no copia y dice qué línea |
 | `copiar_skills_reglas.json` | **no** | sus reglas de limpieza; nombran justo lo que hay que quitar. En el repo va `copiar_skills_reglas.ejemplo.json` con la forma |
+| `avisar_skills_equipo.py` | **sí**, `.claude/hooks/` (copia genérica) | SessionStart: `git pull` del clon del repo de skills del equipo y aviso de qué skill cambió desde la última marca. **No copia**: las skills locales son copias corregidas y se llevan los cambios a mano (`--marcar <skill>` al terminar). Cada corrida deja `skills_equipo_ultima.json` (fecha, resultado del pull, commit, qué encontró) y `--estado` lo muestra: así se sabe si corrió aunque no haya avisado nada. El clon se apunta con `SKILLS_EQUIPO_CLON` |
 | `candado-personal` (pre-commit y commit-msg) | **sí**, en la skill `candado-personal` | git, en cada commit: detiene secretos, datos reales sin `CONTRATO.md`, `data_real/`, archivos de más de 10 MB, material de la empresa y firmas de IA en el mensaje; avisa de código sin firma. Se instala por máquina con `instalar.py` |
 | hooks del estándar laboral | **no** | se quedan en la máquina |
 
@@ -108,6 +109,16 @@ Instalarlo en otra máquina: copiar los dos archivos a `~/.claude/hooks/`, renom
 "PostToolUse": [{ "matcher": "Write|Edit|MultiEdit",
   "hooks": [{ "type": "command", "command": "python", "args": ["-I", "~/.claude/hooks/copiar_skills.py"] }] }]
 ```
+
+El aviso de skills del equipo: copiar `avisar_skills_equipo.py` a `~/.claude/hooks/`, correr una vez
+`python ~/.claude/hooks/avisar_skills_equipo.py --marcar-todo` y agregar:
+
+```json
+"SessionStart": [{ "hooks": [{ "type": "command", "command": "python",
+  "args": ["-I", "~/.claude/hooks/avisar_skills_equipo.py"], "timeout": 40 }] }]
+```
+
+Para ver si corrió: `python ~/.claude/hooks/avisar_skills_equipo.py --estado`.
 
 ## Skills que conviene crear después
 
