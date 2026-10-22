@@ -279,6 +279,32 @@ por la función compartida que le antepone un apóstrofo (`'`) a esos valores. E
 XLSX con SheetJS no tiene este problema. Números negativos reales se exportan como número,
 no como texto.
 
+**La función compartida es una sola y se usa así, en todo tablero que exporte CSV:**
+
+```html
+<script src="/shared/js/csv.js"></script>
+```
+```js
+const esc = csvCelda;   // comillas + neutraliza = + - @ + vacío como ""
+```
+
+⛔ **Nunca una función de comillas propia** como `v => '"' + String(v).replace(/"/g, '""') + '"'`.
+Se ve correcta, exporta bien, y deja pasar la fórmula. Tampoco una copia de `csvNeutral`
+dentro del tablero: se separa de la compartida con el tiempo.
+
+**Una actualización puede quitarla sin que nadie lo note.** Pasó en octubre con S&OP
+Sales: el PR se armó sobre una copia vieja del `index.html` y, al pegarla, desaparecieron
+el `<script>` y `csvCelda`. Antes de mergear la actualización de un tablero, se revisa lo
+que el PR **quita**:
+
+```powershell
+git diff main...<rama-del-pr> -- <tablero>/index.html | Select-String '^-' | Select-String 'csv\.js|csvCelda|csvNeutral'
+```
+
+Tiene que salir vacío. Cómo se comprueba en el navegador (F12, consola, con el tablero
+abierto): `csvCelda('=1+1')` devuelve `"'=1+1"`. Si dice `csvCelda is not defined`, falta
+el `<script>`.
+
 ---
 
 ## 6. Rastros de herramientas: cómo llegan al código

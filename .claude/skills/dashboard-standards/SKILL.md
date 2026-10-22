@@ -1,6 +1,6 @@
 ---
 name: dashboard-standards
-description: Estándares obligatorios para construir dashboards del equipo de BI, de la capa de datos a la pantalla - contrato de datos y meta.json, prohibición de defaults silenciosos, modo degradado visible, caché y validación de la última milla; y del lado visual tokens de color (tema la empresa y alterno), cross-filter entre todas las gráficas, panel de filtros colapsable, tabla de detalle paginada con export a CSV y Excel, data labels, bilingüe ES/EN, panel de documentación, frescura de datos, botón de regreso al portal, y cómo se programa el correo que manda ese tablero por Office365Email desde Fabric. Úsala SIEMPRE que se mencione dashboard, tablero, reporte visual, gráfica, chart, KPI, visualización de datos, panel de control o landing page analítica, y también cuando solo se pida "una gráfica de X" o "una tabla de Y" sin decir la palabra dashboard, o cuando se prepare el JSON o la tabla que alimenta un tablero. Aplica igual al modificar un dashboard existente, y cuando se pida un correo, reporte por mail, envío programado o notificación con datos de un tablero.
+description: Estándares obligatorios para construir dashboards del equipo de BI, de la capa de datos a la pantalla - contrato de datos y meta.json, prohibición de defaults silenciosos, modo degradado visible, caché y validación de la última milla; y del lado visual tokens de color (tema la empresa y alterno), cross-filter entre todas las gráficas, panel de filtros colapsable, tabla de detalle paginada con export a CSV y Excel, data labels, bilingüe ES/EN, panel de documentación, frescura de datos, botón de regreso al portal, y cómo se programa el correo que manda ese tablero por Office365Email desde Fabric. Úsala SIEMPRE que se mencione dashboard, tablero, reporte visual, gráfica, chart, KPI, visualización de datos, panel de control o landing page analítica, y también cuando solo se pida "una gráfica de X" o "una tabla de Y" sin decir la palabra dashboard, o cuando se prepare el JSON o la tabla que alimenta un tablero. También cuando un tablero muestre números de parte, SKU o materiales (todos llevan botón de copiar). Aplica igual al modificar un dashboard existente, y cuando se pida un correo, reporte por mail, envío programado o notificación con datos de un tablero.
 ---
 
 # Estándares de Dashboards — equipo de BI
@@ -536,6 +536,101 @@ Todo dashboard lleva una tabla de detalle **al final de la página**, a ancho co
 - Más de 8 columnas → congelar la primera.
 
 ---
+
+## 6 bis. ⛔ Todo número de parte se puede copiar
+
+**** Donde un tablero muestre un número de parte
+(SKU, material, item, componente) —tabla, matriz, árbol, tarjeta, tooltip fijo—
+va con su botón de copiar **⧉** al lado. Y si el tablero filtra por números de
+parte, un botón **"⧉ Copiar números de parte"** copia todos los de la vista, uno
+por renglón, para pegarlos directo en la selección múltiple de SAP.
+
+Por qué: el flujo real es "veo el número en el tablero → lo busco en SAP". Sin
+el botón, la gente lo selecciona con el mouse, se lleva un espacio o medio texto
+de al lado, o el click en el renglón le abre otra cosa.
+
+### Cómo se hace (la versión de Horizontals, que ya funciona)
+
+```css
+.pn { user-select: text; cursor: text; }
+.pn-copy { border: 0; background: transparent; padding: 0 2px; margin-left: 2px;
+  cursor: pointer; color: var(--c-text-muted); font-size: 11px; line-height: 1;
+  opacity: .55; vertical-align: baseline; }
+.pn-copy:hover { opacity: 1; color: var(--c-primary); }
+.pn-copy.is-copied { opacity: 1; color: var(--c-ok); }
+```
+
+```js
+/* navigator.clipboard solo existe en HTTPS o en localhost. El portal se abre
+   por HTTP en la red de la planta: sin el metodo viejo, el boton no hace nada. */
+async function copiarTexto(txt) {
+  try {
+    if (navigator.clipboard && window.isSecureContext) {
+      await navigator.clipboard.writeText(txt);
+      return true;
+    }
+  } catch (e) { /* se intenta el metodo viejo */ }
+  const ta = document.createElement("textarea");
+  ta.value = txt; ta.setAttribute("readonly", "");
+  ta.style.position = "fixed"; ta.style.opacity = "0";
+  document.body.appendChild(ta); ta.select();
+  let ok = false;
+  try { ok = document.execCommand("copy"); } catch (e) { ok = false; }
+  ta.remove();
+  return ok;
+}
+
+/* El numero con su boton. El valor pasa por esc() en LOS DOS lugares: viene
+   de los datos y entra a un innerHTML. */
+const pnHtml = v => (v == null || v === "") ? "–"
+  : `<span class="pn">${esc(v)}</span><button type="button" class="pn-copy" data-pn="${
+      esc(v)}" title="${esc(t("copy_pn"))}" aria-label="${esc(t("copy_pn"))}">⧉</button>`;
+
+/* En fase de CAPTURA (el `true` del final): corre antes que el click del
+   renglon, que expande la fila o pone un filtro cruzado. Asi copiar no dispara
+   nada mas, y seleccionar el numero con el mouse tampoco. */
+document.addEventListener("click", e => {
+  const b = e.target.closest(".pn-copy");
+  if (b) {
+    e.preventDefault(); e.stopPropagation();
+    copiarTexto(b.dataset.pn).then(ok => {
+      b.classList.toggle("is-copied", ok);
+      b.textContent = ok ? "✓" : "✕";
+      b.title = ok ? b.dataset.pn : t("copy_fail");
+      setTimeout(() => {
+        b.classList.remove("is-copied"); b.textContent = "⧉"; b.title = t("copy_pn");
+      }, 1200);
+    });
+    return;
+  }
+  if (e.target.closest(".pn") && String(window.getSelection() || "").trim())
+    e.stopPropagation();
+}, true);
+```
+
+Y en el diccionario I18N: `copy_pn` ("Copiar número de parte" / "Copy part number"),
+`copy_fail` ("No se pudo copiar" / "Could not copy"), y para el botón de todos
+`copy_all` y `copied_all` ("{n} copiados").
+
+### Las reglas
+
+- **Se copia el valor exacto del dato**, no el texto de pantalla: sin espacios,
+  sin la descripción, sin "…" de un texto truncado. Por eso va en `data-pn`.
+- **El botón da respuesta:** ✓ si copió, ✕ si no. Un botón que no avisa parece
+  roto aunque haya funcionado.
+- **"Copiar todos" copia lo de la vista con los filtros puestos, sin repetidos**
+  (una matriz trae un renglón por planta), uno por renglón.
+- **En SVG (gráficas)** el número no lleva botón: va en el tooltip y en la tabla
+  de detalle, donde sí se copia. Lo que importa es que exista UN lugar en
+  pantalla donde copiarlo.
+- **La exportación a CSV y Excel no cambia:** el número va limpio, sin el ⧉.
+
+### Cómo se comprueba
+
+Con el tablero abierto: clic en un ⧉ y pegar en el Bloc de notas. Bien: sale
+solo el número, y el renglón no se expandió ni se filtró nada. Mal en silencio:
+el portal abierto por IP con HTTP, y el botón sin `copiarTexto` con el método
+viejo: en localhost funciona, y en la planta no hace nada.
 
 ## 7. Exportación (CSV y Excel)
 

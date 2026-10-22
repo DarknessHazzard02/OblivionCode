@@ -75,6 +75,13 @@ En el PR se dice el nombre del notebook en `repo-fabric`, no se copia.
 No van: `servir_local.py`, `LEEME.md` de la fase local, carpetas `datos_locales/`
 ni nada con datos reales.
 
+### ⛔ Al portal solo van datos 100 % inventados (regla local)
+
+Lo que entra al PR se genera **desde cero** con `build/generar_contrato.py`: nada parte de un corte
+real, ni la forma. Los datos semi-ficticios (forma real, identidades inventadas) se quedan en local.
+Y en `meta.json` y en pantalla no van nombres de extractos reales ni textos de la fase local
+(`config.local.json`, `generar_datos.py`, rutas de la máquina).
+
 ### ⛔ El contrato lleva la marca, o el candado lo trata como datos reales
 
 `CONTRATO.md` tiene que traer, sola en un renglón:
@@ -115,6 +122,30 @@ de entregar:
 - **El botón de regreso al portal visible y con su `href` puesto.** En fase
   local viene con `hidden` y sin enlace; se queda así si nadie lo quita.
 
+### ⛔ Si el tablero YA está en el portal: se parte de la versión de `main`
+
+Una actualización (una "ronda" de cambios a un tablero que ya existe) **no se
+entrega pegando tu copia local encima**. Tu copia es de antes y no trae lo que
+se le corrigió en `main` mientras tanto. Al pegarla, el PR **deshace** esas
+correcciones sin que nadie lo note, porque el diff solo se ve como "mi cambio".
+
+Ya nos pasó: el PR de S&OP Sales de octubre quitó la protección del CSV contra
+fórmulas (`/shared/js/csv.js` y `csvCelda`) y regresó nombres de personas a los
+comentarios. Las dos cosas ya estaban corregidas en `main`.
+
+Cómo se hace:
+
+1. `git switch main; git pull` y crea tu rama **desde ahí**.
+2. Lleva **tus cambios** al `index.html` que está en `main`, no al revés.
+3. Antes del commit, revisa **lo que tu PR quita** (los renglones con `-`):
+
+```powershell
+git diff main -- <tablero>/index.html | Select-String '^-' | Select-String 'csv\.js|csvCelda|csvNeutral|seguro\.js|esc\('
+```
+
+Tiene que salir **vacío**. Si sale algo, tu PR está quitando una protección:
+recupérala de `main` antes de seguir.
+
 ### Antes de abrir el PR
 
 ```powershell
@@ -132,6 +163,8 @@ git push -u origin tablero-<tablero>
 | `python -m unittest` | termina en `OK` | un fallo de `test_candado` = falta la marca del contrato |
 | `git status` antes del commit | solo tu carpeta y `.gitignore` | aparece `app.py` u otro archivo del portal: no es tuyo, se deshace |
 | El tablero en tu servidor local, con los datos inventados | carga con su banda de "datos inventados", sin errores en consola | carga en blanco: revisa `dataUrls` |
+| El export a CSV, si el tablero tiene | usa `csvCelda` de `/shared/js/csv.js` (ver `portal-seguridad`, "Los CSV exportados") | tiene su propia función de comillas: así se cuela una fórmula |
+| Si es una actualización: lo que tu PR quita | el comando de arriba sale vacío | sale algo: estás deshaciendo una corrección de `main` |
 
 - **Un PR = un tablero.** No aproveches para arreglar otra cosa.
 - **Parte de lo último de `main`**, nunca de la rama de otro PR: un PR montado
@@ -246,6 +279,7 @@ repo y su banda de aviso. Se dice en el PR para que nadie lo dé por publicado.
 | El tablero no tenía cómo regresar al portal | el botón venía oculto de la fase local | sección 2 |
 | La tarjeta abría un tablero "sin datos reales" | el portal estaba bien; faltaba el pipeline | sección 5 |
 | Se veía la versión vieja al revisar | la rama levantada traía un solo PR, no todos | sección 4 |
+| Una actualización quitó la protección del CSV que `main` ya tenía | el `index.html` se armó sobre una copia vieja y se pegó encima | sección 2, "Si el tablero YA está en el portal" |
 
 ---
 
