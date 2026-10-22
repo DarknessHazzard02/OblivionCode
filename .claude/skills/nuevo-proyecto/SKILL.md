@@ -28,7 +28,7 @@ Común a los tres: `README.md` (qué es, archivos, cómo se corre, de dónde sal
 | Tipo | Archivos | Se parece a |
 |---|---|---|
 | `tablero` | `index.html`, `app.js` (lee `meta.json` + `dashboard.json` de `CONFIG.dataUrls`, banda de inventados/semi-ficticios, KPIs, detalle), `estilos.css` y `shared/` copiados de otro tablero, `generar_datos.py` (fuente: argumento → variable → `config.local.json` → `demo/source`; reales a `data_real/`), `generar_demo.py`, `data/CONTRATO.md`, `actualizar.cmd` | los tableros de BI_DataNexus |
-| `etl` | `main.py` (lee por prefijo, valida esquema, quita duplicados, exporta parquet y csv, log), `config.py` (rutas desde `config.local.json` o variable de ambiente), `requirements.txt` con versión, `generar_demo.py` | los ETL de OblivionCode |
+| `etl` | `main.py` (lee por prefijo, valida esquema, quita duplicados, exporta parquet y csv, log), `config.py` (rutas desde `config.local.json` o variable de ambiente), `requirements.txt` con versión, `generar_demo.py` | `BOM_Join_Project` de BI_DataNexus |
 | `notebook` | `NB_<Nombre>.py` con banners (Parameters → Read → Transform → Export), `demo/source/ejemplo.csv` | los `NB_*` de BI_DataNexus |
 
 Al copiar `estilos.css` de otro tablero, el tema principal se renombra a `corporativo` y se le aplican las
