@@ -19,7 +19,7 @@ Si el trabajo es de la empresa, aplica el estándar laboral, no este.
 | Firma en el código | nunca | **sí**, con la tabla de abajo |
 | Quién autoriza excepciones | quien lleve el estándar laboral | **Haz** |
 | Push a `main` | solo por PR | directo a `main` permitido; lo hace Haz (el hook local de la sesión bloquea al asistente) |
-| Candado de git del equipo | activo | excluido (`includeIf` → `~/.gitconfig-personal`, hooks en `.git/hooks`) |
+| Candado de git | el del equipo | el del equipo excluido (`includeIf` → `~/.gitconfig-personal`); en su lugar, `candado-personal` en `.git/hooks` |
 | Formato de respuesta | corto, con cierre obligatorio | según `haz-forma-de-trabajo` |
 | Firma de IA (`Co-Authored-By`, "Generated with") | nunca | **tampoco**: el trabajo sale a nombre de Haz |
 
@@ -71,6 +71,7 @@ Código ajeno: la firma original se queda y se agrega `Updated by Haz`. Detalle 
 |---|---|---|
 | `haz-estandares-codigo`, `haz-forma-de-trabajo`, `haz-core-sop` | personales | tal cual |
 | `formato-textos` | personal | tal cual |
+| `candado-personal` | personal | candado de git de estos repos |
 | `estandar-personal` | personal | este índice |
 | `dashboard-standards`, `entregar-tablero`, `portal-local`, `portal-seguridad`, `validar-antes-de-entregar` | estándar laboral, genéricas | el método de tableros sirve igual; donde dice "quien autoriza", es Haz |
 | `fabric-sap-ingesta`, `sap-catalogo-fuentes`, `apps-estandar`, `apps-base-datos` | estándar laboral, genéricas | referencia de método; los IDs y rutas son marcadores (`<GUID>`, `<lakehouse>`) |
@@ -83,6 +84,7 @@ Código ajeno: la firma original se queda y se agrega `Updated by Haz`. Detalle 
 |---|---|---|
 | `copiar_skills.py` | **sí**, `.claude/hooks/` | PostToolUse: al crear o editar una skill en `~/.claude/skills`, la copia limpia a BI_DataNexus y OblivionCode; si queda algo que no debe salir, no copia y dice qué línea |
 | `copiar_skills_reglas.json` | **no** | sus reglas de limpieza; nombran justo lo que hay que quitar. En el repo va `copiar_skills_reglas.ejemplo.json` con la forma |
+| `candado-personal` (pre-commit y commit-msg) | **sí**, en la skill `candado-personal` | git, en cada commit: detiene secretos, datos reales sin `CONTRATO.md`, `data_real/`, archivos de más de 10 MB, material de la empresa y firmas de IA en el mensaje; avisa de código sin firma. Se instala por máquina con `instalar.py` |
 | hooks del estándar laboral | **no** | se quedan en la máquina |
 
 Instalarlo en otra máquina: copiar los dos archivos a `~/.claude/hooks/`, renombrar el ejemplo a
@@ -97,7 +99,6 @@ Instalarlo en otra máquina: copiar los dos archivos a `~/.claude/hooks/`, renom
 
 | Skill sugerida | Por qué | Base |
 |---|---|---|
-| `candado-personal` | los repos personales no tienen candado: un pre-commit propio en `.git/hooks` que detenga secretos, datos reales (Excel/CSV fuera de `demo/`) y archivos grandes, y avise si un archivo de código nuevo no trae firma | lo que hace el candado laboral, sin sus reglas de equipo |
 | `datos-semi-ficticios` | el método ya existe en `Main_Dev_Projects/_semi/`; como skill se reusa en cualquier proyecto nuevo | `seudonimo.py` y los `generar_semi.py` |
 | `nuevo-proyecto` | arma `Main_Dev_Projects/<Proyecto>/` con README, `.gitignore`, `data/CONTRATO.md`, `demo/`, `config.local.json` de ejemplo y la firma | la estructura de arriba |
 | `dev-coding-snippets` | cómo se guarda un snippet en `Dev_Coding/<Lenguaje>/`: nombre, encabezado, firma, versión original vs modificada | las carpetas por lenguaje que ya existen |
