@@ -5,7 +5,7 @@ Technical documentation for the BOM Maquinados ETL process.
 
 Overview
 
-Automated ETL process that consolidates BOM (Bill of Materials) TXT files from the J: drive, standardizes data structures, generates business keys, removes duplicate records, and exports analytical datasets in Parquet and CSV formats.
+Automated ETL process that consolidates BOM (Bill of Materials) TXT files from a shared drive, standardizes data structures, generates business keys, removes duplicate records, and exports analytical datasets in Parquet and CSV formats.
 
 Workflow
 
@@ -21,8 +21,11 @@ Workflow
 
 Source Configuration
 
-Source Folder: J:\Compras IHP
-File Prefix: Rpt_DFTFeedC15_BOM_Maquinados_
+The source folder and the file prefix live in `config.local.json` next to `config.py` (ignored by git):
+
+    { "source": "<carpeta con los TXT>", "file_prefix": "<prefijo de los archivos>" }
+
+or in the environment variables `BOM_SOURCE_FOLDER` and `BOM_FILE_PREFIX`. Outputs in `Output/` stay local.
 
 Output Schema
 
@@ -46,4 +49,4 @@ tqdm>=4.67.0
 
 Author
 
-Pablo "Hazzard" Acosta
+Hazzard

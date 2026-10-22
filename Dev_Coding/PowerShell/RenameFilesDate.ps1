@@ -1,4 +1,10 @@
-$ParentFolder = "C:\Users\NMC08UG\OneDrive - Nidec\MASTER - MASTER\Reports"
+# Made by: Hazzard
+# Renames .xlsx files inside dd-MMM-yy folders, appending the folder date as yyyyMMdd.
+# Usage: .\RenameFilesDate.ps1 -ParentFolder "C:\path\to\Reports"
+param(
+    [Parameter(Mandatory = $true)]
+    [string]$ParentFolder
+)
 
 # Get ALL subfolders recursively that match dd-MMM-yy
 $DateFolders = Get-ChildItem -Path $ParentFolder -Directory -Recurse | Where-Object {

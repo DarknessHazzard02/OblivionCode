@@ -8,26 +8,39 @@ description: Índice del estándar de Haz para sus repos personales (BI_DataNexu
 Para los repos de Haz: **BI_DataNexus** (`HazielA-Dev`) y **OblivionCode** (`DarknessHazzard02`).
 Si el trabajo es de la empresa, aplica el estándar laboral, no este.
 
-## Cómo se reconoce
+## Cómo se reconoce: tres tipos de repo
 
-`git remote -v` → `HazielA-Dev/*` o `DarknessHazzard02/*`. Sin remote o en duda: **no** es personal.
+| Repo | Tipo | Qué guarda | Qué estándar manda |
+|---|---|---|---|
+| **OblivionCode** (`DarknessHazzard02`) | **personal** | solo lo personal: nada de la empresa (ni rutas, ni nombres, ni datos) | este, completo |
+| **BI_DataNexus** (`HazielA-Dev`) | **híbrido** | proyectos de trabajo **y** skills y notas personales | en lo de trabajo, el laboral (sin firma, reglas de datos del equipo); en lo personal (`.claude/`, `Dev_Coding/`, notas), este |
+| repos del equipo (organización de la empresa) | laboral | solo trabajo | el laboral |
+
+**Lo que se publica sigue al destino, no al origen:**
+- hacia un repo o portal del equipo → **estrictamente laboral**: sin firma personal, sin notas personales, sin
+  mención de los repos personales;
+- hacia OblivionCode → **solamente personal**: nada de la empresa, aunque venga de BI_DataNexus.
+
+El tipo de cada repo vive en `.candado-modo` (raíz del repo: `personal` o `hibrido`), que lee el
+`candado-personal`. Sin remote o en duda: **no** es personal.
 
 ## Qué cambia frente al estándar laboral
 
 | | Laboral | Personal |
 |---|---|---|
-| Firma en el código | nunca | **sí**, con la tabla de abajo |
+| Firma en el código | nunca | **sí**, con la tabla de abajo (en BI_DataNexus, solo en lo personal) |
 | Quién autoriza excepciones | quien lleve el estándar laboral | **Haz** |
 | Push a `main` | solo por PR | directo a `main` permitido; lo hace Haz (el hook local de la sesión bloquea al asistente) |
 | Candado de git | el del equipo | el del equipo excluido (`includeIf` → `~/.gitconfig-personal`); en su lugar, `candado-personal` en `.git/hooks` |
 | Formato de respuesta | corto, con cierre obligatorio | según `haz-forma-de-trabajo` |
 | Firma de IA (`Co-Authored-By`, "Generated with") | nunca | **tampoco**: el trabajo sale a nombre de Haz |
 
-Lo que **no** cambia, aunque el repo sea personal:
+Lo que **no** cambia, en ningún tipo de repo:
 
-- **Datos de la empresa: nunca reales.** Un repo personal en GitHub es un destino personal. Se usan datos
-  inventados o **semi-ficticios** (forma real, identidades inventadas, validados valor por valor contra el
-  real); los reales se quedan en `data_real/`, ignorada por git.
+- **Datos de la empresa: nunca reales en git.** Se usan datos inventados o **semi-ficticios** (forma real,
+  identidades inventadas, validados valor por valor contra el real); los reales se quedan en `data_real/`,
+  `Output/` o la carpeta de `config.local.json`, ignoradas por git. Una salida de un ETL sobre datos reales
+  **nunca** se versiona.
 - **Credenciales: nunca** en código, commits ni chat.
 - Nada del repo personal en mensajes o reportes de trabajo.
 

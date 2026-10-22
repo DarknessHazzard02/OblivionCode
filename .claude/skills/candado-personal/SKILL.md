@@ -20,6 +20,15 @@ Los repos personales están fuera del candado del equipo (`includeIf` → `~/.gi
 | Firma personal | **avisa** | código nuevo o modificado sin `Made by: Hazzard` / `Author: Haz` / `Updated by Haz` (no revisa `.claude/`, `demo/`, `data/`, `shared/`, `vendor/`) |
 
 - En un archivo modificado revisa **solo las líneas agregadas**: lo que ya estaba no detiene un commit nuevo.
+
+### Modo del repo (`.candado-modo` en la raíz)
+
+| Modo | Repo | Diferencia |
+|---|---|---|
+| `personal` (default) | OblivionCode | todo lo de arriba |
+| `hibrido` | BI_DataNexus | **no** revisa material de la empresa ni avisa de firma (ahí vive trabajo, que va sin firma); secretos, datos sin contrato, tamaño y firma de IA se revisan igual |
+
+Primer renglón del archivo: `personal` o `hibrido`, con un comentario opcional después de `#`.
 - Los marcadores no cuentan como secreto (`"<tu-contraseña>"`, `changeme`, `xxx`, `Password=;`).
 
 ## Instalar

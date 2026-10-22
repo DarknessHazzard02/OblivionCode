@@ -110,13 +110,25 @@ def lineas_agregadas(raiz, ruta):
     salida = git('diff', '--cached', '-U0', '--no-color', '--', ruta, raiz=raiz)
     return [l[1:] for l in salida.splitlines() if l.startswith('+') and not l.startswith('+++')]
 
+def modo_repo(raiz):
+    """'personal' (default) o 'hibrido', del primer renglón de .candado-modo en la raíz del repo.
+    hibrido = el repo también guarda trabajo de la empresa: no se revisa material de la empresa ni la
+    firma personal (lo laboral va sin firma); lo demás se revisa igual."""
+    f = Path(raiz) / '.candado-modo'
+    if f.is_file():
+        primero = f.read_text(encoding='utf-8').split('#', 1)[0].strip().lower()
+        if primero in ('personal', 'hibrido'):
+            return primero
+    return 'personal'
+
 def revisar_stage(raiz):
     """(bloqueos, avisos): listas de textos."""
     nombres = [n for n in git('diff', '--cached', '--name-only', '-z', '--diff-filter=ACMR', raiz=raiz).split('\0') if n]
     en_stage = set(nombres)
     nuevos = {n for n in git('diff', '--cached', '--name-only', '-z', '--diff-filter=A', raiz=raiz).split('\0') if n}
     excepciones = permitidos(raiz)
-    privados = patrones_privados()
+    hibrido = modo_repo(raiz) == 'hibrido'
+    privados = None if hibrido else patrones_privados()
     bloqueos, avisos = [], []
     for ruta in nombres:
         if es_permitido(ruta, excepciones):
@@ -160,10 +172,10 @@ def revisar_stage(raiz):
                             continue
                         bloqueos.append(f'{ruta}: {motivo} ({m.group(0)}) → material de la empresa')
         ext = os.path.splitext(bajo)[1]
-        if ext in EXT_CODIGO and not SIN_FIRMA_RUTAS.search('/' + bajo):
+        if not hibrido and ext in EXT_CODIGO and not SIN_FIRMA_RUTAS.search('/' + bajo):
             if not FIRMA.search(contenido.decode('utf-8', 'replace')):
                 avisos.append(f'{ruta}: sin firma (Made by: Hazzard / Author: Haz / Updated by Haz)')
-    if privados is None:
+    if privados is None and not hibrido:
         avisos.append('sin las reglas privadas del hook de copia: no se revisó material de la empresa')
     return bloqueos, avisos
 
@@ -237,7 +249,19 @@ def self_test():
         ok = bool(revisar_mensaje(texto)) == debe
         fallos += not ok
         print(f"  {'ok ' if ok else 'FALLA'}  {'DETIENE' if debe else 'PASA   '}  {desc}")
-    total = len(casos) + 5
+    # modo hibrido: material de la empresa y firma no se revisan; secretos y datos sí
+    with tempfile.TemporaryDirectory() as t:
+        git('init', '-q', raiz=t)
+        Path(t, '.candado-modo').write_text('hibrido   # trabajo y notas personales\n', encoding='utf-8')
+        Path(t, 'x.py').write_text('import os\n', encoding='utf-8')
+        Path(t, 'y.csv').write_text('a\n1\n', encoding='utf-8')
+        git('add', 'x.py', 'y.csv', raiz=t)
+        bloqueos, avisos = revisar_stage(t)
+        for ok, desc in [(not any('sin firma' in a for a in avisos), 'híbrido: no avisa firma'),
+                         (any(b.startswith('y.csv') for b in bloqueos), 'híbrido: sigue deteniendo datos sin contrato')]:
+            fallos += not ok
+            print(f"  {'ok ' if ok else 'FALLA'}  {desc}")
+    total = len(casos) + 7
     print(f"\n{'los ' + str(total) + ' casos pasaron' if not fallos else str(fallos) + ' casos FALLARON'}")
     return 1 if fallos else 0
 

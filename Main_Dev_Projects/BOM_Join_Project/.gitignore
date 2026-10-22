@@ -10,3 +10,6 @@ Output/*.parquet
 
 # Logs
 Logs/*.log
+# Local: real source folder and outputs (company data never goes to the repo)
+config.local.json
+Output/
