@@ -61,6 +61,8 @@ SECRETOS = [
 EXT_CODIGO = {'.py', '.sql', '.bas', '.cls', '.vba', '.m', '.pq', '.dax', '.js', '.ts', '.tsx', '.jsx', '.cs',
               '.java', '.css', '.html', '.yml', '.yaml', '.sh', '.ps1'}
 FIRMA = re.compile(r'Made by:\s*Hazzard|Author:\s*Haz\b|Updated by Haz', re.I)
+# Librerías de terceros: se revisan por tipo y tamaño, no por contenido
+VENDOR = re.compile(r'(^|/)(vendor|node_modules)/|\.min\.(js|css)$')
 SIN_FIRMA_RUTAS = re.compile(r'(^|/)(\.claude|\.git|\.vscode|node_modules|venv|\.venv|demo|data|shared|vendor)/')
 FIRMA_IA = re.compile(
     r'(?im)^\s*co-authored-by:.*\b(claude|anthropic|copilot|chatgpt|openai|gpt|gemini|cursor|codeium)\b'
@@ -143,6 +145,8 @@ def revisar_stage(raiz):
         contenido = git('show', f':{ruta}', raiz=raiz, binario=True)
         if b'\0' in contenido[:8000]:
             continue                                          # binario: ya se revisó por tipo y tamaño
+        if VENDOR.search('/' + bajo):
+            continue                                          # librería de terceros minificada: sus IDs y su código dan falsos positivos
         agregadas = contenido.decode('utf-8', 'replace').splitlines() if ruta in nuevos else lineas_agregadas(raiz, ruta)
         for n, linea in enumerate(agregadas, 1):
             for motivo, patron in SECRETOS:

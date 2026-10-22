@@ -72,6 +72,7 @@ Código ajeno: la firma original se queda y se agrega `Updated by Haz`. Detalle 
 | `haz-estandares-codigo`, `haz-forma-de-trabajo`, `haz-core-sop` | personales | tal cual |
 | `formato-textos` | personal | tal cual |
 | `candado-personal` | personal | candado de git de estos repos |
+| `nuevo-proyecto` | personal | arma un proyecto en `Main_Dev_Projects` (tablero, ETL o notebook) con esta estructura |
 | `estandar-personal` | personal | este índice |
 | `dashboard-standards`, `entregar-tablero`, `portal-local`, `portal-seguridad`, `validar-antes-de-entregar` | estándar laboral, genéricas | el método de tableros sirve igual; donde dice "quien autoriza", es Haz |
 | `fabric-sap-ingesta`, `sap-catalogo-fuentes`, `apps-estandar`, `apps-base-datos` | estándar laboral, genéricas | referencia de método; los IDs y rutas son marcadores (`<GUID>`, `<lakehouse>`) |
@@ -100,7 +101,6 @@ Instalarlo en otra máquina: copiar los dos archivos a `~/.claude/hooks/`, renom
 | Skill sugerida | Por qué | Base |
 |---|---|---|
 | `datos-semi-ficticios` | el método ya existe en `Main_Dev_Projects/_semi/`; como skill se reusa en cualquier proyecto nuevo | `seudonimo.py` y los `generar_semi.py` |
-| `nuevo-proyecto` | arma `Main_Dev_Projects/<Proyecto>/` con README, `.gitignore`, `data/CONTRATO.md`, `demo/`, `config.local.json` de ejemplo y la firma | la estructura de arriba |
 | `dev-coding-snippets` | cómo se guarda un snippet en `Dev_Coding/<Lenguaje>/`: nombre, encabezado, firma, versión original vs modificada | las carpetas por lenguaje que ya existen |
 | `oracle-ebs-sql` | las consultas de EBS y Blitz Report tienen reglas propias (`ORA-24374`, sin `;`, alias, CTEs); hoy viven dentro de `haz-estandares-codigo` | `Dev_Coding/SQL` |
 | `vba-excel` | patrones de macros (banners, `ListObject`, restaurar `Application`, manejo de errores) con plantillas | `Dev_Coding/VBA` |
