@@ -41,7 +41,7 @@ portal entero, no un tablero.
 |---|---|---|
 | El tablero: `index.html`, el script que genera los datos inventados, datos **inventados** de prueba | **GitHub**, por PR | es código: se revisa, se compara versión contra versión y queda quién lo entregó |
 | Los datos **reales** | **OneLake** y `<carpeta-portal>` | Regla 5: los datos no salen. Nunca a GitHub, nunca en un zip |
-| El pipeline y el notebook en Fabric | repo `repo-fabric`, por PR aparte | otro repo, otro PR |
+| El pipeline y el notebook en Fabric | repo `repo-fabric` (rama base `fabric`), por PR aparte. El pipeline lleva **dos Copy**: a `<carpeta-portal>/<tablero>` y a Azure `portal-data/<tablero>` (`dashboard-standards`, sección 16) | otro repo, otro PR |
 
 **OneLake no es buzón de código.** Un tablero dejado en una carpeta no avisa a
 nadie: uno estuvo cinco días en `<carpeta de recibidos>` sin integrarse
@@ -58,7 +58,9 @@ subcarpeta en `<carpeta-portal>`. Esa igualdad no es estética: de ahí salen la
 
 ```
 <tablero>/
-  index.html                     el tablero completo, sin librerías externas
+  index.html                     el tablero, sin librerías externas
+  app.js                         su lógica, sin JS inline (dashboard-standards § 18)
+  docs/PRD.md                    lo que se decidió y sus criterios (escribir-prd), si lo hay
   build/
     generar_contrato.py          regenera los datos inventados
   data/dashboard/
@@ -170,15 +172,29 @@ git push -u origin tablero-<tablero>
 - **Parte de lo último de `main`**, nunca de la rama de otro PR: un PR montado
   sobre otro no llega a `main` cuando se mergea.
 
-**El PR dice, en simple:** qué es el tablero, en qué sección va (Logistics o
-S&OP), el texto de su tarjeta en español e inglés, qué archivos sirve
-(`meta.json`, `detalle.json`...), de dónde salen sus datos reales y qué falta
-(por ejemplo, "falta la copia a `<carpeta-portal>/<tablero>`"). Con eso Haz lo
-conecta sin tener que preguntar. Sin firmas de herramientas.
+**La descripción del PR es corta** (Regla 6 de `las reglas de seguridad`): **máximo 2
+líneas** si es un ajuste, **máximo 6** si es un tablero nuevo o un cambio grande.
+Dice qué es el tablero y en qué sección va (Logistics o S&OP). Sin firmas de
+herramientas.
+
+Lo que Haz necesita para conectarlo **va en el `CONTRATO.md`** de la carpeta,
+no en el PR:
+
+- el texto de su tarjeta, en español e inglés, **bien corto**: "qué · para qué",
+  como las que ya están en el portal (por ejemplo, *"MB52 inventory vs ZE_SD48
+  demand · shortages and stock-out week"*);
+- qué archivos sirve (`meta.json`, `detalle.json`...);
+- de dónde salen sus datos reales y qué falta (por ejemplo, "falta la copia a
+  `<carpeta-portal>/<tablero>`").
 
 ---
 
 ## 3. Conectarlo al portal — solo Haz
+
+**Si el PR tuvo correcciones de datos** (por ejemplo, primero subió datos reales o
+semi-reales y luego los cambió por inventados), se mergea con **"Squash and
+merge"**: así a `main` entra un solo commit con la versión final, y los datos
+viejos no quedan en su historial. Con el merge normal o con "Rebase", sí quedan.
 
 Se hace **sobre la misma rama del PR** de quien entregó, como un commit más,
 para que el tablero y su conexión entren juntos: una carpeta sin rutas en `main`
@@ -197,7 +213,8 @@ Se copia el bloque de **Canada** o de **Forecast** (lector sellado, ETag desde
 | 5 | `tests/test_rutas.py` | `"<tablero>": "<tablero>"` en `API_CON_NOMBRE` |
 | 6 | `herramientas/auditar.py` | `"<tablero>": "XXX_ARCHIVOS"` en `LISTAS` |
 | 7 | `herramientas/probar_local.py` | su renglón en `CONTRATO` y sus tres pruebas en `PRUEBAS` |
-| 8 | `logistics/index.html` o `sop/index.html` | la tarjeta, en el array `dashboards`, con url **absoluta** (`"/<tablero>/index.html"`) |
+| 8 | `trade-compliance/index.html`, `logistics/index.html` o `sop/index.html`, según el **departamento** | la tarjeta, en el array `dashboards`, con url **absoluta** (`"/<tablero>/index.html"`) y descripción **corta** ("qué · para qué"). Si está en prueba, `estado: "Beta"` (va a *Sneak peek*). Las portadas no llevan tarjetas de "Add dashboard" |
+| 9 | `app.py` | `"<tablero>": {ROL_...}` en `ROLES_DE`, con el rol de su departamento. Sin eso, en Azure queda negado a todos |
 
 **Para no chocar entre tableros:** cada uno en un renglón propio de cada lista,
 sin pegarlo al final de un renglón que ya existe y sin reacomodar las listas.

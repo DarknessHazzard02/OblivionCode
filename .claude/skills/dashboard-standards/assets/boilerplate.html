@@ -2,9 +2,11 @@
 <!-- ============================================================
      BOILERPLATE — equipo de BI
      Punto de partida obligatorio. Ya implementa: cross-filter,
-     panel colapsado, ⓘ por visual, i18n, frescura, paginación
-     de 10 filas, sort, export CSV/Excel, documentación, footer,
-     y la banda de modo degradado (secciones 13-15 de la skill).
+     panel colapsado, ⓘ por visual, i18n, frescura con el detalle
+     de CADA fuente al pasar el mouse, paginación de 10 filas, sort,
+     export CSV/Excel (con csvCelda), documentación, footer, la banda
+     de modo degradado (secciones 13-15) y el estetoscopio 🩺 de
+     diagnóstico (§ 2 ter). Todo se carga del portal, sin CDN.
      Reemplazar los bloques marcados con >>> <<<
      ============================================================ -->
 <html lang="es" data-theme="corporativo">
@@ -12,9 +14,11 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Dashboard — equipo de BI</title>
-<script src="/shared/js/seguro.js"></script>                  <!-- esc(): portal-seguridad § 5 bis -->
-<script src="/shared/js/csv.js"></script>                     <!-- csvCelda(): export CSV sin fórmulas -->
-<script src="/shared/vendor/xlsx/xlsx.full.min.js"></script>  <!-- local, sin CDN: portal-seguridad § 4 -->
+<!-- Todo del propio portal: sin CDN (portal-seguridad). -->
+<script src="/shared/vendor/xlsx/xlsx.full.min.js"></script>
+<script src="/shared/js/seguro.js"></script>      <!-- esc(): todo dato antes de un innerHTML -->
+<script src="/shared/js/csv.js"></script>         <!-- csvCelda(): CSV sin formulas -->
+<script src="/shared/js/diagnostico.js"></script> <!-- 🩺 abajo a la derecha (§ 2 ter) -->
 <style>
 /* >>> PEGAR AQUÍ EL CONTENIDO COMPLETO DE assets/theme.css <<< */
 </style>
@@ -131,7 +135,8 @@
    ============================================================ */
 const CONFIG = {
   dashboardName: "nombre-dashboard",
-  portalUrl: "/logistics/",   // relativa: "/logistics/" o "/sop/" (portal-seguridad; el App Service de Azure ya no existe)
+  // El portal de SU departamento, relativo: "/trade-compliance/", "/logistics/" o "/sop/".
+  portalUrl: "/logistics/",                          // >>> AJUSTAR <<<
 
   lang: { enabled: ["es","en"], default: "es" },   // ["es"] o ["en"] si es monolingüe
 
@@ -211,7 +216,10 @@ const META = {
   generated_at: null,          // ""
   fuente: null,                // qué notebook lo produjo
   categorias: [],              // [{ nombre, nombre_en, rol }] — el orden es este
-  pestanas_sin_actualizar: {}  // { "tab2": "2026-08-09" } — vacío = todo bien
+  pestanas_sin_actualizar: {}, // { "tab2": "2026-08-09" } — vacío = todo bien
+  // Una entrada por archivo o tabla fuente, CADA una con su fecha (§ 8). De aquí
+  // sale el semáforo (la más vieja) y el tooltip del indicador (todas).
+  fuentes: []                  // [{ nombre, extraido_el, dato_al, catalogo, falta }]
 };
 
 /* >>> DATOS — reemplazar por el dataset real <<< */
@@ -310,7 +318,7 @@ function renderChips() {
     c.className = "chip";
     c.textContent = label + " ";   // el label trae valores de los datos/URL: nunca innerHTML (portal-seguridad § 5 bis)
     const x = document.createElement("span"); x.className = "chip__x"; x.textContent = "✕"; c.appendChild(x);
-    c.querySelector(".chip__x").onclick = onX;
+    x.onclick = onX;
     box.appendChild(c);
   };
   Object.entries(filterState.panel).forEach(([f, vals]) => {
@@ -674,8 +682,8 @@ document.getElementById("btnCsv").onclick = () => {
   const rows = exportRows();
   if (!rows.length) return;
   const headers = Object.keys(rows[0]);
-  // csvCelda (/shared/js/csv.js) neutraliza = + - @ al inicio: sin eso Excel
-  // ejecuta como fórmula un texto que llegó de SAP (portal-seguridad § 5 bis).
+  // csvCelda (/shared/js/csv.js): comillas y neutraliza lo que Excel ejecutaría
+  // como fórmula (= + - @ al inicio). Nunca una función propia de comillas.
   const csv = [headers.map(csvCelda).join(","),
     ...rows.map(r => headers.map(h => csvCelda(r[h])).join(","))].join("\r\n");
   const blob = new Blob(["\uFEFF" + csv], { type: "text/csv;charset=utf-8;" }); // BOM
@@ -714,24 +722,41 @@ function download(blob, name) {
    FRESCURA — "Actualizado" vs "Datos al" (el más ANTIGUO)
    ============================================================ */
 function renderFreshness() {
-  document.getElementById("metaUpdated").textContent =
-    new Date(CONFIG.lastRefresh).toLocaleString(lang === "es" ? "es-MX" : "en-US");
-  document.getElementById("ftrUpdated").textContent =
-    new Date(CONFIG.lastRefresh).toLocaleDateString(lang === "es" ? "es-MX" : "en-US");
+  const gen = META.generated_at || CONFIG.lastRefresh;
+  document.getElementById("metaUpdated").textContent = gen ? String(gen).replace("T", " ").slice(0, 16) : "–";
+  document.getElementById("ftrUpdated").textContent = gen ? String(gen).slice(0, 10) : "–";
 
   const el = document.getElementById("metaFreshness");
-  if (!CONFIG.sources || !CONFIG.sources.length) { el.hidden = true; return; }
+  // Las fuentes salen de meta.json (META.fuentes). CONFIG.sources es solo para
+  // un prototipo que todavía no tiene pipeline.
+  const fuentes = (META.fuentes && META.fuentes.length)
+    ? META.fuentes.map(f => ({ nombre: f.nombre, fecha: f.extraido_el, datoAl: f.dato_al,
+                               catalogo: !!f.catalogo, falta: !!f.falta }))
+    : (CONFIG.sources || []).map(s => ({ nombre: s.name, fecha: s.asOf }));
+  if (!fuentes.length) { el.hidden = true; return; }
 
-  const oldest = CONFIG.sources.reduce((a, b) => new Date(a.asOf) < new Date(b.asOf) ? a : b);
-  const days = Math.floor((Date.now() - new Date(oldest.asOf)) / 864e5);
-  const lvl = days > CONFIG.freshness.criticalDays ? "critical"
-            : days > CONFIG.freshness.warnDays ? "warn" : "ok";
+  const dias = f => f ? Math.floor((Date.now() - new Date(f)) / 864e5) : null;
+  // El semáforo va sobre la fuente transaccional MÁS VIEJA; catálogos y faltantes no cuentan.
+  const cuentan = fuentes.filter(f => f.fecha && !f.catalogo && !f.falta);
+  const base = cuentan.length ? cuentan : fuentes.filter(f => f.fecha);
+  const oldest = base.reduce((a, b) => (!a || b.fecha < a.fecha) ? b : a, null);
+  const d = oldest ? dias(oldest.fecha) : Infinity;
+  // Una fecha que no se puede leer da NaN, y NaN > x siempre es falso: sin este !(<=) quedaba en verde.
+  const lvl = !(d <= CONFIG.freshness.criticalDays) ? "critical"
+            : d > CONFIG.freshness.warnDays ? "warn" : "ok";
   el.className = `freshness freshness--${lvl}`;
-  el.innerHTML = `${lvl === "critical" ? "⚠ " : ""}${t("dataAsOf")}: <b>${oldest.asOf}</b>`;
-  el.title = CONFIG.sources.map(s =>
-    `${s.name}: ${s.asOf} (${Math.floor((Date.now()-new Date(s.asOf))/864e5)}d)`).join("\n");
-  document.getElementById("ftrSources").textContent =
-    CONFIG.sources.map(s => s.name).join(", ");
+  el.textContent = `${lvl === "critical" ? "⚠ " : ""}${t("dataAsOf")}: `;
+  const b = document.createElement("b");
+  b.textContent = oldest ? String(oldest.fecha).slice(0, 10) : "–";
+  el.appendChild(b);
+
+  // ⛔ Obligatorio (§ 8): al pasar el mouse, CADA fuente con SU fecha.
+  el.style.cursor = "help";
+  el.title = fuentes.map(f =>
+    `${f.nombre}: ${f.fecha ? String(f.fecha).slice(0, 16) + " (" + dias(f.fecha) + "d)" : "sin fecha"}` +
+    (f.datoAl ? ` · datos al ${f.datoAl}` : "") +
+    (f.catalogo ? " · catálogo" : "") + (f.falta ? " · ⚠ FALTA" : "")).join("\n");
+  document.getElementById("ftrSources").textContent = fuentes.map(f => f.nombre).join(", ");
 }
 
 /* ============================================================
@@ -776,8 +801,8 @@ function renderBanner() {
     ? t("degradedStructure")
     : viejas.map(([p, f]) => `${p}: ${f}`).join(" · ") + " — " + t("staleDetail");
 
-  // `detalle` trae nombres y fechas del meta.json (datos): textContent, nunca innerHTML.
   el.className = `banner banner--${nivel}`;
+  // `detalle` trae nombres y fechas del meta.json (datos): textContent, nunca innerHTML.
   el.textContent = "";
   const ic = document.createElement("span"); ic.className = "banner__icon"; ic.textContent = "⚠";
   const body = document.createElement("div"); body.className = "banner__body";

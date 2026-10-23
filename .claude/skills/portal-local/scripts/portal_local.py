@@ -1,8 +1,9 @@
 """Arma (o rehace) la copia local del Portal BI para ver un cambio antes de aprobarlo.
 
-La copia vive en C:\\<servidor>\<carpeta> sin .git (no se puede
-subir nada desde ahi), con su propio venv. Se rehace desde el repo
-repo-portal y luego se le montan encima los tableros que todavia NO estan
+La copia vive en ~/Documents/Portal-Local (o en PORTAL_COPIA): sin .git (no se
+puede subir nada desde ahi), con su propio venv. Se rehace desde el clon del repo
+repo-portal (~/Documents/GitHub/repo-portal, o PORTAL_REPO) y luego
+se le montan encima los tableros que todavia NO estan
 en el repo (los de _local/tableros.json): sus archivos, su lista blanca, sus
 rutas en app.py y su tarjeta en el portal.
 
@@ -19,11 +20,15 @@ Uso:
     python portal_local.py --servir            # al terminar, levanta el portal en :8080
     python portal_local.py --sin-reemplazos    # el portal tal cual esta en el repo
     python portal_local.py --rebasar <ruta>    # el reemplazo ya se ajusto al repo nuevo: actualiza su huella
-    python portal_local.py --sin-zip           # sin rearmar Documents\\Portal-Local.zip
+    python portal_local.py --sin-zip           # sin rearmar Portal-Local.zip
     python portal_local.py --zip <ruta.zip>    # el zip en otro lugar
 
-Cada corrida (salvo --reales o --sin-zip) rearma Documents\\Portal-Local.zip y
+Cada corrida (salvo --reales o --sin-zip) rearma Portal-Local.zip junto a la copia y
 sobreescribe el anterior: un zip portable, solo con datos inventados.
+
+Rutas de cada quien, sin editar el script:
+    PORTAL_REPO    clon del repo del portal  (default ~/Documents/GitHub/repo-portal)
+    PORTAL_COPIA   carpeta de la copia       (default ~/Documents/Portal-Local)
 
 Cada corrida deja en la copia iniciar_portal.cmd: levanta el portal en cualquier
 equipo Windows con Python, desde la carpeta (o desde el zip descomprimido).
@@ -35,14 +40,15 @@ import argparse
 import hashlib
 import io
 import json
+import os
 import shutil
 import subprocess
 import sys
 import zipfile
 from pathlib import Path
 
-REPO = Path(r"C:\Users\<usuario>\Documents\GitHub\repo-portal")
-COPIA = Path(r"C:\Users\<usuario>\Documents\Portal-Local")
+REPO = Path(os.environ.get("PORTAL_REPO") or Path.home() / "Documents" / "GitHub" / "repo-portal")
+COPIA = Path(os.environ.get("PORTAL_COPIA") or Path.home() / "Documents" / "Portal-Local")
 CONSERVAR = {"venv", "_local"}
 TABLEROS = COPIA / "_local" / "tableros.json"
 REEMPLAZOS = COPIA / "_local" / "reemplazos"
@@ -51,7 +57,7 @@ LANZADOR = Path(__file__).resolve().parent.parent / "plantillas" / "iniciar_port
 # Lo que nunca va en el zip: venv no sirve en otro equipo (rutas absolutas) y
 # _local trae rutas de este usuario. data_real/config.local.json no deberian
 # existir en la copia; si aparecen, el zip no se arma.
-FUERA_DEL_ZIP = {"venv", "_local", "__pycache__", ".env"}
+FUERA_DEL_ZIP = {"venv", "_local", "__pycache__", ".env", ".portal-local"}
 PROHIBIDOS_EN_ZIP = {"data_real", "config.local.json"}
 ZIP = COPIA.parent / f"{COPIA.name}.zip"
 
@@ -102,12 +108,36 @@ def git(*args, binario=False):
     r = subprocess.run(["git", "-C", str(REPO), *args], capture_output=True, check=True)
     return r.stdout if binario else r.stdout.decode("utf-8").strip()
 
+MARCA = ".portal-local"   # la deja el script: solo se borra una carpeta que el script creo
+
+def validar_copia():
+    """Se detiene antes de borrar si PORTAL_COPIA apunta a algo que no es una copia del portal."""
+    copia, repo, casa = COPIA.resolve(), REPO.resolve(), Path.home().resolve()
+    motivo = None
+    if copia == Path(copia.anchor):
+        motivo = "es la raiz de una unidad"
+    elif copia == casa or copia in casa.parents:
+        motivo = "es tu carpeta personal o una de arriba"
+    elif copia == repo or copia in repo.parents or repo in copia.parents:
+        motivo = "es el repo del portal, esta dentro de el o lo contiene"
+    elif (copia / ".git").exists():
+        motivo = "tiene .git: es un repo"
+    elif copia.is_dir() and any(copia.iterdir()) and not (
+            (copia / MARCA).exists() or (copia / "iniciar_portal.cmd").exists()):
+        motivo = "no esta vacia y no es una copia armada por este script"
+    if motivo:
+        sys.exit(f"No borro {copia}: {motivo}. Revisa PORTAL_COPIA.")
+
 def limpiar_copia():
+    validar_copia()
     COPIA.mkdir(parents=True, exist_ok=True)
     for hijo in COPIA.iterdir():
+        if hijo.name == MARCA:
+            continue
         if hijo.name in CONSERVAR:
             continue
         shutil.rmtree(hijo) if hijo.is_dir() else hijo.unlink()
+    (COPIA / MARCA).write_text("Copia de portal_local.py: se rehace en cada corrida.\n", encoding="utf-8")
 
 def copiar_arbol():
     """El arbol de trabajo tal cual (incluye cambios sin commitear), sin .git ni secretos."""
@@ -263,6 +293,9 @@ def main():
                     help=f"donde va el zip (default: {ZIP}); se sobreescribe en cada corrida")
     ap.add_argument("--sin-zip", action="store_true", help="no rearmar el zip esta vez")
     args = ap.parse_args()
+    if not (REPO / "app.py").is_file():
+        sys.exit(f"No encuentro el clon del portal en {REPO} (falta app.py). "
+                 "Clónalo ahí o pon su ruta en la variable PORTAL_REPO.")
 
     tableros = json.loads(TABLEROS.read_text(encoding="utf-8-sig")) if TABLEROS.exists() else []
     origen = f"rama {args.rama} ({git('rev-parse', '--short', args.rama)})" if args.rama else \

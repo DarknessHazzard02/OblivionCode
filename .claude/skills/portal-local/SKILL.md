@@ -150,6 +150,19 @@ Reemplazos activos hoy:
 | `logistics/index.html` | botón **ES/EN** (llave `dash_lang`, igual que S&OP), `desc_en` en cada tarjeta |
 | `index.html` | botón **ES/EN** en la pantalla de divisiones |
 
+## Qué carpeta borra
+
+Cada corrida vacía la carpeta de la copia (salvo `venv/` y `_local/`). Por eso el script **se
+niega** si `PORTAL_COPIA` apunta a la raíz de una unidad, a tu carpeta personal o una de arriba,
+al repo del portal (o dentro o encima de él), a cualquier repo con `.git`, o a una carpeta con
+archivos que no armó él (la marca es `.portal-local`). Si se niega, revisa `PORTAL_COPIA`.
+
+## Puerto ocupado
+
+Si `iniciar_portal.cmd` dice que el 8080 ya está ocupado, casi siempre es **otra copia del portal
+de una corrida anterior**, sirviendo el `app.py` viejo. No se cierra a ciegas un proceso que no
+levantaste tú: usa otro puerto (`.\iniciar_portal.cmd 8090`) y prueba ahí, o ciérralo si es tuyo.
+
 ## ⛔ Datos: inventados por default
 
 - Sin `--reales`, el script monta `datos_demo`. Es lo que pide el repo y lo que basta para ver el

@@ -16,7 +16,7 @@ import subprocess
 import sys
 from pathlib import Path
 
-REPO = "<org>/<repo-fabric-anterior>"
+REPO = "<org>/<repo-fabric>"
 BASE_BRANCH = "fabric"
 NUEVA_RAMA = "ingesta-sap-mb52-zsd49n-coois"
 ORIGEN = Path(r"<carpeta del proyecto>")

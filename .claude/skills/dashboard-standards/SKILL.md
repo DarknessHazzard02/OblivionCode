@@ -298,6 +298,23 @@ Tres líneas en una captura, después de cuatro despliegues adivinando.
 Se mide el `display` **calculado**, no la propiedad `hidden`: la propiedad dice
 lo que el código quiso hacer, el `display` dice lo que el usuario ve.
 
+### El estetoscopio compartido: `/shared/js/diagnostico.js`
+
+**Todo tablero del portal trae el botón 🩺.** Si el tablero no tiene uno propio
+(`id="btnDiag"`), carga el compartido, que no necesita nada del tablero:
+
+```html
+<script src="/shared/js/diagnostico.js"></script>   <!-- en el <head> -->
+```
+
+Pone un botón discreto abajo a la derecha que reporta, en la computadora de
+quien abre la página: cuánto tardó la página y **cada `/api/`** (con su peso
+comprimido y sin comprimir, y cuál fue la más lenta), filas por tabla, gráficas
+sin tamaño, contenedores visibles con alto 0 (sin contar los de otras pestañas),
+la fecha del dato del encabezado y los errores de JavaScript. Con un botón
+**Copiar** para que te manden el reporte. `tests/test_rutas.py` falla si un
+tablero llega sin estetoscopio.
+
 ---
 
 ### ⛔ Que tu CSS exista no quiere decir que aplique
@@ -820,6 +837,14 @@ vacía o marcada como catálogo — nunca prestada de otra.
 Una fuente que **no existe** se declara igual, marcada en rojo. Que falte tiene
 que verse en el tablero, no desaparecer de la lista.
 
+**Cómo se hace.** El indicador es un `<span class="freshness" id="metaFreshness">`
+y su `title` se arma con `META.fuentes.map(...)`, una línea por fuente: nombre,
+extraído y días, datos al, y las marcas de catálogo o FALTA. El boilerplate ya lo
+trae (`renderFreshness`); el molde más completo del portal es Canada
+(`<tablero>/index.html`, `renderFrescura`). Las páginas que no tienen
+`meta.json` (ACE, DataStage) usan `pintarFechaDato(id, fecha, prefijo, antes,
+detalle)` de `/shared/js/fecha-dato.js`, con `detalle = [{nombre, fecha}, ...]`.
+
 ### Cuando una tabla se alimenta de varios archivos
 
 Se toma **el más viejo**. Las facturas vienen de cinco reportes, uno por
@@ -861,10 +886,15 @@ Todo el contenido sale de `CONFIG.documentation`, bilingüe si aplica. Se escrib
 `[← Back to the Portal] · Título del dashboard · chips de filtros activos · Actualizado / Datos al · [ES|EN]`
 
 - **Back to the Portal** siempre presente, primer elemento, con flecha izquierda.
+  Lleva al portal de **su departamento** (Trade Compliance, Logistics o S&OP).
   La URL va en `CONFIG.portalUrl`, **nunca hardcodeada en el HTML**:
   ```js
-  const PORTAL_URL = "/logistics/";   // relativa: "/logistics/" o "/sop/", nunca una URL completa
+  const PORTAL_URL = "/logistics/";   // "/trade-compliance/", "/logistics/" o "/sop/"; nunca una URL completa
   ```
+- **Se tiene que ver aunque se colapse el menú lateral.** Si el botón vive dentro
+  de un sidebar que se colapsa a ancho 0, desaparece con él. El script compartido
+  `/shared/js/back-to-portal.js` ya lo resuelve: con `.sidebar.collapsed` lo pone
+  flotando abajo a la izquierda, y elige el portal por la carpeta del tablero.
 - Si hay pestañas, van debajo del encabezado, y el toggle de idioma se repite en cada una.
 
 **Pie de página** — siempre, en todos los dashboards:
@@ -1149,11 +1179,12 @@ que nos costó un día de datos viejos, en `fabric-sap-ingesta` § 7 quinquies.
 
 ### 15 bis. Publicar al Blob NO es publicar el tablero
 
-> ⛔ **el Blob y Azure ya no existen.** El portal corre en un servidor
-> local y lee de `<carpeta-portal>` en <unidad-compartida>, adonde el pipeline publica con una actividad Copy
-> por el gateway. Lo que sigue explica las cinco piezas del portal y sigue valiendo; lo
-> que diga del Blob, el contenedor `dashboard-data` o su conexión quedó viejo. **Cómo se
-> publica hoy, qué revisa IT y qué no puede llevar el código está en la skill
+> **Historia corta:** el Blob viejo (`dashboard-data`, con llave) se
+> apagó y el portal pasó a un servidor local que lee `<carpeta-portal>`. **> el portal vive otra vez en Azure** (App Service `<app-service-portal>`), y lee del Storage
+> `<storage-portal>`, contenedor `portal-data`, **sin llaves**. Mientras el servidor local
+> siga en uso, cada pipeline publica a los dos (sección 16). Lo que sigue explica las
+> cinco piezas del portal y sigue valiendo; donde diga `dashboard-data` léase
+> `portal-data`. **Qué revisa IT y qué no puede llevar el código está en
 > `portal-seguridad`**, que va junto con esta al armar cualquier tablero.
 
 El portal es una app **Flask** (`<org>/<repo-portal>`, `app.py`). Los archivos
@@ -1166,11 +1197,13 @@ Un tablero nuevo son cinco cosas en el portal, ninguna opcional:
 
 | | |
 |---|---|
-| `<tablero>/index.html` | el HTML, servido de disco |
+| `<tablero>/index.html` | el HTML, servido de disco. La carpeta se llama **exactamente** como la dirección `/<tablero>/` |
 | `<tablero>/data/dashboard/*.json` | el **contrato** (datos inventados), la caída a disco |
 | `<TABLERO>_ARCHIVOS` + los dos lectores | lista blanca y `_leer_blob_*` con el prefijo del contenedor |
 | Las tres rutas | `/<tablero>/`, `/api/<tablero>/<nombre>`, `/<tablero>/<path>` |
 | La tarjeta en `index.html` del portal | si no, existe pero nadie llega |
+
+⛔ **La dirección y la carpeta se llaman igual.** `/openorder/` vivía en `<tablero>/dashboard/`: con Flask en local abría bien, y en el servidor de IT `/openorder/` dio **404** y solo abría la ruta de la carpeta. Un tablero cuya dirección no coincide con su carpeta se ve bien en local y truena al desplegar. Nada de subcarpetas tipo `<algo>/dashboard/`: el HTML va en `<tablero>/index.html` y el contrato en `<tablero>/data/dashboard/`. La prueba `test_cada_tablero_vive_en_la_carpeta_de_su_direccion` del portal lo detiene; si la quitas o la saltas, el error vuelve.
 
 Y en el tablero, `CONFIG.dataUrls = ["/api/<tablero>/", "./"]` — el portal
 primero, `./` para abrir el HTML suelto en local. Un `fetch("./meta.json")`
@@ -1229,100 +1262,54 @@ nadie lo note; lo que se quita es que **hable por las demás**.
 
 ## 16. Ninguna credencial dentro de un notebook. Ninguna.
 
-> El destino ya no es el Blob sino `<carpeta-portal>` por el gateway (ver `portal-seguridad`),
-> pero la regla es la misma: el notebook escribe en OneLake y publica una actividad Copy
-> con una conexión de Fabric.
+> **el portal vive en Azure** y lee sus datos del Storage
+> `<storage-portal>` (contenedor `portal-data`). Mientras el servidor local siga
+> en uso, cada pipeline publica a **los dos**: `<carpeta-portal>` por el gateway y
+> Azure con la Workspace identity. Ninguno de los dos lleva llave.
 
 ⛔ **El notebook nunca sube nada a un storage.** Escribe su resultado en OneLake
-y ahí termina. De publicarlo se encarga una actividad **Copy** al final del
-pipeline, apuntando a una **conexión de Fabric**.
+y ahí termina. De publicarlo se encargan actividades **Copy** al final del
+pipeline, apuntando a **conexiones de Fabric**.
 
 ```
 notebook  →  Files/dashboard/<tablero>/     (OneLake, sin credencial)
              │
-             └─ Copy  →  Blob  (la llave vive en la conexión, no en el código)
+             ├─ Copy "Publicar a PORTAL-BI"            →  <carpeta-portal>/<tablero>   (gateway)
+             └─ Copy "Publicar a Azure (portal-data)"  →  portal-data/<tablero>   (Workspace identity)
 ```
 
-La conexión se captura **una sola vez**, en *⚙ → Manage connections and
-gateways*. Nunca en un notebook, nunca en un Base parameter, nunca en un
-archivo del repo.
+Las dos Copy cuelgan del **mismo** notebook, con *On success*, y corren en
+paralelo. **Sin la de Azure, el tablero no tiene datos en el portal nuevo**,
+aunque el pipeline salga verde.
 
 > **Es una actividad `Copy` del pipeline, no un `Copy Job`.** El *Copy Job* es
 > un item aparte de Fabric, con su propio calendario, y se usa para traer
 > archivos de un origen externo (un share on-prem, por ejemplo). Publicar la
-> salida de un notebook es una actividad dentro del mismo pipeline, colgada del
-> notebook con *On success*. Se configuran distinto; confundirlos manda a
-> buscar por el lado equivocado.
+> salida de un notebook es una actividad dentro del mismo pipeline.
 
-### Cómo se configura
+### El molde: `<pipeline de referencia>`
 
-**La conexión**, una vez:
+En el repo `<org>/<repo-fabric>` (rama base **`fabric`**), workspace
+**BI Team**. Ya trae las dos Copy funcionando. Se clona su actividad y
+cambian dos cosas: la carpeta de origen (`dashboard/<tablero>`) y la de destino
+(`<tablero>`, igual al nombre de la carpeta del tablero en el portal).
 
-```
-Connection type:         Azure Blob Storage
-Account name:            <cuenta>
-Domain:                  <cuenta>.blob.core.windows.net
-Authentication method:   Key          ← aquí va la llave, y solo aquí
-```
-
-Hay que marcarle **"Allow this connection to be utilized with either on-premises
-data gateways or VNet data gateways"**, o el pipeline no deja guardar la
-actividad.
-
-**La actividad Copy**, colgada del notebook con *On success*:
-
-```
-Source                                  Destination
-  Connection:  Lakehouse → <lakehouse>    Connection:  <la conexión de arriba>
-  Root folder: Files                      File path:   <contenedor> / <carpeta> /
-  File path:   dashboard/<tablero>                     (el tercer campo, vacío)
-  Wildcard:    *.json                     File format: Binary
-  Recursively: sí
-  File format: Binary
-```
-
-Tres detalles que importan:
-
-- **`Binary`, nunca `DelimitedText`.** Binary copia byte por byte y conserva el
-  nombre. DelimitedText *parsea y reescribe* el archivo — un JSON pasado por ahí
-  se corrompe.
-- **El tercer campo del path va vacío.** Si le pones algo, renombra todo a ese
-  nombre en vez de conservar los nombres de archivo.
-- **Pon el wildcard `*.json` aunque la carpeta solo tenga JSONs.** Sin él se
-  publica lo que sea que aparezca ahí — un archivo de prueba que alguien dejó,
-  un `.crc` — y nadie se entera.
-
-Los archivos se **sobreescriben** cada corrida. No se acumula historia a
-propósito: el tablero muestra el estado de hoy.
-
-### El JSON, para escribirlo sin pasar por la UI
-
-> ⚠ **Nota de migración.** Los items
-> viven ahora en `<org>/<repo-fabric>` (rama `fabric`), workspace
-> `<GUID>`, lakehouse `<lakehouse>`
-> `<GUID>` **sin esquemas**. Los GUID de la tabla
-> de abajo son del workspace anterior y la conexión del Blob ya no existe: el
-> destino es `<carpeta-portal>` por el gateway (`portal-seguridad` § 1). Copia el
-> molde de `repo-fabric`, no estos valores.
-
-No hay que configurarla a mano cada vez. **Se clona de
-`<pipeline de referencia>`** en `<org>/<repo-fabric>`, que hace
-exactamente esto para otro tablero y lleva tiempo corriendo. Cambian tres cosas:
-la carpeta de origen, la de destino, y el nombre de la actividad de la que
-cuelga.
-
-Las conexiones del workspace BI — son **identificadores, no secretos**; la
-llave vive dentro de la conexión:
+Las conexiones del workspace BI Team — son **identificadores, no
+secretos**:
 
 | | GUID |
 |---|---|
-| Lakehouse `<lakehouse>` | `<GUID>` |
-| Blob de los tableros (`dashboard-data`) | `<GUID>` |
+| Lakehouse `<lakehouse>` (conexión) | `<GUID>` |
 | `artifactId` del lakehouse | `<GUID>` |
+| Azure Storage `<storage-portal>-portal-data` (Workspace identity) | `<GUID>` |
+
+La de Azure **no lleva llave**: entra con la identidad del workspace, que tiene
+el rol *Storage Blob Data Contributor* sobre el Storage, y el Storage la deja
+pasar por *trusted workspace access*. No se marca la casilla de gateways.
 
 ```jsonc
 {
- "name": "Publicar al Blob",
+ "name": "Publicar a Azure (portal-data)",
  "type": "Copy",
  "dependsOn": [{ "activity": "<el notebook que escribe>",
                  "dependencyConditions": ["Succeeded"] }],
@@ -1355,9 +1342,9 @@ llave vive dentro de la conexión:
    "storeSettings": { "type": "AzureBlobStorageWriteSettings" },
    "datasetSettings": {
     "type": "Binary",
-    // Sin `fileName`: es el "tercer campo vacio" de la UI.
+    // Sin `fileName`: conserva los nombres de archivo.
     "typeProperties": { "location": { "type": "AzureBlobStorageLocation",
-                                      "container": "dashboard-data",
+                                      "container": "portal-data",
                                       "folderPath": "<tablero>" } },
     "externalReferences": { "connection": "<GUID>" },
     "annotations": [] } },
@@ -1366,13 +1353,23 @@ llave vive dentro de la conexión:
 }
 ```
 
-**`STATUS` cuelga del Copy, no del notebook.** El estado del pipeline tiene que
-reflejar si el tablero quedó publicado, no si el cálculo terminó.
+Tres detalles que importan, en las dos Copy:
 
-Antes de subirlo, compara la **forma** de tu actividad contra la de Import
-Tracker — las llaves anidadas, ignorando los valores. Si difiere en algo que no
-sea el wildcard, Fabric la va a rechazar con `Failed to discover dependencies`,
-que no dice cuál campo está mal.
+- **`Binary`, nunca `DelimitedText`.** Binary copia byte por byte y conserva el
+  nombre. DelimitedText *parsea y reescribe* el archivo — un JSON pasado por ahí
+  se corrompe.
+- **Sin nombre de archivo en el destino.** Si le pones uno, renombra todo a ese
+  nombre en vez de conservar los nombres de archivo.
+- **Pon el wildcard `*.json` aunque la carpeta solo tenga JSONs.** Sin él se
+  publica lo que sea que aparezca ahí — un archivo de prueba que alguien dejó,
+  un `.crc` — y nadie se entera.
+
+### Cómo se comprueba
+
+| | Bien | Mal en silencio |
+|---|---|---|
+| La corrida | *Publicar a Azure (portal-data)* sale verde, con **Run start de hoy** | ves el Output de una corrida vieja: el panel muestra la última que encontró |
+| El portal en Azure | el tablero abre con la fecha de hoy y **sin** el aviso de "copia del repo" | el pipeline salió verde pero el tablero sigue vacío: falta la Copy de Azure, o va a otra carpeta que la del tablero |
 
 > **Para buscar un molde en el repo, baja la rama completa de un jalón:**
 > `gh api repos/<owner>/<repo>/tarball/<rama> > repo.tar.gz` y busca en local.
@@ -1682,7 +1679,7 @@ Se arman del texto o se comparan como texto ISO.
 - [ ] La banda de modo degradado probada con un `meta.json` al que le falta la estructura
 - [ ] Los JSON se sirven con `Cache-Control: no-cache` y ETag
 - [ ] **Cero credenciales en notebooks y en Base parameters** — la publicación va por una actividad Copy con conexión de Fabric
-- [ ] La actividad Copy se clonó de `<pipeline de referencia>` y su forma coincide; `STATUS` cuelga del Copy, no del notebook
+- [ ] El pipeline publica con **dos** Copy (a `<carpeta-portal>` y a Azure `portal-data`), clonadas de `<pipeline de referencia>` (§ 16)
 - [ ] Se abrió la URL de la última milla y `generated_at` era de hoy
 - [ ] Cero colores hex fuera de las variables CSS
 - [ ] Panel de filtros arranca colapsado, con badge de conteo
@@ -1696,14 +1693,15 @@ Se arman del texto o se comparan como texto ISO.
 - [ ] Ningún manejador se engancha a un contenedor: se engancha al rol (`[data-tab]`, no `button` a secas)
 - [ ] El estado que decide qué panel se ve tiene red: si queda vacío, vuelve al panel por defecto y lo dice
 - [ ] Si el tablero manda correo, pasó el checklist de la sección 17 — **revisado en Outlook**
-- [ ] Existe un botón que reporta tiempos por etapa **y** qué quedó en pantalla, para diagnosticar sin consola
+- [ ] Trae el estetoscopio 🩺: el compartido (`/shared/js/diagnostico.js`) o uno propio que reporte tiempos **y** qué quedó en pantalla (§ 2 ter)
+- [ ] Al pasar el mouse por la fecha del encabezado se ve **cada archivo con su fecha** (§ 8)
 - [ ] Click en cualquier elemento de cualquier gráfica filtra todo lo demás (probado visual por visual)
 - [ ] Cada gráfica tiene su ⓘ con el resumen del cálculo
 - [ ] Data labels visibles donde el espacio lo permite
 - [ ] Tabla de detalle a 10 filas, paginada, con todos los encabezados ordenables
 - [ ] Export CSV (con BOM) y Excel (con hoja Metadata), ambos sobre el dataset filtrado completo
 - [ ] "Actualizado" y "Datos al" presentes, con semáforo según umbral configurado
-- [ ] Botón Back to the Portal apuntando a `CONFIG.portalUrl`
+- [ ] Botón Back to the Portal apuntando al portal de **su departamento**, y visible aunque se colapse el menú (§ 10)
 - [ ] Panel de documentación completo y útil para alguien sin contexto
 - [ ] Footer con crédito al equipo de BI
 - [ ] Si es bilingüe: cero strings sueltos, toggle en cada pestaña, persistencia en localStorage

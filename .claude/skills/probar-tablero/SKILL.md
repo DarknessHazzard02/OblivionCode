@@ -54,7 +54,8 @@ Al terminar: `resize_window` preset `desktop` y `preview_stop` si el servidor lo
 - Capturas: se describen en la tabla; no se guardan archivos de imagen en el repo.
 - Si todo es PASA o N/A y es repo de git:
   `python .claude/hooks/sellar.py pruebas Main_Dev_Projects/<Proyecto> --evidencia .claude/estado/pruebas-<Proyecto>.md`
-  El sello es la huella de html/js/css, `data*/` y `shared/` del tablero. Si después cambia uno de esos
+  El sello es la huella de html, js, css, json y svg del tablero a cualquier profundidad (también
+  `pages/`, `static/`), y de todo `data*/` y `shared/`; no cuentan `docs/`, `build/`, `Modified/` ni `Original/`. Si después cambia uno de esos
   archivos (también los datos), el hook pide probar otra vez antes del commit.
 - **Cuándo se exige:** solo al hacer commit de cambios de un tablero, no en cada turno. Mientras se
   trabaja, se prueba cuando tenga sentido; no hace falta repetir la lista entera por cada ajuste chico.

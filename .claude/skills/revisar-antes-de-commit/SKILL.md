@@ -15,8 +15,8 @@ positivos) y el plugin `code-review` (pasadas en paralelo, solo hallazgos con co
 | `stage` (default) | `git diff --cached` + los archivos completos que toca | antes de commit |
 | `archivos` | una lista de archivos o carpetas, completos | validar algo que no tiene diff (un tablero ya hecho, una copia sin git) |
 
-**Se salta** (y se dice) si el stage es solo `.md`, `.txt`, imágenes o `.pdf` **fuera de `.claude/`**: no hay
-código que revisar. Lo de `.claude/` (skills, agentes) sí se revisa: son instrucciones del asistente.
+**Se salta** (y se dice) si el stage es solo `.md`, `.txt`, imágenes o `.pdf` **fuera de `.claude/`**, salvo `CLAUDE.md`, `SKILL.md`, `REGLAS-EQUIPO.md`, `requirements*.txt` y lo
+que esté bajo `skills/` o `agents/` (la regla es `sellar.es_solo_doc`): no hay código que revisar. Lo de `.claude/` (skills, agentes) sí se revisa: son instrucciones del asistente.
 Si el diff tiene menos de 50 líneas, A2 hace una sola pasada en vez de tres.
 
 ## 2. Lanzar los dos agentes en paralelo

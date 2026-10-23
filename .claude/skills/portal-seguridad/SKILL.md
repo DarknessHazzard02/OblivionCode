@@ -1,6 +1,6 @@
 ---
 name: portal-seguridad
-description: Reglas de seguridad del Portal BI en el servidor local y de lo que se le entrega a IT - de donde lee datos el portal (la carpeta <carpeta-portal> que llena Fabric por el gateway), que puede y que no puede servir (tambien con trucos de rutas de Windows), XSS e innerHTML, inyeccion de formulas en CSV, datos personales y grupos de AD por tablero, librerias sin CDN, encabezados de seguridad, vulnerabilidades, el paquete para IT, y como se evita y se detecta cualquier rastro o firma de herramientas de desarrollo en codigo, commits, rutas y librerias. Usala SIEMPRE que se toque el portal (app.py, una ruta, una lista blanca, un tablero nuevo o existente, una libreria, un <script> o <link>, un fetch, un innerHTML, un tooltip, un filtro que lee la URL, un export a CSV), cuando se publique un tablero, cuando se arme o entregue el paquete para IT, y cuando se mencione servidor local, IP local, IT, revision de seguridad, escaner, vulnerabilidad, CVE, CSP, CDN, jsdelivr, datos personales, datos de empleados, RH, rastro, firma, marca de agua, Co-Authored-By, empaquetar.py o DESPLIEGUE.md. Complementa a dashboard-standards (como se construye el tablero) y a validar-antes-de-entregar (rastros en archivos Word, Excel, PDF).
+description: Reglas de seguridad del Portal BI (el servidor local y el de Azure App Service) y de lo que se le entrega a IT - de donde lee datos el portal (la carpeta <carpeta-portal> que llena Fabric por el gateway, y el Storage portal-data en Azure, sin llaves), roles por seccion con Easy Auth, que puede y que no puede servir (tambien con trucos de rutas de Windows), XSS e innerHTML, inyeccion de formulas en CSV, datos personales y grupos de AD por tablero, librerias sin CDN, encabezados de seguridad, vulnerabilidades, el paquete para IT, y como se evita y se detecta cualquier rastro o firma de herramientas de desarrollo en codigo, commits, rutas y librerias. Usala SIEMPRE que se toque el portal (app.py, una ruta, una lista blanca, un tablero nuevo o existente, una libreria, un <script> o <link>, un fetch, un innerHTML, un tooltip, un filtro que lee la URL, un export a CSV), cuando se publique un tablero, cuando se arme o entregue el paquete para IT, y cuando se mencione servidor local, IP local, Azure, App Service, portal-data, Easy Auth, roles del portal, IT, revision de seguridad, escaner, vulnerabilidad, CVE, CSP, CDN, jsdelivr, datos personales, datos de empleados, RH, rastro, firma, marca de agua, Co-Authored-By, empaquetar.py o DESPLIEGUE.md. Complementa a dashboard-standards (como se construye el tablero) y a validar-antes-de-entregar (rastros en archivos Word, Excel, PDF).
 ---
 
 # Seguridad del Portal BI — equipo de BI
@@ -24,27 +24,38 @@ bien** y **cómo se ve si falló en silencio**.
 
 ## 1. Cómo está armado ahora
 
+hay **dos portales** leyendo los mismos JSON, mientras se termina
+la migración: el local de siempre y el de Azure. Cada pipeline publica a los dos.
+
 ```
 Fabric (notebook)  ->  Files/dashboard/<tablero>/        OneLake, sin credenciales
       |
-      +- Copy "Publicar a PORTAL-BI" (gateway, conexion 47c0bcee)
-      v
-<carpeta-compartida>
+      +- Copy "Publicar a PORTAL-BI" (gateway, conexion <GUID>)
+      |     v
+      |  <carpeta-compartida>
       |
-      +- el portal la lee de PORTAL_DATA_DIR (ruta UNC, solo lectura)
-      v
-Flask + waitress en 127.0.0.1:8080  ->  IIS (HTTPS + Windows Authentication)  ->  usuarios
+      +- Copy "Publicar a Azure (portal-data)" (Workspace identity, conexion <GUID>)
+            v
+         Storage <storage-portal> / portal-data/<tablero>/   (sin llaves, red cerrada)
+            v
+         App Service <app-service-portal> (Managed Identity, Easy Auth + App Roles)  ->  portal en Azure
 ```
 
-- **No existe el Blob.** Nada nuevo publica a `dashboard-data` ni usa la conexión
-  `70d8be8b…`. Un tablero nuevo se publica con una actividad Copy a
-  `<carpeta-portal>/<tablero>`, con destino `FileServerLocation` y la conexión del gateway
-  `<GUID>` (la misma de los Copy Jobs de SAP; su ruta ya
-  empieza en `110 Power BI - Integrated Logistics`, así que el `folderPath` es relativo).
-- **No existe Easy Auth, ni MSAL, ni `/.auth/me`.** Un tablero **no** consulta Fabric
-  desde el navegador. Invox lo hacía (GraphQL con el login de Azure) y se quedó sin
-  funcionar el día de la migración: hoy es un esqueleto desactivado hasta tener una
-  fuente aprobada. Todo tablero lee JSON por `/api/<tablero>/<archivo>`.
+- **Un tablero nuevo lleva las dos Copy.** La del gateway: destino
+  `FileServerLocation` `<carpeta-portal>/<tablero>` y la conexión
+  `<GUID>` (su ruta ya empieza en `110 Power BI -
+  Integrated Logistics`, así que el `folderPath` es relativo). La de Azure: contenedor
+  `portal-data`, carpeta `<tablero>`, conexión `<GUID>`.
+  El JSON completo está en `dashboard-standards`, sección 16. **Sin la de Azure, el
+  tablero sale vacío en el portal nuevo aunque el pipeline salga verde.**
+- **El Blob viejo `dashboard-data` y su conexión `<GUID>…` siguen muertos.** Nada
+  publica ahí.
+- **El inicio de sesión lo resuelve Azure, no el tablero.** Easy Auth corre delante del
+  portal y el servidor revisa el rol en cada página y cada `/api/`. Un tablero **no**
+  usa MSAL, ni llama a `/.auth/me`, ni consulta Fabric desde el navegador (<proveedor de datos> lo
+  hacía y quedó desactivado). Todo tablero lee JSON por `/api/<tablero>/<archivo>`.
+- **Un tablero nuevo necesita su sección en `ROLES_DE`** (`app.py`): sin ella, en Azure
+  queda negado a todos. `tests/test_azure.py` lo detecta.
 - **El portal no guarda secretos.** No necesita ninguna contraseña: el acceso a la
   carpeta lo da la cuenta de servicio. Si algo te pide una llave en el código, está mal.
 

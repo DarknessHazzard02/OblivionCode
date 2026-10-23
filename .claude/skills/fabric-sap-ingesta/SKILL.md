@@ -12,7 +12,11 @@ algo que ya falló.
 llama el archivo y en qué tabla cae— está en la skill `sap-catalogo-fuentes`.**
 Esta de aquí es el *cómo se construye*; esa es el *de dónde viene*.
 
-**El molde de referencia en el workspace BI es `ZMM_MD04_PIPELINE_CI`.**
+**El molde de referencia en el workspace BI Team es `ZMM_MD04_PIPELINE_CI`**
+(repo `<org>/<repo-fabric>`, rama base **`fabric`**, carpeta
+`SAP_TRANSACIONES/SAP_ZMM_MD04/<usuario>/`). Si el pipeline publica a un tablero,
+el molde de la publicación es `<pipeline de referencia>`: lleva dos Copy,
+a `<carpeta-portal>` y a Azure (`dashboard-standards`, sección 16).
 Antes de escribir un item nuevo, léelo y **compara campo por campo**. La mitad
 de los errores de esta lista se habrían evitado con ese diff.
 
@@ -545,13 +549,6 @@ lo era**.
 # META       "default_lakehouse_name": "<lakehouse>",
 # META       "default_lakehouse_workspace_id": "<GUID>",
 ```
-
-> ⚠ **Nota de migración.** Esos GUID
-> son del workspace anterior (`<org>/<repo-fabric-anterior>`). Los items vigentes
-> están en `<org>/<repo-fabric>`, rama `fabric`: workspace
-> `<GUID>`, lakehouse `<GUID>`,
-> **sin esquemas** (`Tables/<tabla>`). Toma los valores de un item que ya
-> funcione ahí, no de este ejemplo.
 
 Esto mata dos trampas viejas: ya no hay que reasociar el lakehouse ni recapturar
 los Base parameters en cada reimport. Y la celda de parámetros va marcada como

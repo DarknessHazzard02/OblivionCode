@@ -19,7 +19,7 @@ import subprocess
 import sys
 from pathlib import Path
 
-REPO_URL = "https://github.com/<org>/<repo-fabric>.git"  # migrado desde repo-fabric-anterior (ya no existe)
+REPO_URL = "https://github.com/<org>/<repo-fabric>.git"
 BASE_BRANCH = "fabric"
 ORIGEN = Path(__file__).parent / "fabric"
 # Fuera de cualquier repo con junction: si viviera dentro del clon de skills,
