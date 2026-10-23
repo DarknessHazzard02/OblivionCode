@@ -34,7 +34,7 @@ Fabric (notebook)  ->  Files/dashboard/<tablero>/        OneLake, sin credencial
       |     v
       |  <carpeta-compartida>
       |
-      +- Copy "Publicar a Azure (portal-data)" (Workspace identity, conexion <GUID>)
+      +- Copy "Publicar a Azure portal-data" (Workspace identity, conexion <GUID>)
             v
          Storage <storage-portal> / portal-data/<tablero>/   (sin llaves, red cerrada)
             v

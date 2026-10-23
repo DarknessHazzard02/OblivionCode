@@ -1275,7 +1275,7 @@ pipeline, apuntando a **conexiones de Fabric**.
 notebook  →  Files/dashboard/<tablero>/     (OneLake, sin credencial)
              │
              ├─ Copy "Publicar a PORTAL-BI"            →  <carpeta-portal>/<tablero>   (gateway)
-             └─ Copy "Publicar a Azure (portal-data)"  →  portal-data/<tablero>   (Workspace identity)
+             └─ Copy "Publicar a Azure portal-data"  →  portal-data/<tablero>   (Workspace identity)
 ```
 
 Las dos Copy cuelgan del **mismo** notebook, con *On success*, y corren en
@@ -1309,7 +1309,7 @@ pasar por *trusted workspace access*. No se marca la casilla de gateways.
 
 ```jsonc
 {
- "name": "Publicar a Azure (portal-data)",
+ "name": "Publicar a Azure portal-data",
  "type": "Copy",
  "dependsOn": [{ "activity": "<el notebook que escribe>",
                  "dependencyConditions": ["Succeeded"] }],
@@ -1368,7 +1368,7 @@ Tres detalles que importan, en las dos Copy:
 
 | | Bien | Mal en silencio |
 |---|---|---|
-| La corrida | *Publicar a Azure (portal-data)* sale verde, con **Run start de hoy** | ves el Output de una corrida vieja: el panel muestra la última que encontró |
+| La corrida | *Publicar a Azure portal-data* sale verde, con **Run start de hoy** | ves el Output de una corrida vieja: el panel muestra la última que encontró |
 | El portal en Azure | el tablero abre con la fecha de hoy y **sin** el aviso de "copia del repo" | el pipeline salió verde pero el tablero sigue vacío: falta la Copy de Azure, o va a otra carpeta que la del tablero |
 
 > **Para buscar un molde en el repo, baja la rama completa de un jalón:**

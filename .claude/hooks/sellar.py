@@ -15,7 +15,7 @@ Usos (desde la raiz del repo):
 Los sellos viven en `.claude/estado/` del repo, que se crea con su propio `.gitignore` (no se
 commitean), y los lee el hook `exigir_antes_de_commit.py`. Si el diff o el tablero cambian despues
 del sello, el sello ya no vale. Este script no revisa ni prueba nada: solo anota. Lo llaman las
-skills `revisar-antes-de-commit` y `probar-tablero` despues de hacer su trabajo.
+skills `revisar-antes-de-commit-personal` y `probar-tablero-personal` despues de hacer su trabajo.
 
 Un tablero es una carpeta de segundo o primer nivel del repo con `index.html` (en el portal,
 `<tablero>/index.html`), en disco o en el stage. Su huella es el blob de git de cada archivo que

@@ -20,9 +20,9 @@ REPOS = Path.home() / 'Documents' / 'GitHub'
 ORIGEN = REPOS / 'BI_DataNexus' / '.claude'
 DESTINO = REPOS / 'OblivionCode' / '.claude'
 PIEZAS = [
-    'skills/entrevista-prd', 'skills/escribir-prd', 'skills/revisar-antes-de-commit',
-    'skills/probar-tablero', 'skills/auditar-entrega',
-    'agents/revisor-seguridad-personal.md', 'agents/revisor-codigo-personal.md', 'agents/auditor.md',
+    'skills/entrevista-prd-personal', 'skills/escribir-prd-personal', 'skills/revisar-antes-de-commit-personal',
+    'skills/probar-tablero-personal', 'skills/auditar-entrega-personal',
+    'agents/revisor-seguridad-personal.md', 'agents/revisor-codigo-personal.md', 'agents/auditor-personal.md',
     'hooks/sellar.py', 'hooks/exigir_antes_de_commit.py', 'hooks/sincronizar_repo.py',
     'settings.json', '.gitignore',  # launch.json no: cada repo tiene sus tableros
 ]

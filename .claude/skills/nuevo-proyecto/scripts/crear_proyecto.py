@@ -484,8 +484,8 @@ def buscar_estilos(repo):
     return candidatos[0] if candidatos else None
 
 def plantilla_prd(repo, nombre):
-    """La plantilla del PRD sale de la skill escribir-prd del repo, para no tener dos copias que se separen."""
-    skill = repo / '.claude' / 'skills' / 'escribir-prd' / 'SKILL.md'
+    """La plantilla del PRD sale de la skill escribir-prd-personal del repo, para no tener dos copias que se separen."""
+    skill = repo / '.claude' / 'skills' / 'escribir-prd-personal' / 'SKILL.md'
     if skill.is_file():
         m = re.search(r'```markdown\n(.*?)\n```', skill.read_text(encoding='utf-8'), re.S)
         if m:
@@ -575,8 +575,8 @@ def main():
     if prd:
         escribir(dst / 'docs' / 'PRD.md', prd)
     else:
-        avisos.append('no encontré la skill escribir-prd en el repo: docs/PRD.md no se creó')
-    tabla = '\n'.join(f'| {x.format(**f)} | {y} |' for x, y in TABLAS[a.tipo] + [('`docs/PRD.md`', 'objetivo, KPIs y criterios de aceptación (borrador; lo llena `escribir-prd`)')])
+        avisos.append('no encontré la skill escribir-prd-personal en el repo: docs/PRD.md no se creó')
+    tabla = '\n'.join(f'| {x.format(**f)} | {y} |' for x, y in TABLAS[a.tipo] + [('`docs/PRD.md`', 'objetivo, KPIs y criterios de aceptación (borrador; lo llena `escribir-prd-personal`)')])
     escribir(dst / 'README.md', README.format(tabla=tabla, correr=CORRER[a.tipo].format(**f), **f))
 
     print(f'Creado: {dst}')

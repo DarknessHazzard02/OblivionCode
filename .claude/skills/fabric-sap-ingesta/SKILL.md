@@ -637,6 +637,53 @@ Lo que quede es el cambio de verdad. Si sale vacío, el PR es puro reformateo.
 Es un ping-pong sin consecuencias: se mergea tu versión, Fabric la vuelve a
 normalizar en el siguiente commit. No pelees con él ni adoptes su formato.
 
+### ⛔ Primero Update all, después commit — y solo lo que tú cambiaste
+
+Un commit desde el workspace **gana sobre git**, aunque git tenga algo más
+nuevo. Si el workspace todavía no recibió un PR y commiteas ese item, subes la
+versión vieja encima del arreglo. Ya pasó: el arreglo de los destinos de
+SharePoint (`c121c6d`) se revirtió el mismo día con un
+*Committing 5 items from workspace*.
+
+1. **Source control → Updates → Update all**, siempre antes.
+2. En **Changes**, marca **solo** los items que tú tocaste. Lo demás que salga
+   ahí es de alguien más o es ruido del *Modified* de arriba: pregunta antes.
+
+### Nombres de actividad: sin paréntesis
+
+Fabric deja **correr** un pipeline con una Copy llamada
+`Publicar a Azure (portal-data)`, pero **no deja guardarlo** desde el editor:
+*Activity name should only contain letters, numbers, dashes (-), underscores (_),
+or spaces.* Desde git entra sin queja, así que el error aparece hasta que
+alguien lo edita. Solo letras, números, `-`, `_` y espacios.
+
+### SharePoint: `SharePointOnlineFileStoreLocation`, no `DatasetLocation`
+
+Cuando la ubicación de un destino de SharePoint dice `"type": "DatasetLocation"`,
+la corrida **funciona** pero el editor muestra **Connection vacía** y no deja
+guardar (*linkedService is required*). El tipo correcto es
+`SharePointOnlineFileStoreLocation`.
+
+Para arreglarlo a mano: en la Copy → **Destination** → **Connection**, elige
+`<conexion-sharepoint>` (id `<GUID>…`); aparecen **Directory** y **File name**,
+y ahí se vuelven a capturar. Un nombre con fecha va en **Add dynamic content**;
+el aviso *Expected type is 'object'* es normal, y **Validate** pasa.
+
+### Calendarios
+
+- **Apagado = `"enabled": false` + `"enabledControlType": "UserDisabled"`.** Con
+  `false` + `UserEnabled`, el Update all truena: *'enabled' is required to be
+  true when 'enabledControlType' is 'UserEnabled'*.
+- **Apagar y prender un calendario en Schedule NO lo vuelve a guardar: crea
+  otro**, con la zona horaria que se le ocurra (salió *Central America*). Para
+  rehacer uno, bórralo y crea el nuevo con zona *(UTC-06:00) Guadalajara,
+  Mexico City, Planta*.
+- **Dos calendarios iguales = corre doble**, y las dos corridas chocan sobre la
+  misma tabla Delta (*conflicting metadata change*). Revisa que quede uno.
+- **`Central Standard Time` a secas es la hora de EE.UU.**, que cambia de
+  horario: en verano sus 04:25 son las 03:25 de México. Para México:
+  `Central Standard Time (Mexico)`.
+
 ---
 
 ## 5. Nomenclatura: `ERP_TRANSACCION_ESPECIFICACION`

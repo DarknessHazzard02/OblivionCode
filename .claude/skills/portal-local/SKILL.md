@@ -172,7 +172,8 @@ levantaste tú: usa otro puerto (`.\iniciar_portal.cmd 8090`) y prueba ahí, o c
 - La skill `entregar-tablero` (sección 4) dice que **ver un tablero del portal con datos reales
   en local lo hace Haz**, y solo cuando los inventados no alcanzan. Antes de usar `--reales`
   hay que avisarlo: es copiar datos de OneLake a otra carpeta del equipo (Reglas 4 y 5). La copia
-  vive fuera de OneDrive y de todo repo. **El asistente no abre esos JSON**, ni con
+  vive fuera de OneDrive y de todo repo: si `PORTAL_COPIA` cae dentro de OneDrive, SharePoint o
+  un repo, el script se detiene antes de copiar nada. **El asistente no abre esos JSON**, ni con
   `get_page_text` ni con capturas del tablero: revisa la banda, la consola y los conteos.
 - Para dejar la copia sin datos reales, vuelve a correr el script sin `--reales`.
 

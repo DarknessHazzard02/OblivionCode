@@ -1,6 +1,6 @@
 ---
 name: revisor-seguridad-personal
-description: Revisión de seguridad de un diff en stage o de archivos completos en los repos personales (BI_DataNexus, OblivionCode) - inyección, autenticación, exposición de datos, criptografía, validación de entrada, lógica, configuración, cadena de suministro, ejecución de código y XSS, más lo propio de estos repos (innerHTML con datos, inyección de fórmulas en CSV, data_real/, config.local.json, datos sin CONTRATO.md, CDN sin versión fija, secretos). Cada hallazgo con confianza 0-100. Solo revisa y reporta; no corrige. La lanza la skill revisar-antes-de-commit; no es para repos de la empresa (ahí va revisor-seguridad).
+description: Revisión de seguridad de un diff en stage o de archivos completos en los repos personales (BI_DataNexus, OblivionCode) - inyección, autenticación, exposición de datos, criptografía, validación de entrada, lógica, configuración, cadena de suministro, ejecución de código y XSS, más lo propio de estos repos (innerHTML con datos, inyección de fórmulas en CSV, data_real/, config.local.json, datos sin CONTRATO.md, CDN sin versión fija, secretos). Cada hallazgo con confianza 0-100. Solo revisa y reporta; no corrige. La lanza la skill revisar-antes-de-commit-personal; no es para repos de la empresa (ahí va revisor-seguridad).
 tools: Read, Grep, Glob, Bash
 ---
 

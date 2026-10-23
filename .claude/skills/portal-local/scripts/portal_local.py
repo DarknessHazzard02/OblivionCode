@@ -128,6 +128,25 @@ def validar_copia():
     if motivo:
         sys.exit(f"No borro {copia}: {motivo}. Revisa PORTAL_COPIA.")
 
+def validar_reales():
+    """Con --reales los JSON reales caen en la copia: se detiene si esa carpeta se sincroniza a la
+    nube o vive dentro de un repo (Regla 5, entregar-tablero § 4). Va antes de copiar nada."""
+    copia = COPIA.resolve()
+    nubes = [Path(os.environ[v]).resolve() for v in ("OneDrive", "OneDriveCommercial", "OneDriveConsumer")
+             if os.environ.get(v)]
+    motivo = None
+    if any(n == copia or n in copia.parents for n in nubes) or \
+            any("onedrive" in p.lower() or "sharepoint" in p.lower() for p in copia.parts):
+        motivo = "esta dentro de OneDrive o SharePoint: los datos reales se subirian a la nube"
+    else:
+        for d in (copia, *copia.parents):
+            if (d / ".git").exists():
+                motivo = f"esta dentro del repo {d}"
+                break
+    if motivo:
+        sys.exit(f"--reales cancelado: la copia {copia} {motivo}. "
+                 "Pon PORTAL_COPIA en una carpeta local fuera de OneDrive y de todo repo.")
+
 def limpiar_copia():
     validar_copia()
     COPIA.mkdir(parents=True, exist_ok=True)
@@ -296,6 +315,8 @@ def main():
     if not (REPO / "app.py").is_file():
         sys.exit(f"No encuentro el clon del portal en {REPO} (falta app.py). "
                  "Clónalo ahí o pon su ruta en la variable PORTAL_REPO.")
+    if args.reales:
+        validar_reales()
 
     tableros = json.loads(TABLEROS.read_text(encoding="utf-8-sig")) if TABLEROS.exists() else []
     origen = f"rama {args.rama} ({git('rev-parse', '--short', args.rama)})" if args.rama else \

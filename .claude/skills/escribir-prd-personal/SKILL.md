@@ -1,6 +1,6 @@
 ---
-name: escribir-prd
-description: Convierte las decisiones de una entrevista (entrevista-prd) o de la conversación en el PRD de un proyecto de los repos personales - Main_Dev_Projects/<proyecto>/docs/PRD.md con objetivo, usuarios, fuentes y contrato de datos, KPIs con fórmula, pantallas, fuera de alcance, criterios de aceptación numerados y verificables, riesgos y pendientes. Es lo que lee el auditor (auditar-entrega). Úsala SIEMPRE que se pida "escribe el PRD", "pásalo a spec", "documenta lo que decidimos", al terminar entrevista-prd, o cuando un proyecto de Main_Dev_Projects no tenga docs/PRD.md y se vaya a auditar.
+name: escribir-prd-personal
+description: Convierte las decisiones de una entrevista (entrevista-prd-personal) o de la conversación en el PRD de un proyecto de los repos personales - Main_Dev_Projects/<proyecto>/docs/PRD.md con objetivo, usuarios, fuentes y contrato de datos, KPIs con fórmula, pantallas, fuera de alcance, criterios de aceptación numerados y verificables, riesgos y pendientes. Es lo que lee el auditor (auditar-entrega-personal). Úsala SIEMPRE que se pida "escribe el PRD", "pásalo a spec", "documenta lo que decidimos", al terminar entrevista-prd-personal, o cuando un proyecto de Main_Dev_Projects no tenga docs/PRD.md y se vaya a auditar.
 ---
 
 # Escribir el PRD

@@ -1,6 +1,6 @@
 ---
-name: probar-tablero
-description: Prueba un tablero en el navegador integrado de la app (sin instalar nada) con una lista fija - consola sin errores, red sin 404, banda de frescura y de datos inventados o semi-ficticios, KPIs con número, cross-filter, filtros, tabla paginada, export CSV y Excel, ES/EN, botón de copiar, ancho de celular y tema oscuro - y deja evidencia (texto y capturas) y el sello de prueba. Úsala SIEMPRE que se edite un tablero de Main_Dev_Projects (index.html, app.js, estilos.css, data*/), cuando el hook exigir_antes_de_commit niegue un commit por falta de prueba, antes de auditar-entrega, y cuando se diga "pruébalo", "ábrelo en el navegador", "valida el tablero", "¿funciona?" o "revisa que no falle en silencio". También sirve para validar un tablero del Portal en su copia local (portal-local).
+name: probar-tablero-personal
+description: Prueba un tablero en el navegador integrado de la app (sin instalar nada) con una lista fija - consola sin errores, red sin 404, banda de frescura y de datos inventados o semi-ficticios, KPIs con número, cross-filter, filtros, tabla paginada, export CSV y Excel, ES/EN, botón de copiar, ancho de celular y tema oscuro - y deja evidencia (texto y capturas) y el sello de prueba. Úsala SIEMPRE que se edite un tablero de Main_Dev_Projects (index.html, app.js, estilos.css, data*/), cuando el hook exigir_antes_de_commit niegue un commit por falta de prueba, antes de auditar-entrega-personal, y cuando se diga "pruébalo", "ábrelo en el navegador", "valida el tablero", "¿funciona?" o "revisa que no falle en silencio". También sirve para validar un tablero del Portal en su copia local (portal-local).
 ---
 
 # Probar tablero

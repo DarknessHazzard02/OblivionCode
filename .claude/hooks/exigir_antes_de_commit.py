@@ -8,10 +8,10 @@
 Paso 3 del flujo de 4 pasos (skill estandar-personal). Junta dos reglas en un solo arranque de
 Python (ya hay otros hooks en cada Bash):
 
-    H1  el diff en stage tiene que tener el sello de `revisar-antes-de-commit`
+    H1  el diff en stage tiene que tener el sello de `revisar-antes-de-commit-personal`
         (`.claude/estado/revision.json` con el mismo hash).
     H2  si el stage toca un tablero (carpeta de primer o segundo nivel con index.html), ese
-        tablero tiene que tener el sello de `probar-tablero` con la misma huella que el stage
+        tablero tiene que tener el sello de `probar-tablero-personal` con la misma huella que el stage
         (`.claude/estado/pruebas.json`).
 
 Donde vigila:
@@ -388,13 +388,13 @@ def revisar_sellos(raiz):
     h, _ = sellar.hash_stage(raiz)
     rev = sellar.leer_sello(raiz, 'revision.json')
     if rev.get('hash') != h:
-        faltan.append('la revision de seguridad y codigo de este diff (skill revisar-antes-de-commit)'
+        faltan.append('la revision de seguridad y codigo de este diff (skill revisar-antes-de-commit-personal)'
                       + (': el stage cambio despues del sello' if rev else ''))
     pruebas = sellar.leer_sello(raiz, 'pruebas.json')
     for p in sellar.tableros_tocados(raiz, rutas):
         sello = pruebas.get(p) if isinstance(pruebas.get(p), dict) else {}
         if sello.get('huella') != sellar.huella_stage(raiz, p):
-            faltan.append(f'la prueba en el navegador de {p} (skill probar-tablero)'
+            faltan.append(f'la prueba en el navegador de {p} (skill probar-tablero-personal)'
                           + (': lo que esta en stage no es lo que se probo' if sello else ''))
     if faltan:
         return ('Commit detenido. Falta: ' + '; '.join(faltan) + '. Corre lo que falta y vuelve a hacer '
@@ -460,11 +460,11 @@ def _decidir(comando, cwd, vigilada, apunta_aqui, bash=True):
         if problema == 'dry':
             continue
         if problema:
-            raise Rechazo(f'El commit {problema}. Haz git add de lo que va, corre /revisar-antes-de-commit '
+            raise Rechazo(f'El commit {problema}. Haz git add de lo que va, corre /revisar-antes-de-commit-personal '
                           'y commitea solo con -m.')
         if hubo_stage:
             raise Rechazo('El comando cambia el stage y commitea en el mismo paso: el hook solo ve el stage '
-                          'de antes. Haz el git add, sella con /revisar-antes-de-commit y corre el commit aparte.')
+                          'de antes. Haz el git add, sella con /revisar-antes-de-commit-personal y corre el commit aparte.')
         motivo = revisar_sellos(raiz)
         if motivo:
             raise Rechazo(motivo)
@@ -595,12 +595,12 @@ def self_test():
         sh(r, 'add', '.')
         sella(r, 'revision')
         m = D('git commit -m "t"') or ''
-        casos.append(('tablero sin prueba se niega', 'probar-tablero' in m and 'revision' not in m))
+        casos.append(('tablero sin prueba se niega', 'probar-tablero-personal' in m and 'revision' not in m))
         sella(r, 'pruebas', 'T')
         casos.append(('tablero probado y revisado pasa', D('git commit -m "t"') is None))
         escribe(r, 'T/data/dashboard.json', '{"a": 1}\n'); sh(r, 'add', '.')
         sella(r, 'revision')
-        casos.append(('datos cambiaron: prueba vencida', niega('git commit -m "t"', 'probar-tablero')))
+        casos.append(('datos cambiaron: prueba vencida', niega('git commit -m "t"', 'probar-tablero-personal')))
         sella(r, 'pruebas', 'T')
         casos.append(('prueba de nuevo y pasa', D('git commit -m "t"') is None))
         escribe(r, 'T/app.js', 'let a = 2;\n')
@@ -611,7 +611,7 @@ def self_test():
         escribe(r, 'tableros/Logística/index.html', '<html></html>\n')
         sh(r, 'add', 'tableros')
         sella(r, 'revision')
-        casos.append(('tablero con acento pide prueba', niega('git commit -m "l"', 'probar-tablero')))
+        casos.append(('tablero con acento pide prueba', niega('git commit -m "l"', 'probar-tablero-personal')))
         sh(r, 'reset', '-q')
 
         escribe(r, 'etl/E/main.py', 'print(1)\n'); sh(r, 'add', 'etl/E')
@@ -654,7 +654,7 @@ def self_test():
         casos.append(('global: carpeta sin git pasa', G('git status', afuera) is None))
         escribe(r, 'T/app.js', 'let a = 3;\n'); sh(r, 'add', '.')
         sella(r, 'revision')
-        casos.append(('global: tablero sin prueba se niega', 'probar-tablero' in (G('git commit -m t', r) or '')))
+        casos.append(('global: tablero sin prueba se niega', 'probar-tablero-personal' in (G('git commit -m t', r) or '')))
         casos.append(('global: backticks desde fuera se niegan',
                       G(f'echo `git -C "{r}" commit -am x`', afuera) is not None))
         casos.append(('git commit-tree no es commit', D('git commit-tree HEAD^{tree} -m x') is None))
@@ -662,7 +662,7 @@ def self_test():
         sella(r, 'pruebas', 'T')
         escribe(r, 'T/pages/p.js', 'let p = 1;\n'); sh(r, 'add', 'T/pages')
         sella(r, 'revision')
-        casos.append(('subcarpeta del tablero pide prueba', niega('git commit -m p', 'probar-tablero')))
+        casos.append(('subcarpeta del tablero pide prueba', niega('git commit -m p', 'probar-tablero-personal')))
         sh(r, 'reset', '-q')
         escribe(r, 'T/docs/PRD.md', 'prd\n'); sh(r, 'add', 'T/docs')
         sella(r, 'revision')
@@ -670,7 +670,7 @@ def self_test():
         sh(r, 'reset', '-q')
         sh(r, 'mv', 'T/app.js', 'scripts/app.js')
         sella(r, 'revision')
-        casos.append(('git mv fuera del tablero pide prueba', niega('git commit -m mv', 'probar-tablero')))
+        casos.append(('git mv fuera del tablero pide prueba', niega('git commit -m mv', 'probar-tablero-personal')))
         sh(r, 'mv', 'scripts/app.js', 'T/app.js')
         escribe(r, 'G/index.html', '<html>grupo</html>\n')
         escribe(r, 'G/S/index.html', '<html></html>\n'); escribe(r, 'G/S/app.js', 'let s = 1;\n')

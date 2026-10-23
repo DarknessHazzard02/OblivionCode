@@ -1,5 +1,5 @@
 ---
-name: revisar-antes-de-commit
+name: revisar-antes-de-commit-personal
 description: Revisión de seguridad y de código del diff en stage antes de un commit en los repos personales (BI_DataNexus, OblivionCode) - lanza en paralelo los agentes revisor-seguridad-personal y revisor-codigo-personal, junta solo hallazgos con confianza de 80 o más, y si no hay bloqueantes sella la revisión para que el commit pase. Úsala SIEMPRE antes de un git commit en un repo personal, cuando el hook exigir_antes_de_commit niegue un commit por falta de revisión, o cuando se pida "revisa antes de commitear", "revisa el diff" o "revisa lo que voy a subir". También sirve sobre archivos completos (modo archivos) para validar un tablero o un proyecto que no tiene diff. No reemplaza al revisor-seguridad del equipo en repos de la empresa.
 ---
 
@@ -60,7 +60,7 @@ El commit manual en su terminal siempre está disponible: el hook es solo del as
 
 ## 6. Orden con el hook y el candado
 
-`git add` → esta skill (sella) → `probar-tablero` si el stage toca un tablero (sella) → `git commit -m`
+`git add` → esta skill (sella) → `probar-tablero-personal` si el stage toca un tablero (sella) → `git commit -m`
 **en un comando aparte**. El hook niega `git add … && git commit`, `-a`, `-i`, `-o`, `-p` y rutas sueltas:
 todos commitean algo distinto del stage sellado.
 El hook `exigir_antes_de_commit.py` compara los sellos con el stage **antes** de que corra git; luego

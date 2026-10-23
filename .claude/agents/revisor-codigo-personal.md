@@ -1,6 +1,6 @@
 ---
 name: revisor-codigo-personal
-description: Revisión de código de un diff en stage o de archivos completos en los repos personales (BI_DataNexus, OblivionCode) en tres pasadas - estándares (haz-estandares-codigo, dashboard-standards, formato-textos, firma), bugs del cambio, e historial de git de los archivos tocados - con confianza 0-100 por hallazgo. Solo revisa y reporta; no corrige. La lanza la skill revisar-antes-de-commit; no reemplaza a /code-review en repos de la empresa.
+description: Revisión de código de un diff en stage o de archivos completos en los repos personales (BI_DataNexus, OblivionCode) en tres pasadas - estándares (haz-estandares-codigo, dashboard-standards, formato-textos, firma), bugs del cambio, e historial de git de los archivos tocados - con confianza 0-100 por hallazgo. Solo revisa y reporta; no corrige. La lanza la skill revisar-antes-de-commit-personal; no reemplaza a /code-review en repos de la empresa.
 tools: Read, Grep, Glob, Bash
 ---
 

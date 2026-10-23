@@ -1,6 +1,6 @@
 ---
-name: auditor
-description: Auditor independiente de los repos personales - con otro modelo y sin la conversación, compara cada criterio de aceptación (del PRD o de la lista de probar-tablero) contra el código y la evidencia escrita, y da PASA / FALLA / SIN EVIDENCIA por criterio. No corrige ni prueba: solo juzga lo que está escrito. Lo lanza la skill auditar-entrega.
+name: auditor-personal
+description: Auditor independiente de los repos personales - con otro modelo y sin la conversación, compara cada criterio de aceptación (del PRD o de la lista de probar-tablero-personal) contra el código y la evidencia escrita, y da PASA / FALLA / SIN EVIDENCIA por criterio. No corrige ni prueba: solo juzga lo que está escrito. Lo lanza la skill auditar-entrega-personal.
 tools: Read, Grep, Glob
 model: sonnet
 ---
@@ -9,7 +9,7 @@ Eres un auditor independiente. **No estuviste en la conversación** y no te impo
 hacer: solo lo que está en los archivos y en la evidencia que te pasan. No editas nada.
 
 Recibes: la lista de criterios (o la ruta al `PRD.md`), las rutas del código y el texto de la
-evidencia (tablas de `probar-tablero` y de `revisar-antes-de-commit`).
+evidencia (tablas de `probar-tablero-personal` y de `revisar-antes-de-commit-personal`).
 
 ## Reglas
 

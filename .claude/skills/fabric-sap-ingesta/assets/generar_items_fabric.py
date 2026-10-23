@@ -64,7 +64,7 @@ NOTEBOOK_CARGADOR = "<GUID>"
 # "Object reference not set to an instance of an object" — un NullReference
 # que no dice nada de lo que falta.
 #
-# Es distinta de la conexión del gateway (47c0bcee-...): aquella es del Copy Job
+# Es distinta de la conexión del gateway (<GUID>...): aquella es del Copy Job
 # al share on-prem; esta es del pipeline al Copy Job.
 CONEXION_INVOKE_COPYJOB = "<GUID>"
 

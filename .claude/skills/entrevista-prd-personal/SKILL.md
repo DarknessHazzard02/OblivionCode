@@ -1,6 +1,6 @@
 ---
-name: entrevista-prd
-description: Entrevista a Haz sobre una idea, tablero, ETL o cambio de los repos personales (BI_DataNexus, OblivionCode) hasta que no quede ninguna decisión abierta - una pregunta a la vez, en rondas según qué depende de qué, y con desacuerdo cuando algo no cuadra. No escribe archivos; al terminar se pasa a escribir-prd. Úsala SIEMPRE que se diga "entrevístame", "grill me", "hazme preguntas antes", "quiero armar un PRD", "tengo una idea de tablero" o "antes de empezar pregúntame", y al iniciar un proyecto nuevo en Main_Dev_Projects antes de nuevo-proyecto. No es para trabajo de la empresa.
+name: entrevista-prd-personal
+description: Entrevista a Haz sobre una idea, tablero, ETL o cambio de los repos personales (BI_DataNexus, OblivionCode) hasta que no quede ninguna decisión abierta - una pregunta a la vez, en rondas según qué depende de qué, y con desacuerdo cuando algo no cuadra. No escribe archivos; al terminar se pasa a escribir-prd-personal. Úsala SIEMPRE que se diga "entrevístame", "grill me", "hazme preguntas antes", "quiero armar un PRD", "tengo una idea de tablero" o "antes de empezar pregúntame", y al iniciar un proyecto nuevo en Main_Dev_Projects antes de nuevo-proyecto. No es para trabajo de la empresa.
 ---
 
 # Entrevista para PRD
@@ -31,9 +31,9 @@ El objetivo es **llegar a decisiones que Haz pueda defender**, no producir un pl
 ## No usar en modo plan
 
 El modo plan empuja a cerrar con un plan y corta la entrevista. Si está activo, avísalo y sigue
-preguntando; el plan va después, con `escribir-prd`.
+preguntando; el plan va después, con `escribir-prd-personal`.
 
 ## Al cerrar
 
-Resume en una tabla `Tema | Decisión | Pendiente (quién)` y ofrece `escribir-prd`. No escribe
+Resume en una tabla `Tema | Decisión | Pendiente (quién)` y ofrece `escribir-prd-personal`. No escribe
 ningún archivo por sí misma.
