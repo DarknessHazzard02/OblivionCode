@@ -1,0 +1,345 @@
+{
+  "properties": {
+    "activities": [
+      {
+        "type": "SetVariable",
+        "typeProperties": {
+          "variableName": "START_TIME_1",
+          "value": {
+            "value": "@utcNow()",
+            "type": "Expression"
+          }
+        },
+        "policy": {
+          "secureInput": false,
+          "secureOutput": false
+        },
+        "name": "START_TIME_1",
+        "dependsOn": []
+      },
+      {
+        "type": "InvokeCopyJob",
+        "typeProperties": {
+          "copyJobId": "<logical-id-90>",
+          "workspaceId": "<workspace-id-02>"
+        },
+        "externalReferences": {
+          "connection": "<connection-id-10>"
+        },
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30,
+          "secureInput": false,
+          "secureOutput": false
+        },
+        "name": "Copy job1",
+        "dependsOn": [
+          {
+            "activity": "START_TIME_1",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "TridentNotebook",
+        "typeProperties": {
+          "notebookId": "<logical-id-89>",
+          "workspaceId": "<workspace-id-02>",
+          "parameters": {
+            "target_table": {
+              "value": "SAP_ZMM_MD04_TEST",
+              "type": "string"
+            },
+            "write_mode": {
+              "value": "snapshot",
+              "type": "string"
+            }
+          }
+        },
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30,
+          "secureInput": false,
+          "secureOutput": false
+        },
+        "name": "Notebook1",
+        "dependsOn": [
+          {
+            "activity": "Copy job1",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "SetVariable",
+        "typeProperties": {
+          "variableName": "END_TIME_1",
+          "value": {
+            "value": "@utcNow()",
+            "type": "Expression"
+          }
+        },
+        "policy": {
+          "secureInput": false,
+          "secureOutput": false
+        },
+        "name": "END_TIME_1",
+        "dependsOn": [
+          {
+            "activity": "Notebook1",
+            "dependencyConditions": [
+              "Completed"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "SetVariable",
+        "typeProperties": {
+          "variableName": "STATUS_1",
+          "value": {
+            "value": "@activity('Notebook1').status",
+            "type": "Expression"
+          }
+        },
+        "policy": {
+          "secureInput": false,
+          "secureOutput": false
+        },
+        "name": "STATUS_1",
+        "dependsOn": [
+          {
+            "activity": "END_TIME_1",
+            "dependencyConditions": [
+              "Completed"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "TridentNotebook",
+        "typeProperties": {
+          "notebookId": "<item-id-01>",
+          "workspaceId": "<workspace-id-02>",
+          "parameters": {
+            "PIPELINE_NAME": {
+              "value": {
+                "value": "@pipeline().Pipeline",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "DATAFLOW_NAME": {
+              "value": "ZMM_MD04",
+              "type": "string"
+            },
+            "DURATION": {
+              "value": {
+                "value": "@string(activity('Notebook1').output.executionDuration)",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "START_TIME": {
+              "value": {
+                "value": "@variables('START_TIME_1')",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "END_TIME": {
+              "value": {
+                "value": "@variables('END_TIME_1')",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "STATUS": {
+              "value": {
+                "value": "@variables('STATUS_1')",
+                "type": "Expression"
+              },
+              "type": "string"
+            }
+          }
+        },
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30,
+          "secureInput": false,
+          "secureOutput": false
+        },
+        "name": "Notebook2",
+        "dependsOn": [
+          {
+            "activity": "STATUS_1",
+            "dependencyConditions": [
+              "Completed"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "Office365Email",
+        "typeProperties": {
+          "body": "<p>Fallo el Copy Job de ingesta (conexion <strong>ZMM_MD04_COPYJOB_CONEXION</strong>).<br>\nError: @{activity('Copy job1').error.message}</p>\n<p>Los siguientes dashboards no se actualizaran con la info mas reciente:<br>\n<strong>Confirmaciones</strong><br>\n<strong>LA vs PGI</strong><br>\ny cualquier otro dashboard que utilice esta conexion. Por favor arreglar la conexion ZMM_MD04_COPYJOB_CONEXION.</p>",
+          "to": "<<CORREOS_ALERTA>>",
+          "subject": {
+            "value": "@concat('❌ ATENCION: fallo la conexion del ZMM_MD04 (Copy Job) [', formatDateTime(utcNow(), 'yyyy-MM-dd HH:mm'), ']')",
+            "type": "Expression"
+          }
+        },
+        "externalReferences": {
+          "connection": "<connection-id-11>"
+        },
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30,
+          "secureInput": false,
+          "secureOutput": false
+        },
+        "name": "Office365Email1",
+        "dependsOn": [
+          {
+            "activity": "Copy job1",
+            "dependencyConditions": [
+              "Failed"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "Office365Email",
+        "typeProperties": {
+          "body": "<p>El proceso de carga ZMM_MD04 finalizo correctamente.</p>\n<p><strong>Resumen:</strong> @{json(activity('Notebook1').output.result.exitValue).summary}</p>\n<p>Status: <strong>@{json(activity('Notebook1').output.result.exitValue).status_global}</strong><br>\nTabla: @{json(activity('Notebook1').output.result.exitValue).tabla}<br>\nModo: @{json(activity('Notebook1').output.result.exitValue).modo}<br>\nArchivos procesados: @{json(activity('Notebook1').output.result.exitValue).archivos_procesados}<br>\nFilas cargadas: @{json(activity('Notebook1').output.result.exitValue).filas_cargadas_total}<br>\nFilas rechazadas (cuarentena): @{json(activity('Notebook1').output.result.exitValue).filas_rechazadas_total}<br>\nStock negativo: @{json(activity('Notebook1').output.result.exitValue).stock_negativos_total}<br>\nDuracion: @{json(activity('Notebook1').output.result.exitValue).duracion_segundos} s</p>\n<p>Detalle completo (JSON):<br>\n@{activity('Notebook1').output.result.exitValue}</p>",
+          "to": "<<CORREOS_ALERTA>>",
+          "subject": {
+            "value": "@concat('✅ Success in ZMM_MD04 data flow [', formatDateTime(utcNow(), 'yyyy-MM-dd HH:mm'), '] - ', json(activity('Notebook1').output.result.exitValue).status_global)",
+            "type": "Expression"
+          }
+        },
+        "externalReferences": {
+          "connection": "<connection-id-11>"
+        },
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30,
+          "secureInput": false,
+          "secureOutput": false
+        },
+        "name": "Office365Email2",
+        "state": "Inactive",
+        "onInactiveMarkAs": "Succeeded",
+        "dependsOn": [
+          {
+            "activity": "Notebook1",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "TridentNotebook",
+        "typeProperties": {
+          "notebookId": "<logical-id-88>",
+          "workspaceId": "<workspace-id-02>",
+          "parameters": {
+            "workspace_id": {
+              "value": "<workspace-id>",
+              "type": "string"
+            },
+            "lakehouse_id": {
+              "value": "<lakehouse-id>",
+              "type": "string"
+            },
+            "source_folder": {
+              "value": "Files/SAP/ZMM_MD04/ZMM_MD04 RAW",
+              "type": "string"
+            },
+            "target_table": {
+              "value": "sap_zmm_md04_vigente",
+              "type": "string"
+            },
+            "log_table": {
+              "value": "SAP_ZMM_MD04_LOG",
+              "type": "string"
+            },
+            "date_format_in": {
+              "value": "M/d/yyyy",
+              "type": "string"
+            },
+            "write_mode": {
+              "value": "snapshot",
+              "type": "string"
+            },
+            "history_desde": {
+              "value": "2026-07-01",
+              "type": "string"
+            },
+            "incluir_stock_negativo": {
+              "value": true,
+              "type": "bool"
+            },
+            "force_reload": {
+              "value": false,
+              "type": "bool"
+            },
+            "aplicar_exclusiones": {
+              "value": false,
+              "type": "bool"
+            },
+            "permitir_perder_historia": {
+              "value": false,
+              "type": "bool"
+            },
+            "mostrar_muestra_negativos": {
+              "value": "10",
+              "type": "int"
+            },
+            "fechas_como_texto": {
+              "value": false,
+              "type": "bool"
+            }
+          }
+        },
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30,
+          "secureInput": false,
+          "secureOutput": false
+        },
+        "name": "Cargar ZMM completo",
+        "dependsOn": [
+          {
+            "activity": "Copy job1",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          }
+        ]
+      }
+    ],
+    "variables": {
+      "START_TIME_1": {
+        "type": "String"
+      },
+      "END_TIME_1": {
+        "type": "String"
+      },
+      "STATUS_1": {
+        "type": "String"
+      }
+    }
+  }
+}

@@ -1,0 +1,98 @@
+{
+  "properties": {
+    "activities": [
+      {
+        "name": "Notebook1",
+        "type": "TridentNotebook",
+        "state": "Inactive",
+        "onInactiveMarkAs": "Succeeded",
+        "dependsOn": [],
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30,
+          "secureOutput": false,
+          "secureInput": false
+        },
+        "typeProperties": {
+          "notebookId": "<item-id-03>",
+          "workspaceId": "<workspace-id-03>",
+          "parameters": {
+            "PIPELINE_NAME": {
+              "value": {
+                "value": "@pipeline().PipelineName",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "DATAFLOW_NAME": {
+              "value": {
+                "value": "'ZMM_MD04'",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "DURATION": {
+              "value": {
+                "value": "@activity('ZMM_MD04_DATAFLOW').output",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "START_TIME": {
+              "value": {
+                "value": "@variables('START_TIME_1')",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "END_TIME": {
+              "value": {
+                "value": "@variables('END_TIME_1')",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "STATUS": {
+              "value": {
+                "value": "@variables('STATUS_1')",
+                "type": "Expression"
+              },
+              "type": "string"
+            }
+          }
+        }
+      },
+      {
+        "name": "Copy job_62e",
+        "type": "InvokeCopyJob",
+        "state": "Inactive",
+        "onInactiveMarkAs": "Succeeded",
+        "dependsOn": [],
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30,
+          "secureOutput": false,
+          "secureInput": false
+        },
+        "typeProperties": {
+          "copyJobId": "<item-id-06>",
+          "workspaceId": "<workspace-id-03>",
+          "operationType": "RunCopyJob"
+        }
+      }
+    ],
+    "variables": {
+      "START_TIME_1": {
+        "type": "String"
+      },
+      "END_TIME_1": {
+        "type": "String"
+      },
+      "STATUS_1": {
+        "type": "String"
+      }
+    }
+  }
+}

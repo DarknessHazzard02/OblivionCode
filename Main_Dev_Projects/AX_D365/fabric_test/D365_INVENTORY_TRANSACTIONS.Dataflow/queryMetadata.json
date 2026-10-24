@@ -1,0 +1,9 @@
+{
+  "formatVersion": "202502",
+  "computeEngineSettings": {},
+  "name": "D365_INVENTORY_TRANSACTIONS",
+  "queryGroups": [],
+  "documentLocale": "en-US",
+  "queriesMetadata": {},
+  "connections": []
+}

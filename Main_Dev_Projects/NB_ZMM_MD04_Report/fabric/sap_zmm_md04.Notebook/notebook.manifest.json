@@ -1,0 +1,107 @@
+[
+  {
+    "raw": "# Fabric notebook source\n\n"
+  },
+  {
+    "raw": "# METADATA ********************\n\n# META {\n# META   \"kernel_info\": {\n# META     \"name\": \"synapse_pyspark\"\n# META   }\n# META }\n\n"
+  },
+  {
+    "header": "# MARKDOWN ********************",
+    "prefix": "#",
+    "bare": [
+      0,
+      6,
+      7
+    ],
+    "short": [],
+    "file": "cells/01.md"
+  },
+  {
+    "header": "# MARKDOWN ********************",
+    "prefix": "#",
+    "bare": [
+      0,
+      16,
+      17
+    ],
+    "short": [],
+    "file": "cells/03.md"
+  },
+  {
+    "header": "# PARAMETERS CELL ********************",
+    "file": "cells/04.py"
+  },
+  {
+    "raw": "# METADATA ********************\n\n# META {\n# META   \"language\": \"python\",\n# META   \"language_group\": \"synapse_pyspark\"\n# META }\n\n"
+  },
+  {
+    "header": "# CELL ********************",
+    "file": "cells/05.py"
+  },
+  {
+    "raw": "# METADATA ********************\n\n# META {\n# META   \"language\": \"python\",\n# META   \"language_group\": \"synapse_pyspark\"\n# META }\n\n"
+  },
+  {
+    "raw": "# METADATA ********************\n\n# META {\n# META   \"language\": \"python\",\n# META   \"language_group\": \"synapse_pyspark\"\n# META }\n\n"
+  },
+  {
+    "header": "# CELL ********************",
+    "file": "cells/06.py"
+  },
+  {
+    "raw": "# METADATA ********************\n\n# META {\n# META   \"language\": \"python\",\n# META   \"language_group\": \"synapse_pyspark\"\n# META }\n\n"
+  },
+  {
+    "header": "# CELL ********************",
+    "file": "cells/07.py"
+  },
+  {
+    "raw": "# METADATA ********************\n\n# META {\n# META   \"language\": \"python\",\n# META   \"language_group\": \"synapse_pyspark\"\n# META }\n\n"
+  },
+  {
+    "header": "# CELL ********************",
+    "file": "cells/08.py"
+  },
+  {
+    "raw": "# METADATA ********************\n\n# META {\n# META   \"language\": \"python\",\n# META   \"language_group\": \"synapse_pyspark\"\n# META }\n\n"
+  },
+  {
+    "header": "# CELL ********************",
+    "file": "cells/09.py"
+  },
+  {
+    "raw": "# METADATA ********************\n\n# META {\n# META   \"language\": \"python\",\n# META   \"language_group\": \"synapse_pyspark\"\n# META }\n\n"
+  },
+  {
+    "header": "# CELL ********************",
+    "file": "cells/10.py"
+  },
+  {
+    "raw": "# METADATA ********************\n\n# META {\n# META   \"language\": \"python\",\n# META   \"language_group\": \"synapse_pyspark\"\n# META }\n\n"
+  },
+  {
+    "header": "# CELL ********************",
+    "file": "cells/11.py"
+  },
+  {
+    "raw": "# METADATA ********************\n\n# META {\n# META   \"language\": \"python\",\n# META   \"language_group\": \"synapse_pyspark\"\n# META }\n\n"
+  },
+  {
+    "header": "# CELL ********************",
+    "file": "cells/12.py"
+  },
+  {
+    "raw": "# METADATA ********************\n\n# META {\n# META   \"language\": \"python\",\n# META   \"language_group\": \"synapse_pyspark\"\n# META }\n\n"
+  },
+  {
+    "header": "# MARKDOWN ********************",
+    "prefix": "#",
+    "bare": [
+      0,
+      17,
+      18
+    ],
+    "short": [],
+    "file": "cells/13.md"
+  }
+]

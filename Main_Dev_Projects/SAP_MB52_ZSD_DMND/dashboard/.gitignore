@@ -1,0 +1,9 @@
+# Datos reales: nunca al repo. Viven en OneLake (Files/MB52_ZSD_DMND).
+/source/
+/data_real/
+/config.local.json
+*.csv
+!demo/source/*.csv
+*.xlsx
+*.parquet
+__pycache__/

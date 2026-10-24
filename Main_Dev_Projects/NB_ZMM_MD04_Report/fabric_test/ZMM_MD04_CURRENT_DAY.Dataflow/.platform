@@ -1,0 +1,12 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "Dataflow",
+    "displayName": "ZMM_MD04_CURRENT_DAY",
+    "description": "ESTE DATAFLOW CORRE UNICAMENTE EL ARCHIVO DEL DIA ACTUAL DEL ZMM_MD04, DEBE HACER APPEND A LA TABLA SAP_ZMM_MD04"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "<logical-id-93>"
+  }
+}

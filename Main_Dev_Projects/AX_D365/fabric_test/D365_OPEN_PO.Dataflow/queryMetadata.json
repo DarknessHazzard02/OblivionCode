@@ -1,0 +1,21 @@
+{
+  "formatVersion": "202502",
+  "computeEngineSettings": {},
+  "name": "D365_OPEN_PO",
+  "queryGroups": [],
+  "documentLocale": "en-US",
+  "gatewayObjectId": "<connection-id-03>",
+  "queriesMetadata": {
+    "<query-id-22>": {
+      "queryId": "<query-id-28>",
+      "queryName": "<query-id-22>"
+    }
+  },
+  "connections": [
+    {
+      "path": "dsn=D365_EXPORT_PRD",
+      "kind": "Odbc",
+      "connectionId": "{\"ClusterId\":\"<connection-id-03>\",\"DatasourceId\":\"<connection-id-01>\"}"
+    }
+  ]
+}

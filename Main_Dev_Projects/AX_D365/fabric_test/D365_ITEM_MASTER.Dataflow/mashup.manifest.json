@@ -1,0 +1,11 @@
+[
+  {
+    "raw": "[StagingDefinition = [Kind = \"FastCopy\"]]\r\nsection Section1;\r\n[DataDestinations = {[Definition = [Kind = \"Reference\", QueryName = \"<query-id-22>_DataDestination\", IsNewTarget = true], Settings = [Kind = \"Automatic\", TypeSettings = [Kind = \"Table\"]]]}]\r\n"
+  },
+  {
+    "file": "queries/query-id-22.pq"
+  },
+  {
+    "file": "queries/query-id-22_DataDestination.pq"
+  }
+]

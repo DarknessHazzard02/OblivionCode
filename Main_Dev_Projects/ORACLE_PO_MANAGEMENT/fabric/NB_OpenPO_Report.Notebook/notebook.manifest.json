@@ -1,0 +1,15 @@
+[
+  {
+    "raw": "# Fabric notebook source\n\n"
+  },
+  {
+    "raw": "# METADATA ********************\n\n# META {\n# META   \"kernel_info\": {\n# META     \"name\": \"synapse_pyspark\"\n# META   },\n# META   \"dependencies\": {\n# META     \"lakehouse\": {\n# META       \"default_lakehouse\": \"<lakehouse-id>\",\n# META       \"default_lakehouse_name\": \"CMA_BI_Lake\",\n# META       \"default_lakehouse_workspace_id\": \"<workspace-id>\",\n# META       \"known_lakehouses\": [\n# META         {\n# META           \"id\": \"<lakehouse-id>\"\n# META         }\n# META       ]\n# META     },\n# META     \"warehouse\": {}\n# META   }\n# META }\n\n"
+  },
+  {
+    "header": "# CELL ********************",
+    "file": "cells/01.py"
+  },
+  {
+    "raw": "# METADATA ********************\n\n# META {\n# META   \"language\": \"python\",\n# META   \"language_group\": \"synapse_pyspark\"\n# META }\n"
+  }
+]

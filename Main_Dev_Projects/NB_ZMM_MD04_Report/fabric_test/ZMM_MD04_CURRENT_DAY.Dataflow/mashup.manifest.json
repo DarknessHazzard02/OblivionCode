@@ -1,0 +1,32 @@
+[
+  {
+    "raw": "[StagingDefinition = [Kind = \"FastCopy\"]]\r\nsection Section1;\r\n[DataDestinations = {[Definition = [Kind = \"Reference\", QueryName = \"ZMM_MD04_DataDestination\", IsNewTarget = false], Settings = [Kind = \"Manual\", AllowCreation = false, ColumnSettings = [Mappings = {[SourceColumnName = \"Centro\", DestinationColumnName = \"Centro\"], [SourceColumnName = \"Proveedor\", DestinationColumnName = \"Proveedor\"], [SourceColumnName = \"Nombre del Proveedor\", DestinationColumnName = \"Nombre del Proveedor\"], [SourceColumnName = \"Planif. Nec\", DestinationColumnName = \"Planif. Nec\"], [SourceColumnName = \"Material\", DestinationColumnName = \"Material\"], [SourceColumnName = \"Material Description\", DestinationColumnName = \"Material Description\"], [SourceColumnName = \"Material Proveedor\", DestinationColumnName = \"Material Proveedor\"], [SourceColumnName = \"Ind. ABC\", DestinationColumnName = \"Ind. ABC\"], [SourceColumnName = \"Pedido\", DestinationColumnName = \"Pedido\"], [SourceColumnName = \"Posición\", DestinationColumnName = \"Posición\"], [SourceColumnName = \"Unidad Med\", DestinationColumnName = \"Unidad Med\"], [SourceColumnName = \"Tipo Confirmacion\", DestinationColumnName = \"Tipo Confirmacion\"], [SourceColumnName = \"Referencia\", DestinationColumnName = \"Referencia\"], [SourceColumnName = \"Fecha Reprog\", DestinationColumnName = \"Fecha Reprog\"], [SourceColumnName = \"Estrategia Lib\", DestinationColumnName = \"Estrategia Lib\"], [SourceColumnName = \"Fecha Entrada Necesidad\", DestinationColumnName = \"Fecha Entrada Necesidad\"], [SourceColumnName = \"Status Msg\", DestinationColumnName = \"Status Msg\"], [SourceColumnName = \"Fecha creación OC\", DestinationColumnName = \"Fecha creación OC\"], [SourceColumnName = \"Fecha entrega PO\", DestinationColumnName = \"Fecha entrega PO\"], [SourceColumnName = \"Fecha Embarque AB\", DestinationColumnName = \"Fecha Embarque AB\"], [SourceColumnName = \"Fecha Embarque LA\", DestinationColumnName = \"Fecha Embarque LA\"], [SourceColumnName = \"Cantidad\", DestinationColumnName = \"Cantidad\"], [SourceColumnName = \"Precio Neto\", DestinationColumnName = \"Precio Neto\"], [SourceColumnName = \"Por\", DestinationColumnName = \"Por\"], [SourceColumnName = \"Mon\", DestinationColumnName = \"Mon\"], [SourceColumnName = \"Stock Centro Disp\", DestinationColumnName = \"Stock Centro Disp\"], [SourceColumnName = \"Ubicación\", DestinationColumnName = \"Ubicación\"], [SourceColumnName = \"Family\", DestinationColumnName = \"Family\"], [SourceColumnName = \"ROP\", DestinationColumnName = \"ROP\"], [SourceColumnName = \"Plazo Entrega Previo\", DestinationColumnName = \"Plazo Entrega Previo\"], [SourceColumnName = \"Tiempo Tratamiento EM\", DestinationColumnName = \"Tiempo Tratamiento EM\"], [SourceColumnName = \"Aging\", DestinationColumnName = \"Aging\"], [SourceColumnName = \"Status\", DestinationColumnName = \"Status\"], [SourceColumnName = \"Reschedule Days\", DestinationColumnName = \"Reschedule Days\"], [SourceColumnName = \"Reschedule\", DestinationColumnName = \"Reschedule\"], [SourceColumnName = \"Excepción\", DestinationColumnName = \"Excepción\"], [SourceColumnName = \"EXECUTION_TIME\", DestinationColumnName = \"EXECUTION_TIME\"], [SourceColumnName = \"EXECUTION_DATE\", DestinationColumnName = \"EXECUTION_DATE\"], [SourceColumnName = \"DATA_BASE\", DestinationColumnName = \"DATA_BASE\"]}], DynamicSchema = false, UpdateMethod = [Kind = \"Append\"], TypeSettings = [Kind = \"Table\"]]]}]\r\n"
+  },
+  {
+    "file": "queries/ZMM_MD04.pq"
+  },
+  {
+    "file": "queries/Sample_file.pq"
+  },
+  {
+    "file": "queries/Parameter.pq"
+  },
+  {
+    "file": "queries/Transform_Sample_file.pq"
+  },
+  {
+    "file": "queries/Transform_file.pq"
+  },
+  {
+    "file": "queries/Aging.pq"
+  },
+  {
+    "file": "queries/NavigationQuery.pq"
+  },
+  {
+    "file": "queries/ZMM_MD04_2.pq"
+  },
+  {
+    "file": "queries/ZMM_MD04_DataDestination.pq"
+  }
+]

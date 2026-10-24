@@ -1,0 +1,11 @@
+[
+  {
+    "raw": "[StagingDefinition = [Kind = \"FastCopy\"]]\r\nsection Section1;\r\n[DataDestinations = {[Definition = [Kind = \"Reference\", QueryName = \"Odbc_DataDestination\", IsNewTarget = false], Settings = [Kind = \"Manual\", AllowCreation = false, ColumnSettings = [Mappings = {[SourceColumnName = \"DATA_BASE\", DestinationColumnName = \"DATA_BASE\"], [SourceColumnName = \"ORG_CODE\", DestinationColumnName = \"ORG_CODE\"], [SourceColumnName = \"ORG_NAME\", DestinationColumnName = \"ORG_NAME\"], [SourceColumnName = \"DIVISION\", DestinationColumnName = \"DIVISION\"], [SourceColumnName = \"EXECUTION_DATE\", DestinationColumnName = \"EXECUTION_DATE\"], [SourceColumnName = \"EXECUTION_TIME\", DestinationColumnName = \"EXECUTION_TIME\"], [SourceColumnName = \"DELIVERY NUMBER\", DestinationColumnName = \"DELIVERY NUMBER\"], [SourceColumnName = \"PURCHASE ORDER NUMBER\", DestinationColumnName = \"PURCHASE ORDER NUMBER\"], [SourceColumnName = \"WORK ID\", DestinationColumnName = \"WORK ID\"], [SourceColumnName = \"ITEM NUMBER\", DestinationColumnName = \"ITEM NUMBER\"], [SourceColumnName = \"QUANTITY\", DestinationColumnName = \"QUANTITY\"], [SourceColumnName = \"WORK ID STATUS\", DestinationColumnName = \"WORK ID STATUS\"], [SourceColumnName = \"LOCATION\", DestinationColumnName = \"LOCATION\"], [SourceColumnName = \"BATCH NUMBER\", DestinationColumnName = \"BATCH NUMBER\"], [SourceColumnName = \"LICENSE PLATE\", DestinationColumnName = \"LICENSE PLATE\"], [SourceColumnName = \"WORK IN PROCESS\", DestinationColumnName = \"WORK IN PROCESS\"], [SourceColumnName = \"CLOSED WORK\", DestinationColumnName = \"CLOSED WORK\"], [SourceColumnName = \"NAME OF USER\", DestinationColumnName = \"NAME OF USER\"]}], DynamicSchema = false, UpdateMethod = [Kind = \"Append\"], TypeSettings = [Kind = \"Table\"]]]}]\r\n"
+  },
+  {
+    "file": "queries/Odbc.pq"
+  },
+  {
+    "file": "queries/Odbc_DataDestination.pq"
+  }
+]

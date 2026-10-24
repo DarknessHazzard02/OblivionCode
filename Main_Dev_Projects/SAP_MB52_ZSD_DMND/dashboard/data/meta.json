@@ -1,0 +1,104 @@
+{
+ "generated_at": "2026-10-23 22:42",
+ "demo": true,
+ "fuente": "datos inventados (build/generar_contrato.py)",
+ "regla_demanda": "requerimientos",
+ "analysis_date": "2026-10-23",
+ "workable_days_3m": 79,
+ "periodos": {
+  "p1_fin": "2026-11-23",
+  "p2_fin": "2026-12-23",
+  "p3_fin": "2027-01-23"
+ },
+ "counts": {
+  "mb52_filas": 599,
+  "sd48_filas": 1785,
+  "sd48_filas_con_fecha": 1785,
+  "sd48_p_filas": 1715,
+  "materiales": 308,
+  "status": {
+   "Unrestricted": {
+    "Below Rolling 3M Coverage": 71,
+    "No Demand": 72,
+    "Immediate Shortage": 62,
+    "Covered Rolling 3M": 103
+   },
+   "Total_Inventory": {
+    "Below Rolling 3M Coverage": 85,
+    "No Demand": 72,
+    "Immediate Shortage": 48,
+    "Covered Rolling 3M": 103
+   }
+  }
+ },
+ "avisos": {
+  "ubicaciones_sin_mapear": 1,
+  "total_menor_que_unrestricted": 0
+ },
+ "filters": {
+  "status": [
+   {
+    "valor": "Immediate Shortage",
+    "rol": "critical",
+    "es": "Faltante Inmediato",
+    "en": "Immediate Shortage"
+   },
+   {
+    "valor": "Below Rolling 3M Coverage",
+    "rol": "warn",
+    "es": "Bajo Cobertura 3M",
+    "en": "Below Rolling 3M Coverage"
+   },
+   {
+    "valor": "Covered Rolling 3M",
+    "rol": "ok",
+    "es": "Cubierto 3M",
+    "en": "Covered Rolling 3M"
+   },
+   {
+    "valor": "No Demand",
+    "rol": "neutral",
+    "es": "Sin Demanda",
+    "en": "No Demand"
+   }
+  ],
+  "ubicaciones": [
+   "Almacen",
+   "Blank",
+   "Blocked Material",
+   "Ext Almacen",
+   "FG Almacen",
+   "Inv Adjustment",
+   "Piso Prod",
+   "Quality",
+   "Scrap"
+  ]
+ },
+ "fuentes": [
+  {
+   "nombre": "Inventario por almacén",
+   "nombre_en": "Stock by storage location",
+   "sistema": "SAP",
+   "tabla": "inventario_demo.csv",
+   "archivo": "inventario_demo.csv",
+   "extraido_el": "2026-10-23",
+   "actualizado": "2026-10-23 22:42",
+   "dato_al": "2026-10-23",
+   "filas": 599,
+   "falta": false
+  },
+  {
+   "nombre": "Demanda",
+   "nombre_en": "Demand",
+   "sistema": "SAP",
+   "tabla": "demanda_demo.csv",
+   "archivo": "demanda_demo.csv",
+   "extraido_el": "2026-10-23",
+   "actualizado": "2026-10-23 22:42",
+   "dato_al": "2026-10-23",
+   "filas": 1785,
+   "falta": false
+  }
+ ],
+ "pestanas_sin_actualizar": {}
+}

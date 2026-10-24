@@ -1,0 +1,86 @@
+{
+  "properties": {
+    "jobMode": "CDC",
+    "source": {
+      "type": "DelimitedText",
+      "connectionSettings": {
+        "type": "FileServer",
+        "externalReferences": {
+          "connection": "<connection-id-09>"
+        }
+      }
+    },
+    "destination": {
+      "type": "DelimitedText",
+      "connectionSettings": {
+        "type": "Lakehouse",
+        "typeProperties": {
+          "workspaceId": "<workspace-id-02>",
+          "artifactId": "<lakehouse-id-02>",
+          "rootFolder": "Files"
+        }
+      }
+    },
+    "policy": {
+      "timeout": "0.12:00:00",
+      "retry": 0
+    }
+  },
+  "activities": [
+    {
+      "id": "<id-01>",
+      "properties": {
+        "source": {
+          "datasetSettings": {
+            "location": {
+              "type": "FileServerLocation",
+              "folderPath": "ZMM_MD04"
+            },
+            "columnDelimiter": "|",
+            "escapeChar": "\\",
+            "firstRowAsHeader": false,
+            "quoteChar": "\""
+          },
+          "changeDataSettings": {
+            "readMethod": "SnapshotPlusIncremental"
+          },
+          "storeSettings": {
+            "recursive": true,
+            "enablePartitionDiscovery": false
+          },
+          "formatSettings": {}
+        },
+        "destination": {
+          "writeBehavior": "Append",
+          "datasetSettings": {
+            "location": {
+              "type": "LakehouseLocation",
+              "folderPath": "SAP/ZMM_MD04/ZMM_MD04 RAW"
+            },
+            "columnDelimiter": "|",
+            "escapeChar": "\\",
+            "firstRowAsHeader": false,
+            "quoteChar": "\""
+          },
+          "storeSettings": {
+            "copyBehavior": "PreserveHierarchy"
+          },
+          "formatSettings": {
+            "fileExtension": ".txt"
+          },
+          "applyVOrder": false
+        },
+        "enableStaging": false,
+        "translator": {
+          "type": "TabularTranslator"
+        },
+        "typeConversionSettings": {
+          "typeConversion": {
+            "allowDataTruncation": true,
+            "treatBooleanAsNumber": false
+          }
+        }
+      }
+    }
+  ]
+}
