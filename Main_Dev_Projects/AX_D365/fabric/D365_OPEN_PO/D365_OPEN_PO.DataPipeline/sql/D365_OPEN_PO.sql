@@ -1,0 +1,32 @@
+-- Made by: Hazzard
+-- D365 purchase order lines (V2 staging) with dates, quantities and delivery address
+SELECT
+    po_line.DEFINITIONGROUP                 AS DATA_BASE,
+    po_line.PURCHASEORDERLINESTATUS,
+    po_line.CONFIRMEDDELIVERYDATE,
+    po_line.CUSTOMERREQUISITIONNUMBER,
+    po_line.REQUESTEDDELIVERYDATE,
+    po_line.DELIVERYADDRESSNAME,
+    po_line.ITEMNUMBER,
+    po_line.LINENUMBER,
+    po_line.LINEDESCRIPTION,
+    po_line.PURCHASEORDERNUMBER,
+    po_line.ORDEREDPURCHASEQUANTITY,
+    po_line.PURCHASEUNITSYMBOL,
+    po_line.CONFIRMEDSHIPPINGDATE,
+    po_line.REQUESTEDSHIPPINGDATE,
+    po_line.DELIVERYADDRESSLOCATIONID,
+    po_line.FORMATTEDDELVERYADDRESS,
+    po_line.DELIVERYADDRESSCITY,
+    po_line.DELIVERYADDRESSCOUNTRYREGIONID,
+    po_line.ORDEREDINVENTORYSTATUSID,
+    po_line.DELIVERYADDRESSSTATEID,
+    po_line.DELIVERYADDRESSSTREET,
+    po_line.INVENTORYLOTID,
+    po_line.PURCHASEREQUISITIONID,
+    po_line.DELIVERYDATE,
+    po_line.NAME,
+    po_line.QTYORDERED,
+    po_line.PURCHID,
+    po_line.SYNCSTARTDATETIME
+FROM PurchPurchaseOrderLineV2Staging po_line

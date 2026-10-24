@@ -1,0 +1,456 @@
+{
+  "properties": {
+    "activities": [
+      {
+        "type": "RefreshDataflow",
+        "typeProperties": {
+          "dataflowId": "<logical-id-14>",
+          "workspaceId": "<workspace-id-02>",
+          "notifyOption": "NoNotification",
+          "dataflowType": "DataflowFabric",
+          "executeMashupQueriesOnly": true
+        },
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30,
+          "secureInput": false,
+          "secureOutput": false
+        },
+        "name": "INVOICING_GW1",
+        "state": "Active",
+        "dependsOn": [
+          {
+            "activity": "START_TIME_1",
+            "dependencyConditions": [
+              "Completed"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "TridentNotebook",
+        "typeProperties": {
+          "notebookId": "<item-id-01>",
+          "workspaceId": "<workspace-id-02>",
+          "parameters": {
+            "PIPELINE_NAME": {
+              "value": {
+                "value": "@pipeline().PipelineName",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "DATAFLOW_NAME": {
+              "value": {
+                "value": "D365_INVOICING_GW1",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "DURATION": {
+              "value": {
+                "value": "@activity('INVOICING_GW1').output.executionDuration",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "START_TIME": {
+              "value": {
+                "value": "@variables('START_TIME_1')",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "END_TIME": {
+              "value": {
+                "value": "@variables('END_TIME_1')",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "STATUS": {
+              "value": {
+                "value": "@variables('STATUS_1')",
+                "type": "Expression"
+              },
+              "type": "string"
+            }
+          }
+        },
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30,
+          "secureInput": false,
+          "secureOutput": false
+        },
+        "name": "Notebook1",
+        "dependsOn": [
+          {
+            "activity": "STATUS_1",
+            "dependencyConditions": [
+              "Completed"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "SetVariable",
+        "typeProperties": {
+          "variableName": "START_TIME_1",
+          "value": {
+            "value": "@utcNow()",
+            "type": "Expression"
+          }
+        },
+        "policy": {
+          "secureInput": false,
+          "secureOutput": false
+        },
+        "name": "START_TIME_1",
+        "state": "Active",
+        "dependsOn": []
+      },
+      {
+        "type": "SetVariable",
+        "typeProperties": {
+          "variableName": "END_TIME_1",
+          "value": {
+            "value": "@utcNow()",
+            "type": "Expression"
+          }
+        },
+        "policy": {
+          "secureInput": false,
+          "secureOutput": false
+        },
+        "name": "END_TIME_1",
+        "state": "Active",
+        "dependsOn": [
+          {
+            "activity": "INVOICING_GW1",
+            "dependencyConditions": [
+              "Completed"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "SetVariable",
+        "typeProperties": {
+          "variableName": "STATUS_1",
+          "value": {
+            "value": "@activity('INVOICING_GW1').status",
+            "type": "Expression"
+          }
+        },
+        "policy": {
+          "secureInput": false,
+          "secureOutput": false
+        },
+        "name": "STATUS_1",
+        "dependsOn": [
+          {
+            "activity": "END_TIME_1",
+            "dependencyConditions": [
+              "Completed"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "RefreshDataflow",
+        "typeProperties": {
+          "dataflowId": "<item-id-02>",
+          "workspaceId": "<workspace-id-03>",
+          "notifyOption": "NoNotification",
+          "dataflowType": "DataflowFabric",
+          "executeMashupQueriesOnly": true
+        },
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30,
+          "secureInput": false,
+          "secureOutput": false
+        },
+        "name": "INVOICING_GW2",
+        "state": "Inactive",
+        "onInactiveMarkAs": "Succeeded",
+        "dependsOn": [
+          {
+            "activity": "START_TIME_2",
+            "dependencyConditions": [
+              "Completed"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "SetVariable",
+        "typeProperties": {
+          "variableName": "START_TIME_2",
+          "value": {
+            "value": "@utcNow()",
+            "type": "Expression"
+          }
+        },
+        "policy": {
+          "secureInput": false,
+          "secureOutput": false
+        },
+        "name": "START_TIME_2",
+        "state": "Inactive",
+        "onInactiveMarkAs": "Succeeded",
+        "dependsOn": [
+          {
+            "activity": "INVOICING_GW1",
+            "dependencyConditions": [
+              "Failed"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "SetVariable",
+        "typeProperties": {
+          "variableName": "END_TIME_2",
+          "value": {
+            "value": "@utcNow()",
+            "type": "Expression"
+          }
+        },
+        "policy": {
+          "secureInput": false,
+          "secureOutput": false
+        },
+        "name": "END_TIME_2",
+        "state": "Inactive",
+        "onInactiveMarkAs": "Succeeded",
+        "dependsOn": [
+          {
+            "activity": "INVOICING_GW2",
+            "dependencyConditions": [
+              "Completed"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "SetVariable",
+        "typeProperties": {
+          "variableName": "STATUS_2",
+          "value": {
+            "value": "@activity('INVOICING_GW2').status",
+            "type": "Expression"
+          }
+        },
+        "policy": {
+          "secureInput": false,
+          "secureOutput": false
+        },
+        "name": "STATUS_2",
+        "state": "Inactive",
+        "onInactiveMarkAs": "Succeeded",
+        "dependsOn": [
+          {
+            "activity": "END_TIME_2",
+            "dependencyConditions": [
+              "Completed"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "Office365Outlook",
+        "typeProperties": {
+          "inputs": {
+            "body": {
+              "To": "<<CORREOS_ALERTA>>",
+              "Subject": "WARNING! ERROR FOUND IN D365_INVOICING GW1",
+              "Body": "<p>WARNING!!</p>\n<p>ERROR FOUND IN @{pipeline().PipelineName}</p>\n<p>PLEASE TAKE A LOOK</p>",
+              "Sensitivity": "",
+              "Importance": "Normal"
+            },
+            "method": "post",
+            "path": "/v2/Mail"
+          }
+        },
+        "name": "Outlook1",
+        "dependsOn": [
+          {
+            "activity": "INVOICING_GW1",
+            "dependencyConditions": [
+              "Failed"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "Office365Outlook",
+        "typeProperties": {
+          "inputs": {
+            "body": {
+              "To": "<<CORREOS_ALERTA>>",
+              "Subject": "WARNING! ERROR FOUND IN D365_INVOICING GW2",
+              "Body": "<p>WARNING!!&nbsp;</p>\n<p>ERROR FOUND IN @{pipeline().PipelineName}&nbsp;</p>\n<p>PLEASE TAKE A LOOK</p>",
+              "Sensitivity": "",
+              "Importance": "Normal"
+            },
+            "method": "post",
+            "path": "/v2/Mail"
+          }
+        },
+        "name": "Outlook2",
+        "state": "Inactive",
+        "onInactiveMarkAs": "Succeeded",
+        "dependsOn": [
+          {
+            "activity": "INVOICING_GW2",
+            "dependencyConditions": [
+              "Failed"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "TridentNotebook",
+        "typeProperties": {
+          "notebookId": "<item-id-03>",
+          "workspaceId": "<workspace-id-03>",
+          "parameters": {
+            "PIPELINE_NAME": {
+              "value": {
+                "value": "@pipeline().PipelineName",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "DATAFLOW_NAME": {
+              "value": {
+                "value": "D365_INVOICING_GW2",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "DURATION": {
+              "value": {
+                "value": "@activity('INVOICING_GW2').output.executionDuration",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "START_TIME": {
+              "value": {
+                "value": "@variables('START_TIME_2')",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "END_TIME": {
+              "value": {
+                "value": "@variables('END_TIME_2')",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "STATUS": {
+              "value": {
+                "value": "@variables('STATUS_2')",
+                "type": "Expression"
+              },
+              "type": "string"
+            }
+          }
+        },
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30,
+          "secureInput": false,
+          "secureOutput": false
+        },
+        "name": "Notebook2",
+        "state": "Inactive",
+        "onInactiveMarkAs": "Succeeded",
+        "dependsOn": [
+          {
+            "activity": "STATUS_2",
+            "dependencyConditions": [
+              "Completed"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "TridentNotebook",
+        "typeProperties": {
+          "notebookId": "<logical-id-20>",
+          "workspaceId": "<workspace-id-02>"
+        },
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30,
+          "secureInput": false,
+          "secureOutput": false
+        },
+        "name": "Notebook3",
+        "dependsOn": [
+          {
+            "activity": "INVOICING_GW1",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "TridentNotebook",
+        "typeProperties": {
+          "notebookId": "<item-id-04>",
+          "workspaceId": "<workspace-id-03>"
+        },
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30,
+          "secureInput": false,
+          "secureOutput": false
+        },
+        "name": "Notebook4",
+        "state": "Inactive",
+        "onInactiveMarkAs": "Succeeded",
+        "dependsOn": [
+          {
+            "activity": "INVOICING_GW2",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          }
+        ]
+      }
+    ],
+    "variables": {
+      "START_TIME_1": {
+        "type": "String"
+      },
+      "END_TIME_1": {
+        "type": "String"
+      },
+      "END_TIME_2": {
+        "type": "String"
+      },
+      "STATUS_1": {
+        "type": "String"
+      },
+      "STATUS_2": {
+        "type": "String"
+      },
+      "START_TIME_2": {
+        "type": "String"
+      }
+    }
+  }
+}

@@ -1,0 +1,243 @@
+{
+  "properties": {
+    "activities": [
+      {
+        "type": "TridentNotebook",
+        "typeProperties": {
+          "notebookId": "<item-id-05>",
+          "workspaceId": "<workspace-id>",
+          "parameters": {
+            "PIPELINE_NAME": {
+              "value": {
+                "value": "@pipeline().PipelineName",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "DATAFLOW_NAME": {
+              "value": {
+                "value": "INVOICING_GP_GW1",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "DURATION": {
+              "value": {
+                "value": "@activity('INVOICING_GP_GW1').output.executionDuration",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "START_TIME": {
+              "value": {
+                "value": "@variables('START_TIME_1')",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "END_TIME": {
+              "value": {
+                "value": "@variables('END_TIME_1')",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "STATUS": {
+              "value": {
+                "value": "@variables('STATUS_1')",
+                "type": "Expression"
+              },
+              "type": "string"
+            }
+          }
+        },
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30,
+          "secureInput": false,
+          "secureOutput": false
+        },
+        "name": "Notebook1",
+        "state": "Inactive",
+        "onInactiveMarkAs": "Succeeded",
+        "dependsOn": [
+          {
+            "activity": "INVOICING_GP",
+            "dependencyConditions": [
+              "Completed"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "Copy",
+        "typeProperties": {
+          "source": {
+            "type": "OdbcSource",
+            "query": "@@sql:sql/INVOICING_GP.sql@@",
+            "queryTimeout": "02:00:00",
+            "datasetSettings": {
+              "type": "OdbcTable",
+              "schema": [],
+              "externalReferences": {
+                "connection": "<connection-id-06>"
+              },
+              "annotations": []
+            }
+          },
+          "sink": {
+            "type": "LakehouseTableSink",
+            "tableActionOption": "Append",
+            "applyVOrder": false,
+            "enableTimestampNtz": false,
+            "partitionOption": "None",
+            "datasetSettings": {
+              "type": "LakehouseTable",
+              "typeProperties": {
+                "table": "D365_INVOICING_GP"
+              },
+              "schema": [],
+              "linkedService": {
+                "name": "CMA_BI_Lake",
+                "properties": {
+                  "type": "Lakehouse",
+                  "typeProperties": {
+                    "artifactId": "<lakehouse-id-02>",
+                    "workspaceId": "<workspace-id-02>",
+                    "rootFolder": "Tables"
+                  },
+                  "annotations": []
+                }
+              },
+              "annotations": []
+            }
+          },
+          "translator": {
+            "type": "TabularTranslator",
+            "typeConversion": true,
+            "typeConversionSettings": {
+              "allowDataTruncation": true,
+              "treatBooleanAsNumber": false
+            }
+          },
+          "enableStaging": false
+        },
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30,
+          "secureInput": false,
+          "secureOutput": false
+        },
+        "name": "INVOICING_GP",
+        "dependsOn": []
+      },
+      {
+        "type": "Copy",
+        "typeProperties": {
+          "source": {
+            "type": "LakehouseTableSource",
+            "datasetSettings": {
+              "type": "LakehouseTable",
+              "typeProperties": {
+                "table": "D365_INVOICING_GP"
+              },
+              "schema": [],
+              "linkedService": {
+                "name": "CMA_BI_Lake",
+                "properties": {
+                  "type": "Lakehouse",
+                  "typeProperties": {
+                    "artifactId": "<lakehouse-id-02>",
+                    "workspaceId": "<workspace-id-02>",
+                    "rootFolder": "Tables"
+                  },
+                  "annotations": []
+                }
+              },
+              "annotations": []
+            }
+          },
+          "sink": {
+            "type": "DelimitedTextSink",
+            "formatSettings": {
+              "type": "DelimitedTextWriteSettings",
+              "fileExtension": ".txt"
+            },
+            "storeSettings": {
+              "type": "SharePointOnlineFileWriteSettings"
+            },
+            "datasetSettings": {
+              "type": "DelimitedText",
+              "typeProperties": {
+                "location": {
+                  "type": "DatasetLocation",
+                  "folderPath": "Shared Documents/AX_D365/D365_INVOICING_GP",
+                  "fileName": {
+                    "value": "@concat(     'D365_INVOICING_GP_',     formatDateTime(pipeline().TriggerTime,'yyyyMMdd_HHmmss'),     '.csv' )",
+                    "type": "Expression"
+                  }
+                },
+                "columnDelimiter": ",",
+                "quoteChar": "\"",
+                "escapeChar": "\\",
+                "firstRowAsHeader": true
+              },
+              "schema": [],
+              "externalReferences": {
+                "connection": "<connection-id-02>"
+              },
+              "annotations": []
+            }
+          },
+          "translator": {
+            "type": "TabularTranslator",
+            "typeConversion": true,
+            "typeConversionSettings": {
+              "allowDataTruncation": true,
+              "treatBooleanAsNumber": false
+            }
+          },
+          "enableStaging": false
+        },
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30,
+          "secureInput": false,
+          "secureOutput": false
+        },
+        "name": "INVOICING_GP_SHAREPOINT",
+        "dependsOn": [
+          {
+            "activity": "INVOICING_GP",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          }
+        ]
+      }
+    ],
+    "variables": {
+      "START_TIME_1": {
+        "type": "String"
+      },
+      "END_TIME_1": {
+        "type": "String"
+      },
+      "END_TIME_2": {
+        "type": "String"
+      },
+      "STATUS_1": {
+        "type": "String"
+      },
+      "STATUS_2": {
+        "type": "String"
+      },
+      "START_TIME_2": {
+        "type": "String"
+      }
+    }
+  }
+}

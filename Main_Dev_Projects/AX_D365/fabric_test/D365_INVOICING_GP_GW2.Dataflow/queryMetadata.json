@@ -1,0 +1,9 @@
+{
+  "formatVersion": "202502",
+  "computeEngineSettings": {},
+  "name": "D365_INVOICING_GP_GW1",
+  "queryGroups": [],
+  "documentLocale": "en-US",
+  "queriesMetadata": {},
+  "connections": []
+}

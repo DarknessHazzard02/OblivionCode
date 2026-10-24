@@ -1,0 +1,10 @@
+# Datos reales: nunca al repo. Viven en la carpeta de origen (config.local.json).
+/source/
+/data_real/
+/config.local.json
+*.csv
+!demo/source/**/*.csv
+*.xlsx
+*.docx
+*.parquet
+__pycache__/

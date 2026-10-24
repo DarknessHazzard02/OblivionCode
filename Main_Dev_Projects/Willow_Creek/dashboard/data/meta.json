@@ -1,0 +1,420 @@
+{
+ "generated_at": "2026-10-23 22:42",
+ "demo": true,
+ "fuente": "datos inventados (build/generar_contrato.py)",
+ "corte_wc": "2026-10-21 11:00",
+ "counts": {
+  "archivos": 107,
+  "envios": 186,
+  "ordenes": 185,
+  "categoria": {
+   "PROCESADA": 112,
+   "MANUAL": 22,
+   "ERROR": 17,
+   "OBSERVACIONES": 29,
+   "PENDIENTE": 5
+  },
+  "hallazgos": {
+   "ERR_SAP": 15,
+   "INCONS": 15,
+   "CAPTURADA_MANUAL": 22,
+   "BLOQ": 14,
+   "SOLD_NO_CAT": 6,
+   "SO_NO_ABIERTA": 21,
+   "ADV_SAP": 9,
+   "NOTA_NO_DOC": 13,
+   "OM_VACIO": 7,
+   "EXITO_SIN_SO": 6,
+   "SOLD_VACIO": 4,
+   "PEND_REV": 5,
+   "EN_PROC": 5,
+   "OM_DIF": 3,
+   "BLOQ_ENTREGA": 11,
+   "REINTENTO": 1,
+   "SIN_RESP": 2,
+   "RECH": 2
+  },
+  "sap_sin_wc": 55,
+  "wc_followup_filas": 486,
+  "wc_followup_so": 235,
+  "zwccust": 6,
+  "sdd167_filas": 108,
+  "sdd167_so": 42
+ },
+ "archivos_resumen": {
+  "total": 107,
+  "consolidados": [
+   "2026-09-30 11 AM.csv.csv"
+  ],
+  "consolidado_min_dias": 15,
+  "formatos": {
+   "15": 18,
+   "19": 89
+  },
+  "formato_actual": 19,
+  "cambio_formato": "2026-07-25",
+  "identicos": 15,
+  "primero": "2026-07-19 06:00",
+  "ultimo": "2026-10-21 11:00",
+  "mediana_filas": 5,
+  "max_filas": 139
+ },
+ "avisos": {
+  "sdd167_no_en_wc_followup": 0,
+  "sin_wc_followup": false,
+  "sin_zwccust": false,
+  "sin_sdd167": false
+ },
+ "filters": {
+  "categoria": [
+   {
+    "valor": "ERROR",
+    "rol": "critical",
+    "es": "Con Error / Sin Procesar",
+    "en": "Error / Not Processed"
+   },
+   {
+    "valor": "MANUAL",
+    "rol": "manual",
+    "es": "Error en WC, Capturada a Mano en SAP",
+    "en": "WC Error, Entered Manually in SAP"
+   },
+   {
+    "valor": "PENDIENTE",
+    "rol": "warn",
+    "es": "Pendiente",
+    "en": "Pending"
+   },
+   {
+    "valor": "OBSERVACIONES",
+    "rol": "obs",
+    "es": "Procesada con Observaciones",
+    "en": "Processed with Findings"
+   },
+   {
+    "valor": "PROCESADA",
+    "rol": "ok",
+    "es": "Procesada",
+    "en": "Processed"
+   }
+  ],
+  "hallazgos": [
+   {
+    "valor": "BLOQ",
+    "rol": "critical",
+    "es": "Bloqueada por WC",
+    "en": "Blocked by WC",
+    "desc_es": "WC Status = Blocked: WC no pudo procesarla (ver la nota).",
+    "desc_en": "WC Status = Blocked: WC could not process it (see the note)."
+   },
+   {
+    "valor": "INVAL",
+    "rol": "critical",
+    "es": "Solicitud Inválida",
+    "en": "Invalid Request",
+    "desc_es": "WC Status = Invalid Request: la frenó una regla de Contoso.",
+    "desc_en": "WC Status = Invalid Request: stopped by a Contoso rule."
+   },
+   {
+    "valor": "ERR_WC",
+    "rol": "critical",
+    "es": "Error Interno de WC",
+    "en": "WC Internal Error",
+    "desc_es": "WC Status = Internal Error o nota Willow Creek Computer Error.",
+    "desc_en": "WC Status = Internal Error or note Willow Creek Computer Error."
+   },
+   {
+    "valor": "RECH",
+    "rol": "critical",
+    "es": "Rechazada en Revisión",
+    "en": "Rejected in Review",
+    "desc_es": "El OM la rechazó (Review Rejected / Rejected).",
+    "desc_en": "The OM rejected it (Review Rejected / Rejected)."
+   },
+   {
+    "valor": "ERR_SAP",
+    "rol": "critical",
+    "es": "Error al Crear en SAP",
+    "en": "SAP Creation Error",
+    "desc_es": "SAP Status = Error: no se creó la orden de venta.",
+    "desc_en": "SAP Status = Error: the sales order was not created."
+   },
+   {
+    "valor": "SIN_RESP",
+    "rol": "critical",
+    "es": "SAP sin Respuesta",
+    "en": "No Response from SAP",
+    "desc_es": "SAP Status = No Response: SAP no contestó en 30 minutos.",
+    "desc_en": "SAP Status = No Response: SAP did not answer within 30 minutes."
+   },
+   {
+    "valor": "EXITO_SIN_SO",
+    "rol": "critical",
+    "es": "Éxito sin Número de SO",
+    "en": "Success without SO Number",
+    "desc_es": "WC y SAP dicen Success pero no hay número de orden de venta.",
+    "desc_en": "WC and SAP say Success but there is no sales order number."
+   },
+   {
+    "valor": "SOLD_VACIO",
+    "rol": "critical",
+    "es": "Sin Sold-To",
+    "en": "No Sold-To",
+    "desc_es": "La orden llegó sin Sold To ID.",
+    "desc_en": "The order arrived without a Sold To ID."
+   },
+   {
+    "valor": "SOLD_DIF",
+    "rol": "critical",
+    "es": "Sold-To en SAP Distinto",
+    "en": "Different Sold-To in SAP",
+    "desc_es": "El Sold-To de la orden de venta en SAP no es el que trae WC.",
+    "desc_en": "The SAP sales order Sold-To is not the one WC has."
+   },
+   {
+    "valor": "PEND_REV",
+    "rol": "warn",
+    "es": "Pendiente de Revisión",
+    "en": "Awaiting Review",
+    "desc_es": "Review Status = Awaiting Review o Not Started, sin error.",
+    "desc_en": "Review Status = Awaiting Review or Not Started, with no error."
+   },
+   {
+    "valor": "EN_PROC",
+    "rol": "warn",
+    "es": "En Proceso",
+    "en": "In Progress",
+    "desc_es": "WC Status = In Progress o Starting, sin error.",
+    "desc_en": "WC Status = In Progress or Starting, with no error."
+   },
+   {
+    "valor": "INCONS",
+    "rol": "warn",
+    "es": "WC Success con SAP en Error",
+    "en": "WC Success with SAP Error",
+    "desc_es": "WC Status = Success pero SAP Status = Error: el estatus de WC no refleja la falla.",
+    "desc_en": "WC Status = Success but SAP Status = Error: the WC status hides the failure."
+   },
+   {
+    "valor": "ADV_SAP",
+    "rol": "warn",
+    "es": "Advertencias de SAP",
+    "en": "SAP Warnings",
+    "desc_es": "SAP Status = Warnings: se creó, pero con advertencias.",
+    "desc_en": "SAP Status = Warnings: created, but with warnings."
+   },
+   {
+    "valor": "PO_DIF",
+    "rol": "warn",
+    "es": "PO en SAP Distinto al de WC",
+    "en": "SAP PO Differs from WC",
+    "desc_es": "El PO capturado en la orden de venta no es igual al de WC.",
+    "desc_en": "The PO on the sales order is not the same as in WC."
+   },
+   {
+    "valor": "PO_MULTI_SO",
+    "rol": "warn",
+    "es": "PO con Más de un SO",
+    "en": "PO with More than One SO",
+    "desc_es": "El mismo PO del cliente aparece en más de una orden de venta abierta.",
+    "desc_en": "The same customer PO appears on more than one open sales order."
+   },
+   {
+    "valor": "BLOQ_ENTREGA",
+    "rol": "warn",
+    "es": "SO con Bloqueo de Entrega",
+    "en": "SO with Delivery Block",
+    "desc_es": "Alguna línea de la orden de venta tiene bloqueo de entrega en SAP.",
+    "desc_en": "A sales order line has a delivery block in SAP."
+   },
+   {
+    "valor": "SOLD_NO_CAT",
+    "rol": "warn",
+    "es": "Sold-To Fuera del Catálogo de Clientes",
+    "en": "Sold-To Not in the Customer Catalog",
+    "desc_es": "El Sold To ID no está en el catálogo de clientes WC.",
+    "desc_en": "The Sold To ID is not in the WC customer catalog."
+   },
+   {
+    "valor": "OM_VACIO",
+    "rol": "warn",
+    "es": "Sin Order Manager",
+    "en": "No Order Manager",
+    "desc_es": "La orden no trae Order Manager.",
+    "desc_en": "The order has no Order Manager."
+   },
+   {
+    "valor": "OM_DIF",
+    "rol": "warn",
+    "es": "Order Manager Distinto al del Catálogo",
+    "en": "Order Manager Differs from the Catalog",
+    "desc_es": "El Order Manager no es el asignado al cliente en el catálogo de clientes.",
+    "desc_en": "The Order Manager is not the one assigned to the customer in the customer catalog."
+   },
+   {
+    "valor": "ESTATUS_NO_DOC",
+    "rol": "warn",
+    "es": "Estatus No Documentado",
+    "en": "Undocumented Status",
+    "desc_es": "WC Status fuera de la lista de Reporting Notes.",
+    "desc_en": "WC Status outside the Reporting Notes list."
+   },
+   {
+    "valor": "NOTA_NO_DOC",
+    "rol": "neutral",
+    "es": "Nota No Documentada",
+    "en": "Undocumented Note",
+    "desc_es": "Nota fuera de la lista de Reporting Notes (p. ej. \"PO: n\", Date Format Parsing Error).",
+    "desc_en": "Note outside the Reporting Notes list (e.g. \"PO: n\", Date Format Parsing Error)."
+   },
+   {
+    "valor": "PAR_NO_DOC",
+    "rol": "neutral",
+    "es": "Estatus y Nota sin Pareja Documentada",
+    "en": "Status/Note Pair Not Documented",
+    "desc_es": "La combinación WC Status + Nota no está en la tabla Matched Data Pairs.",
+    "desc_en": "The WC Status + Note combination is not in the Matched Data Pairs table."
+   },
+   {
+    "valor": "CAPTURADA_MANUAL",
+    "rol": "neutral",
+    "es": "Capturada a Mano en SAP",
+    "en": "Entered Manually in SAP",
+    "desc_es": "WC no creó la orden, pero el mismo PO ya está en una orden abierta de SAP capturada fuera de WC.",
+    "desc_en": "WC did not create the order, but the same PO is on an open SAP order entered outside WC."
+   },
+   {
+    "valor": "SO_NO_ABIERTA",
+    "rol": "neutral",
+    "es": "SO No Está Abierta en SAP",
+    "en": "SO Not Open in SAP",
+    "desc_es": "El SO no aparece en las órdenes abiertas de SAP: puede estar ya surtido o cerrado.",
+    "desc_en": "The SO is not in the SAP open orders: it may already be shipped or closed."
+   },
+   {
+    "valor": "REINTENTO",
+    "rol": "neutral",
+    "es": "Reenviada",
+    "en": "Resubmitted",
+    "desc_es": "El mismo PO llegó en más de un envío a WC.",
+    "desc_en": "The same PO came in more than one WC submission."
+   }
+  ],
+  "tipo_sap": [
+   {
+    "valor": "DUPLICADO",
+    "rol": "critical",
+    "es": "PO Ya Creado por WC en Otra SO (Posible Duplicado)",
+    "en": "PO Already Created by WC on Another SO (Possible Duplicate)"
+   },
+   {
+    "valor": "MANUAL_TRAS_WC",
+    "rol": "manual",
+    "es": "Capturada a Mano tras Fallar en WC",
+    "en": "Entered Manually After Failing in WC"
+   },
+   {
+    "valor": "SIN_WC",
+    "rol": "warn",
+    "es": "Sin Registro en WC",
+    "en": "No WC Record"
+   }
+  ],
+  "marcas_archivo": [
+   {
+    "valor": "CONSOLIDADO",
+    "rol": "critical",
+    "es": "Parece Consolidado",
+    "en": "Looks Consolidated"
+   },
+   {
+    "valor": "GRANDE",
+    "rol": "warn",
+    "es": "Mucho Más Grande que lo Normal",
+    "en": "Much Larger than Usual"
+   },
+   {
+    "valor": "FORMATO_ANTERIOR",
+    "rol": "warn",
+    "es": "Formato Anterior (Menos Columnas)",
+    "en": "Older Format (Fewer Columns)"
+   },
+   {
+    "valor": "IDENTICO",
+    "rol": "neutral",
+    "es": "Idéntico a Otro Archivo",
+    "en": "Identical to Another File"
+   },
+   {
+    "valor": "VARIOS_POR_DIA",
+    "rol": "neutral",
+    "es": "Varios Archivos el Mismo Día",
+    "en": "Several Files the Same Day"
+   },
+   {
+    "valor": "VACIO",
+    "rol": "warn",
+    "es": "Sin Renglones",
+    "en": "No Rows"
+   },
+   {
+    "valor": "SIN_FECHA_EN_NOMBRE",
+    "rol": "critical",
+    "es": "Sin Fecha en el Nombre",
+    "en": "No Date in the Name"
+   }
+  ]
+ },
+ "fuentes": [
+  {
+   "nombre": "Reportes diarios de Willow Creek",
+   "nombre_en": "Willow Creek daily reports",
+   "sistema": "Willow Creek",
+   "tabla": "reportes_demo/",
+   "archivo": "731 renglones de demo",
+   "extraido_el": "2026-10-21",
+   "actualizado": "2026-10-21 11:00",
+   "dato_al": "2026-10-21",
+   "filas": 731,
+   "falta": false
+  },
+  {
+   "nombre": "Órdenes abiertas de SAP",
+   "nombre_en": "SAP open orders",
+   "sistema": "SAP",
+   "tabla": "ordenes_abiertas_demo.csv",
+   "archivo": "ordenes_abiertas_demo.csv",
+   "extraido_el": "2026-10-21",
+   "actualizado": null,
+   "dato_al": "2026-10-23",
+   "filas": 486,
+   "falta": false
+  },
+  {
+   "nombre": "Seguimiento de PO (job diario)",
+   "nombre_en": "PO follow-up (daily job)",
+   "sistema": "SAP",
+   "tabla": "seguimiento_demo.csv",
+   "archivo": "seguimiento_demo.csv",
+   "extraido_el": "2026-10-21",
+   "actualizado": null,
+   "dato_al": "2026-10-23",
+   "filas": 108,
+   "falta": false
+  },
+  {
+   "nombre": "Clientes de Willow Creek",
+   "nombre_en": "Willow Creek customers",
+   "sistema": "SAP",
+   "tabla": "clientes_demo.csv",
+   "archivo": "clientes_demo.csv",
+   "extraido_el": "2026-10-21",
+   "actualizado": null,
+   "dato_al": null,
+   "filas": 6,
+   "falta": false,
+   "catalogo": true
+  }
+ ],
+ "pestanas_sin_actualizar": {}
+}

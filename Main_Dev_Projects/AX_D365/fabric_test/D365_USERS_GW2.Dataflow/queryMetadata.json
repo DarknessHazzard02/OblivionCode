@@ -1,0 +1,35 @@
+{
+  "formatVersion": "202502",
+  "computeEngineSettings": {
+    "allowModernEvaluationEngine": true
+  },
+  "name": "D365_USERS_GW2",
+  "queryGroups": [],
+  "documentLocale": "en-US",
+  "gatewayObjectId": "<connection-id-05>",
+  "queriesMetadata": {
+    "Odbc": {
+      "queryId": "<query-id-51>",
+      "queryName": "Odbc",
+      "loadEnabled": false
+    },
+    "Odbc_DataDestination": {
+      "queryId": "<query-id-52>",
+      "queryName": "Odbc_DataDestination",
+      "isHidden": true,
+      "loadEnabled": false
+    }
+  },
+  "connections": [
+    {
+      "path": "dsn=D365_EXPORT_PRD",
+      "kind": "Odbc",
+      "connectionId": "{\"ClusterId\":\"<connection-id-05>\",\"DatasourceId\":\"<connection-id-06>\"}"
+    },
+    {
+      "path": "Lakehouse",
+      "kind": "Lakehouse",
+      "connectionId": "{\"ClusterId\":\"<lakehouse-id-03>\",\"DatasourceId\":\"<connection-id-04>\"}"
+    }
+  ]
+}

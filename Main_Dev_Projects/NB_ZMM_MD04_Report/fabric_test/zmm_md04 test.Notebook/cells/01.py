@@ -1,0 +1,3 @@
+
+spark.sql("DROP TABLE IF EXISTS SAP_ZMM_MD04_LOG")
+

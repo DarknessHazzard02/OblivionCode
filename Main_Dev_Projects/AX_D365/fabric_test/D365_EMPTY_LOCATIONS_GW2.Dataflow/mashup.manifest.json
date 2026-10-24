@@ -1,0 +1,11 @@
+[
+  {
+    "raw": "[StagingDefinition = [Kind = \"FastCopy\"]]\r\nsection Section1;\r\n[DataDestinations = {[Definition = [Kind = \"Reference\", QueryName = \"Odbc_DataDestination\", IsNewTarget = false], Settings = [Kind = \"Manual\", AllowCreation = false, ColumnSettings = [Mappings = {[SourceColumnName = \"DATA_BASE\", DestinationColumnName = \"DATA_BASE\"], [SourceColumnName = \"ORG_CODE\", DestinationColumnName = \"ORG_CODE\"], [SourceColumnName = \"ORG_NAME\", DestinationColumnName = \"ORG_NAME\"], [SourceColumnName = \"DIVISION\", DestinationColumnName = \"DIVISION\"], [SourceColumnName = \"EXECUTION_DATE\", DestinationColumnName = \"EXECUTION_DATE\"], [SourceColumnName = \"EXECUTION_TIME\", DestinationColumnName = \"EXECUTION_TIME\"], [SourceColumnName = \"Warehouse\", DestinationColumnName = \"Warehouse\"], [SourceColumnName = \"Location\", DestinationColumnName = \"Location\"]}], DynamicSchema = false, UpdateMethod = [Kind = \"Replace\"], TypeSettings = [Kind = \"Table\"]]]}]\r\n"
+  },
+  {
+    "file": "queries/Odbc.pq"
+  },
+  {
+    "file": "queries/Odbc_DataDestination.pq"
+  }
+]

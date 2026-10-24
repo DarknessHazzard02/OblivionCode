@@ -1,0 +1,11 @@
+[
+  {
+    "raw": "[StagingDefinition = [Kind = \"FastCopy\"]]\r\nsection Section1;\r\n[DataDestinations = {[Definition = [Kind = \"Reference\", QueryName = \"Odbc_DataDestination\", IsNewTarget = true], Settings = [Kind = \"Manual\", AllowCreation = true, ColumnSettings = [Mappings = {[SourceColumnName = \"DATA_BASE\", DestinationColumnName = \"DATA_BASE\"], [SourceColumnName = \"ORG_CODE\", DestinationColumnName = \"ORG_CODE\"], [SourceColumnName = \"ORG_NAME\", DestinationColumnName = \"ORG_NAME\"], [SourceColumnName = \"DIVISION\", DestinationColumnName = \"DIVISION\"], [SourceColumnName = \"EXECUTION_DATE\", DestinationColumnName = \"EXECUTION_DATE\"], [SourceColumnName = \"EXECUTION_TIME\", DestinationColumnName = \"EXECUTION_TIME\"], [SourceColumnName = \"Location\", DestinationColumnName = \"Location\"], [SourceColumnName = \"Aisle\", DestinationColumnName = \"Aisle\"], [SourceColumnName = \"Rack\", DestinationColumnName = \"Rack\"], [SourceColumnName = \"Level\", DestinationColumnName = \"Level\"], [SourceColumnName = \"Position\", DestinationColumnName = \"Position\"], [SourceColumnName = \"Site\", DestinationColumnName = \"Site\"], [SourceColumnName = \"Zone\", DestinationColumnName = \"Zone\"], [SourceColumnName = \"Sort Code\", DestinationColumnName = \"Sort Code\"]}], DynamicSchema = false, UpdateMethod = [Kind = \"Replace\"], TypeSettings = [Kind = \"Table\"]]]}]\r\n"
+  },
+  {
+    "file": "queries/Odbc.pq"
+  },
+  {
+    "file": "queries/Odbc_DataDestination.pq"
+  }
+]

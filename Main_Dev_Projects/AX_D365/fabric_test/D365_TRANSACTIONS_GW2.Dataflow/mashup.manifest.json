@@ -1,0 +1,11 @@
+[
+  {
+    "raw": "[StagingDefinition = [Kind = \"FastCopy\"]]\r\nsection Section1;\r\n[DataDestinations = {[Definition = [Kind = \"Reference\", QueryName = \"Odbc_DataDestination\", IsNewTarget = false], Settings = [Kind = \"Manual\", AllowCreation = false, ColumnSettings = [Mappings = {[SourceColumnName = \"DATA_BASE\", DestinationColumnName = \"DATA_BASE\"], [SourceColumnName = \"ORG_CODE\", DestinationColumnName = \"ORG_CODE\"], [SourceColumnName = \"ORG_NAME\", DestinationColumnName = \"ORG_NAME\"], [SourceColumnName = \"DIVISION\", DestinationColumnName = \"DIVISION\"], [SourceColumnName = \"EXECUTION_DATE\", DestinationColumnName = \"EXECUTION_DATE\"], [SourceColumnName = \"EXECUTION_TIME\", DestinationColumnName = \"EXECUTION_TIME\"], [SourceColumnName = \"Item Number\", DestinationColumnName = \"Item Number\"], [SourceColumnName = \"Physical Date\", DestinationColumnName = \"Physical Date\"], [SourceColumnName = \"Financial Date\", DestinationColumnName = \"Financial Date\"], [SourceColumnName = \"Category\", DestinationColumnName = \"Category\"], [SourceColumnName = \"Number\", DestinationColumnName = \"Number\"], [SourceColumnName = \"Receipt\", DestinationColumnName = \"Receipt\"], [SourceColumnName = \"Issue\", DestinationColumnName = \"Issue\"], [SourceColumnName = \"Quantity\", DestinationColumnName = \"Quantity\"], [SourceColumnName = \"Cost Amount\", DestinationColumnName = \"Cost Amount\"], [SourceColumnName = \"Site\", DestinationColumnName = \"Site\"], [SourceColumnName = \"Warehouse\", DestinationColumnName = \"Warehouse\"], [SourceColumnName = \"Batch Number\", DestinationColumnName = \"Batch Number\"], [SourceColumnName = \"Location\", DestinationColumnName = \"Location\"], [SourceColumnName = \"Inventory Status\", DestinationColumnName = \"Inventory Status\"], [SourceColumnName = \"License Plate\", DestinationColumnName = \"License Plate\"]}], DynamicSchema = false, UpdateMethod = [Kind = \"Replace\"], TypeSettings = [Kind = \"Table\"]]]}]\r\n"
+  },
+  {
+    "file": "queries/Odbc.pq"
+  },
+  {
+    "file": "queries/Odbc_DataDestination.pq"
+  }
+]

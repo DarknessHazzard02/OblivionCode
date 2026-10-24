@@ -1,0 +1,174 @@
+{
+  "properties": {
+    "activities": [
+      {
+        "type": "Copy",
+        "typeProperties": {
+          "source": {
+            "type": "OdbcSource",
+            "query": "@@sql:sql/EMPTY_LOCATIONS.sql@@",
+            "queryTimeout": "02:00:00",
+            "datasetSettings": {
+              "type": "OdbcTable",
+              "schema": [],
+              "externalReferences": {
+                "connection": "<connection-id-01>"
+              },
+              "annotations": []
+            }
+          },
+          "sink": {
+            "type": "LakehouseTableSink",
+            "tableActionOption": "OverwriteSchema",
+            "applyVOrder": false,
+            "enableTimestampNtz": false,
+            "partitionOption": "None",
+            "datasetSettings": {
+              "type": "LakehouseTable",
+              "typeProperties": {
+                "table": "D365_EMPTY_LOCATIONS"
+              },
+              "schema": [],
+              "linkedService": {
+                "name": "CMA_BI_Lake",
+                "properties": {
+                  "type": "Lakehouse",
+                  "typeProperties": {
+                    "artifactId": "<lakehouse-id-02>",
+                    "workspaceId": "<workspace-id-02>",
+                    "rootFolder": "Tables"
+                  },
+                  "annotations": []
+                }
+              },
+              "annotations": []
+            }
+          },
+          "translator": {
+            "type": "TabularTranslator",
+            "typeConversion": true,
+            "typeConversionSettings": {
+              "allowDataTruncation": true,
+              "treatBooleanAsNumber": false
+            }
+          },
+          "enableStaging": false
+        },
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30,
+          "secureInput": false,
+          "secureOutput": false
+        },
+        "name": "EMPTY_LOCATIONS",
+        "dependsOn": []
+      },
+      {
+        "type": "Copy",
+        "typeProperties": {
+          "source": {
+            "type": "LakehouseTableSource",
+            "datasetSettings": {
+              "type": "LakehouseTable",
+              "typeProperties": {
+                "table": "D365_EMPTY_LOCATIONS"
+              },
+              "schema": [],
+              "linkedService": {
+                "name": "CMA_BI_Lake",
+                "properties": {
+                  "type": "Lakehouse",
+                  "typeProperties": {
+                    "artifactId": "<lakehouse-id-02>",
+                    "workspaceId": "<workspace-id-02>",
+                    "rootFolder": "Tables"
+                  },
+                  "annotations": []
+                }
+              },
+              "annotations": []
+            }
+          },
+          "sink": {
+            "type": "DelimitedTextSink",
+            "formatSettings": {
+              "type": "DelimitedTextWriteSettings",
+              "fileExtension": ".txt"
+            },
+            "storeSettings": {
+              "type": "SharePointOnlineFileWriteSettings"
+            },
+            "datasetSettings": {
+              "type": "DelimitedText",
+              "typeProperties": {
+                "location": {
+                  "type": "DatasetLocation",
+                  "folderPath": "Shared Documents/AX_D365/D365_EMPTY_LOCATIONS",
+                  "fileName": {
+                    "value": "@concat(     'D365_EMPTY_LOCATIONS',     formatDateTime(pipeline().TriggerTime,'yyyyMMdd_HHmmss'),     '.csv' )",
+                    "type": "Expression"
+                  }
+                },
+                "columnDelimiter": ",",
+                "quoteChar": "\"",
+                "escapeChar": "\\",
+                "firstRowAsHeader": true
+              },
+              "schema": [],
+              "externalReferences": {
+                "connection": "<connection-id-02>"
+              },
+              "annotations": []
+            }
+          },
+          "translator": {
+            "type": "TabularTranslator",
+            "typeConversion": true,
+            "typeConversionSettings": {
+              "allowDataTruncation": true,
+              "treatBooleanAsNumber": false
+            }
+          },
+          "enableStaging": false
+        },
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30,
+          "secureInput": false,
+          "secureOutput": false
+        },
+        "name": "EMPTY_LOCATIONS_SHAREPOINT",
+        "dependsOn": [
+          {
+            "activity": "EMPTY_LOCATIONS",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          }
+        ]
+      }
+    ],
+    "variables": {
+      "START_TIME_1": {
+        "type": "String"
+      },
+      "END_TIME_1": {
+        "type": "String"
+      },
+      "END_TIME_2": {
+        "type": "String"
+      },
+      "STATUS_1": {
+        "type": "String"
+      },
+      "STATUS_2": {
+        "type": "String"
+      },
+      "START_TIME_2": {
+        "type": "String"
+      }
+    }
+  }
+}

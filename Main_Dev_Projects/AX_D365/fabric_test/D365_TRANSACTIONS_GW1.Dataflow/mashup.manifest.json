@@ -1,0 +1,11 @@
+[
+  {
+    "raw": "[StagingDefinition = [Kind = \"FastCopy\"]]\r\nsection Section1;\r\n[DataDestinations = {[Definition = [Kind = \"Reference\", QueryName = \"Odbc_DataDestination\", IsNewTarget = true], Settings = [Kind = \"Automatic\", TypeSettings = [Kind = \"Table\"]]]}]\r\n"
+  },
+  {
+    "file": "queries/Odbc.pq"
+  },
+  {
+    "file": "queries/Odbc_DataDestination.pq"
+  }
+]
