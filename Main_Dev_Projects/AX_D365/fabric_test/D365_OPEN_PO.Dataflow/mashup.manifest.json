@@ -1,8 +1,0 @@
-[
-  {
-    "raw": "[StagingDefinition = [Kind = \"FastCopy\"]]\r\nsection Section1;\r\n"
-  },
-  {
-    "file": "queries/query-id-22.pq"
-  }
-]

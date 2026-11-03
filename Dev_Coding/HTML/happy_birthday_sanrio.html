@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>¡Feliz Cumpleaños Kawaii!</title>
+    <!-- Tailwind CSS for rapid styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- canvas-confetti library -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <!-- Google Fonts for cute typography -->
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Pacifico&display=swap" rel="stylesheet">
+    
+    <style>
+        /* Custom Styles & Animations */
+        body {
+            font-family: 'Fredoka', sans-serif;
+            background: linear-gradient(135deg, #ffe4e1 0%, #ffb6c1 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        h1, .pacifico {
+            font-family: 'Pacifico', cursive;
+        }
+
+        /* Floating Animation for characters */
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+
+        .floating {
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        .floating-delay-1 { animation: float 3s ease-in-out 0.5s infinite; }
+        .floating-delay-2 { animation: float 3s ease-in-out 1s infinite; }
+        .floating-delay-3 { animation: float 3s ease-in-out 1.5s infinite; }
+
+        /* CSS Balloons */
+        .balloon-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .balloon {
+            width: 60px;
+            height: 75px;
+            background-color: #ff99cc;
+            border-radius: 50% 50% 50% 50% / 40% 40% 60% 60%;
+            position: absolute;
+            bottom: -100px;
+            box-shadow: inset -5px -5px 0 rgba(0,0,0,0.07);
+            animation: flyUp 10s linear infinite;
+        }
+
+        .balloon::before {
+            content: "▲";
+            font-size: 15px;
+            color: inherit;
+            position: absolute;
+            bottom: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .balloon::after {
+            content: "";
+            position: absolute;
+            bottom: -50px;
+            left: 50%;
+            width: 1px;
+            height: 40px;
+            background-color: rgba(0,0,0,0.2);
+        }
+
+        /* Variaciones de globos */
+        .b1 { left: 10%; background-color: #ff99cc; animation-duration: 12s; }
+        .b2 { left: 30%; background-color: #b3d9ff; animation-duration: 9s; animation-delay: 2s; }
+        .b3 { left: 50%; background-color: #e6b3ff; animation-duration: 14s; animation-delay: 1s; }
+        .b4 { left: 70%; background-color: #ffffb3; animation-duration: 10s; animation-delay: 3s; }
+        .b5 { left: 90%; background-color: #ff99cc; animation-duration: 11s; animation-delay: 0.5s; }
+
+        @keyframes flyUp {
+            0% { transform: translateY(0) rotate(0deg); opacity: 0.9; }
+            50% { transform: translateY(-50vh) rotate(10deg); }
+            100% { transform: translateY(-120vh) rotate(-10deg); opacity: 0; }
+        }
+
+        /* Glassmorphism Card */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 255, 255, 0.9);
+            box-shadow: 0 8px 32px 0 rgba(255, 105, 180, 0.2);
+        }
+    </style>
+</head>
+<body class="relative flex items-center justify-center py-8 px-4 min-h-screen">
+
+    <!-- Globos Animados Decorativos -->
+    <div class="balloon-container">
+        <div class="balloon b1"></div>
+        <div class="balloon b2"></div>
+        <div class="balloon b3"></div>
+        <div class="balloon b4"></div>
+        <div class="balloon b5"></div>
+    </div>
+
+    <!-- Contenedor Layout de 2 Columnas -->
+    <div class="w-full max-w-[1200px] flex flex-col lg:flex-row gap-8 relative z-10 mx-auto items-stretch">
+        
+        <!-- Columna Izquierda: Sanrio (2/3) -->
+        <div class="glass-card w-full lg:w-2/3 rounded-[2rem] p-6 md:p-10 text-center shadow-2xl overflow-hidden flex flex-col justify-between">
+            
+            <div>
+                <!-- Título -->
+                <h1 class="text-5xl md:text-6xl text-pink-500 mb-3 drop-shadow-md animate-pulse mt-2">
+                    ¡Feliz Cumpleaños Mich!
+                </h1>
+                <p class="text-lg md:text-xl text-pink-700 font-bold mb-8">
+                    Hay que celebrar, hoy es un dia especial y para eso, unos amigos mios han venido a desearte un feliz cumpleaños lleno de alegría y diversión.
+                </p>
+
+                <!-- Lista de Personajes de Sanrio (Grid Responsivo 1x1 a 2x2) -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                    
+                    <!-- Hello Kitty -->
+                    <div class="bg-white rounded-3xl p-5 shadow-lg transform transition duration-300 active:scale-95 hover:scale-105 floating border-4 border-pink-200">
+                        <img src="https://www.pngall.com/wp-content/uploads/22/Hello-Kitty-Happy-Birthday-PNG.gif"
+                             alt="Hello Kitty" 
+                             class="w-full h-48 rounded-2xl mb-4 object-cover bg-pink-50">
+                        <h2 class="text-3xl font-bold text-pink-500 pacifico">Hello Kitty</h2>
+                        <p class="text-gray-600 mt-2 text-md font-semibold">Un abrazo gigante para ti</p>
+                    </div>
+
+                    <!-- My Melody -->
+                    <div class="bg-white rounded-3xl p-5 shadow-lg transform transition duration-300 active:scale-95 hover:scale-105 floating-delay-1 border-4 border-pink-400">
+                        <img src="https://media.tenor.com/VTeCYIorwEgAAAAj/sanrio-cute.gif" 
+                             alt="My Melody" 
+                             class="w-full h-48 rounded-2xl mb-4 object-cover bg-pink-50">
+                        <h2 class="text-3xl font-bold text-pink-600 pacifico">My Melody</h2>
+                        <p class="text-gray-600 mt-2 text-md font-semibold">Alguien especial te desea un feliz cumpleaños</p>
+                    </div>
+
+                    <!-- Pompompurin -->
+                    <div class="bg-white rounded-3xl p-5 shadow-lg transform transition duration-300 active:scale-95 hover:scale-105 floating-delay-2 border-4 border-purple-300">
+                        <img src="https://i.pinimg.com/originals/7b/e1/4e/7be14eb9d2b210676dea67ca77c98a67.gif" 
+                             alt="Pompompurin" 
+                             class="w-full h-48 rounded-2xl mb-4 object-cover bg-purple-50">
+                        <h2 class="text-3xl font-bold text-purple-600 pacifico">Pompompurin</h2>
+                        <p class="text-gray-600 mt-2 text-md font-semibold">Diviertete mucho hoy</p>
+                    </div>
+
+                    <!-- Pikachu -->
+                    <div class="bg-white rounded-3xl p-5 shadow-lg transform transition duration-300 active:scale-95 hover:scale-105 floating-delay-3 border-4 border-blue-200">
+                        <img src="https://media1.tenor.com/m/lb8n3znXeFQAAAAd/pokemon-happy-birthday.gif" 
+                             alt="Pikachu" 
+                             class="w-full h-48 rounded-2xl mb-4 object-cover bg-blue-50">
+                        <h2 class="text-3xl font-bold text-blue-500 pacifico">Pikachu y Togepi</h2>
+                        <p class="text-gray-600 mt-2 text-md font-semibold">Pika Pika, Pikachu. <br> Toge Toge, Togepri.</p>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- Botón de Sorpresa -->
+            <button id="surpriseBtn" class="w-full mx-auto block bg-gradient-to-r from-pink-400 to-pink-500 text-white font-bold py-4 px-6 rounded-[2rem] shadow-xl text-xl transform transition hover:scale-105 active:scale-95 active:shadow-sm touch-manipulation">
+                ✨ ¡Toca para sorpresa! ✨
+            </button>
+        </div>
+
+        <!-- Columna Derecha: Poema Pancha (1/3) -->
+        <div class="bg-white/90 backdrop-blur-md rounded-[2rem] p-6 md:p-8 shadow-2xl border-4 border-pink-300 flex flex-col items-center text-center w-full lg:w-1/3">
+            <h2 class="text-4xl font-bold text-pink-500 mb-6 drop-shadow-sm">Para Pancha</h2>
+            
+            <img src="https://i.pinimg.com/originals/e4/0a/fb/e40afb79cb0516b0c2105fd3184f3cfd.gif" 
+                 alt="Pikachu y Eevee" 
+                 class="w-full rounded-2xl mb-6 shadow-md border-2 border-pink-100 object-cover">
+            
+            <div class="text-pink-900 text-lg font-medium leading-relaxed flex-grow flex flex-col justify-center">
+                <p>
+                    Caminaba un Pikachu por el bosque de Kanto,<br>
+                    junto a su hermanita Mime Jr. con encanto.<br>
+                    De pronto en los arbustos, escucharon un llanto,<br>
+                    era una pequeña Eevee, temblando de espanto.
+                </p>
+                <p class="mt-4">
+                    Pikachu la abrazó y juró protegerlas a las dos,<br>
+                    guiándolas a casa de mamá Wigglytuff, a paso veloz.<br>
+                    Y aunque vengan tormentas o el cielo detone,<br>
+                    él será su escudo, sin que nada lo cuestione.
+                </p>
+                <p class="mt-4">
+                    No importa el tiempo que pase o que el destino te corone,<br>
+                    y algún día esta Eevee en un bello Espeon evolucione.<br>
+                    Para aquel Pikachu, firme y sin que nada lo engañe,<br>
+                    siempre serás su pequeña Eevee, a la que cuida y acompañe.
+                </p>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // Event Listener para el botón usando la librería canvas-confetti
+        document.getElementById('surpriseBtn').addEventListener('click', () => {
+            const duration = 3 * 1000;
+            const animationEnd = Date.now() + duration;
+            const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 100 };
+
+            function randomInRange(min, max) {
+                return Math.random() * (max - min) + min;
+            }
+
+            const interval = setInterval(function() {
+                const timeLeft = animationEnd - Date.now();
+
+                if (timeLeft <= 0) {
+                    return clearInterval(interval);
+                }
+
+                const particleCount = 50 * (timeLeft / duration);
+                
+                // Confeti desde la izquierda
+                confetti(Object.assign({}, defaults, { 
+                    particleCount, 
+                    origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 },
+                    colors: ['#ff99cc', '#b3d9ff', '#e6b3ff', '#ffffb3']
+                }));
+                // Confeti desde la derecha
+                confetti(Object.assign({}, defaults, { 
+                    particleCount, 
+                    origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 },
+                    colors: ['#ff99cc', '#b3d9ff', '#e6b3ff', '#ffffb3']
+                }));
+            }, 250);
+        });
+    </script>
+</body>
+</html>
