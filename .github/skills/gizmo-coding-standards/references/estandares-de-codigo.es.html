@@ -1,0 +1,194 @@
+<!-- Made by: Hazzard -->
+<html><head><meta charset="utf-8"><title>Estándares de Código</title>
+<style>body{font-family:Calibri,sans-serif;font-size:11pt}h1{font-size:18pt}h2{font-size:14pt}h3{font-size:12pt}table{border-collapse:collapse}td,th{border:1px solid #999;padding:3px 6px;vertical-align:top}th{background:#eee}pre{font-family:Consolas,monospace;font-size:9.5pt;background:#f4f4f4;padding:6px}</style></head><body>
+
+<h1>Estándares de Código</h1>
+<p>Referencia para VBA, Power Query (M), SQL, Oracle, Python, PySpark, DAX y flujos de automatización. Aplica a todo el código que se escriba o revise.</p>
+
+<h2>1. Principios</h2>
+<ul>
+<li><b>Mantenible primero:</b> limpio, modular e idempotente (correrlo dos veces da lo mismo).</li>
+<li><b>Sin errores tragados en silencio y sin defaults silenciosos:</b> lo que falta o es inválido se ve. Un valor que no se puede leer sale nulo y se cuenta aparte, nunca como 0.</li>
+<li><b>Bloques completos</b>, listos para copiar y pegar, sin "..." que haya que rellenar.</li>
+<li>Nombres y código en <b>inglés</b>; la explicación, en el idioma de quien pregunta.</li>
+<li>Si se modifica un archivo que ya existe, su estilo gana sobre estas reglas.</li>
+</ul>
+
+<h2>2. Firma de autor</h2>
+<table>
+<tr><th>Destino</th><th>Regla</th></tr>
+<tr><td>Laboral (todo lo de la empresa)</td><td>Sin firma: ni "Made by", ni "Author", ni "Updated by". Tampoco firmas de herramientas.</td></tr>
+<tr><td>Personal (proyectos propios de Haz)</td><td>Firma obligatoria, según la tabla de abajo.</td></tr>
+</table>
+<p>En duda, sin firma.</p>
+<table>
+<tr><th>Lenguaje</th><th>Firma</th><th>Dónde</th></tr>
+<tr><td>VBA</td><td>'Made by: Hazzard</td><td>Última línea, después de End Sub</td></tr>
+<tr><td>Power Query (M)</td><td>// Made by: Hazzard + una línea de descripción</td><td>Primera línea</td></tr>
+<tr><td>Python</td><td>Banner con # Author: Haz</td><td>Encabezado</td></tr>
+<tr><td>SQL</td><td>-- Made by: Hazzard</td><td>Primera línea</td></tr>
+<tr><td>Oracle</td><td>-- Made by: Hazzard</td><td>Dentro de la consulta, después del SELECT o WITH</td></tr>
+<tr><td>DAX</td><td>// Made by: Hazzard</td><td>Antes del primer VAR</td></tr>
+<tr><td>JS / TS / C# / Java</td><td>// Made by: Hazzard</td><td>Primera línea, después de lo que el lenguaje exija arriba</td></tr>
+<tr><td>CSS</td><td>/* Made by: Hazzard */</td><td>Primera línea</td></tr>
+<tr><td>HTML</td><td>&lt;!-- Made by: Hazzard --&gt;</td><td>Después de &lt;!DOCTYPE html&gt;</td></tr>
+<tr><td>YAML / Bash / PowerShell</td><td># Made by: Hazzard</td><td>Primera línea, después del shebang</td></tr>
+<tr><td>JSON</td><td>—</td><td>No admite comentarios</td></tr>
+</table>
+<p>En código ajeno, la firma original se queda y se agrega "Updated by Haz".</p>
+
+<h2>3. VBA</h2>
+<ul>
+<li>Option Explicit en la primera línea de todo módulo.</li>
+<li>On Error GoTo ErrorHandler. El handler restaura Application y dice qué falló.</li>
+<li>On Error Resume Next solo envolviendo una línea, seguido de On Error GoTo 0.</li>
+<li>Banners por sección, en este orden: Variable Declaration → Application Settings → lógica → Restore Application Settings.</li>
+<li>Se apagan ScreenUpdating, Calculation (xlCalculationManual) y EnableEvents, y se restauran siempre, también en el handler.</li>
+<li>Variables descriptivas en PascalCase (CurrentWorkbook, CurrentTable). Se trabaja con ListObject, no con rangos fijos.</li>
+</ul>
+<pre>Option Explicit
+
+Sub ProcessInventoryData()
+    On Error GoTo ErrorHandler
+
+    '================================================================
+    ' Variable Declaration
+    '================================================================
+    Dim CurrentTable As ListObject
+
+    '================================================================
+    ' Application Settings
+    '================================================================
+    Application.ScreenUpdating = False
+    Application.Calculation = xlCalculationManual
+    Application.EnableEvents = False
+
+    ' Processing logic
+
+CleanExit:
+    '================================================================
+    ' Restore Application Settings
+    '================================================================
+    Application.ScreenUpdating = True
+    Application.Calculation = xlCalculationAutomatic
+    Application.EnableEvents = True
+    Exit Sub
+
+ErrorHandler:
+    MsgBox "Error " &amp; Err.Number &amp; ": " &amp; Err.Description, vbCritical
+    Resume CleanExit
+End Sub</pre>
+
+<h2>4. Power Query (M)</h2>
+<ul>
+<li>Pasos en inglés y en CamelCase, cortos y descriptivos (CleanedHeaders, FilteredRows, ChangedTypes). Nunca #"Changed Type1".</li>
+<li>Sin líneas en blanco entre pasos dentro de let ... in.</li>
+<li>No se comenta cada paso: el nombre del paso es la documentación. Una línea de descripción al inicio.</li>
+<li>Se filtra y se quitan columnas temprano, para conservar el query folding.</li>
+<li>Sin argumento de cultura en las conversiones, salvo que haga falta de verdad.</li>
+</ul>
+<pre>// Cleans the MB52 export and keeps unrestricted stock by plant
+let
+    Source = Csv.Document(File.Contents(FilePath), [Delimiter = ";", Encoding = 65001]),
+    PromotedHeaders = Table.PromoteHeaders(Source, [PromoteAllScalars = true]),
+    CleanedHeaders = Table.TransformColumnNames(PromotedHeaders, Text.Trim),
+    FilteredRows = Table.SelectRows(CleanedHeaders, each [Plant] &lt;&gt; null)
+in
+    FilteredRows</pre>
+
+<h2>5. SQL</h2>
+<ul>
+<li>CTEs (WITH) en lugar de subconsultas anidadas; cada CTE con una intención clara.</li>
+<li>Alias descriptivos para tablas y columnas (inv_head, fact_ord, po_line). Nunca a, b ni t1.</li>
+<li>Columnas explícitas: nada de SELECT * en algo que se entrega.</li>
+<li>Una cláusula por línea y joins explícitos y alineados.</li>
+<li>Nulos tratados de forma explícita: COALESCE o NVL, según el motor.</li>
+</ul>
+
+<h2>6. Oracle (EBS, Blitz Report)</h2>
+<ul>
+<li><b>Ningún comentario antes de la primera sentencia.</b> Provoca ORA-24374: define not done before fetch or execute. La consulta empieza directo con SELECT o WITH.</li>
+<li><b>Sin ";" al final.</b></li>
+<li>Si hace falta documentar, el comentario va dentro de la consulta, después del SELECT o WITH, o fuera del archivo que se ejecuta.</li>
+<li>Las consultas pesadas se corren solo en la ventana acordada con el DBA.</li>
+</ul>
+<pre>WITH open_po AS (
+    -- Open purchase order lines by item
+    SELECT po_line.item_id,
+           SUM(po_line.quantity) AS ordered_qty
+    FROM   po_lines_all po_line
+    WHERE  NVL(po_line.closed_code, 'OPEN') = 'OPEN'
+    GROUP  BY po_line.item_id
+)
+SELECT item_mst.segment1 AS item_number,
+       COALESCE(open_po.ordered_qty, 0) AS ordered_qty
+FROM   mtl_system_items_b item_mst
+LEFT   JOIN open_po ON open_po.item_id = item_mst.inventory_item_id
+WHERE  item_mst.organization_id = :org_id</pre>
+
+<h2>7. Python y pandas</h2>
+<ul>
+<li>ETL con pandas + pyarrow y salida en .parquet.</li>
+<li>Un entorno virtual por proyecto, con las dependencias declaradas.</li>
+<li>La configuración (rutas, tablas, columnas esperadas) va fuera del código.</li>
+<li>logging en lugar de print, con un mensaje final de completado.</li>
+<li>Banners por sección.</li>
+<li>try / except, con error visible, en toda lectura de archivos y en todo barrido de carpetas.</li>
+</ul>
+<pre># ===============================================
+# Validate Schema
+# ===============================================
+expected_columns = ["PO_NUM", "VENDOR_NUM", "ITEM_NUM", "QUANTITY", "NEED_BY_DATE"]
+missing = [c for c in expected_columns if c not in df.columns]
+if missing:
+    raise ValueError(f"Missing columns: {missing}")</pre>
+
+<h2>8. PySpark en Fabric: trampas que ya costaron</h2>
+<table>
+<tr><th>Trampa</th><th>Qué pasa</th><th>Cómo se hace bien</th></tr>
+<tr><td>NULL == "x" dentro de un filter</td><td>Devuelve NULL, no False, y el filtro descarta la fila. Una tabla entera puede salir casi vacía.</td><td>F.col(c).eqNullSafe("x"), o COALESCE antes de comparar.</td></tr>
+<tr><td>Row no tiene .get()</td><td>AttributeError: get, sin decir dónde.</td><td>.asDict() al construir diccionarios desde collect() o first().</td></tr>
+<tr><td>spark.table("nombre") sin lakehouse adjunto</td><td>Desde un pipeline truena. Su hermano spark.catalog.tableExists() devuelve False en silencio y el proceso sigue sin la tabla.</td><td>Leer por ruta: spark.read.format("delta").load(f"{base_path}/Tables/{nombre}").</td></tr>
+<tr><td>Alias de join con varios withColumn</td><td>Una columna nueva con el mismo nombre tapa la del alias y deja de resolver a media cadena.</td><td>Prefijar las columnas antes de unir, en lugar de calificar con alias.</td></tr>
+<tr><td>sorted() con None después de collect()</td><td>TypeError entre NoneType y str. Filtrarlos los tira del catálogo en silencio.</td><td>Apartar el nulo antes de ordenar y devolverlo al final: key=lambda x: (x is None, x or "").</td></tr>
+<tr><td>mssparkutils.fs.head</td><td>Corta a 100 KB sin avisar, aunque se pida más.</td><td>open() desde /lakehouse/default/..., y comparar los bytes leídos contra el tamaño del archivo.</td></tr>
+<tr><td>option("wholetext", True)</td><td>option() espera string: el bool se ignora y se lee una sola línea.</td><td>Leer con open() desde el mount local.</td></tr>
+<tr><td>Rutas de OneLake</td><td>Distinguen mayúsculas.</td><td>Listar la carpeta antes de escribir la ruta en la config.</td></tr>
+<tr><td>Campo ausente en una fila</td><td>r["X"] sobre una columna que no existe da un error con solo el nombre.</td><td>Antes de leer campo por campo, comprobar que el DataFrame trae las columnas, y si no, decir cuáles sí tiene.</td></tr>
+</table>
+<p><b>Red de seguridad:</b> cuando un proceso reparte filas en cubetas, verifica que las cubetas sumen la entrada, y aborta si no.</p>
+<pre>if n_rejected + n_invoiced + output != input_rows:
+    raise ValueError(f"Se perdieron filas: entrada {input_rows:,}, "
+                     f"cubetas {n_rejected + n_invoiced + output:,}")</pre>
+<p>Para alinear esquemas de varias fuentes: unionByName(other, allowMissingColumns=True).</p>
+
+<h2>9. DAX</h2>
+<ul>
+<li>Nombre de negocio legible (Schedule Adherence %).</li>
+<li>Un VAR por paso, y DIVIDE() en lugar de /.</li>
+<li>Modelo en estrella, con las medidas en una tabla de medidas.</li>
+</ul>
+<pre>Schedule Adherence % =
+VAR PlannedQty = SUM ( FactSchedule[PlannedQty] )
+VAR AdheredQty = SUMX ( FactSchedule, MIN ( FactSchedule[ActualQty], FactSchedule[PlannedQty] ) )
+RETURN
+    DIVIDE ( AdheredQty, PlannedQty )</pre>
+
+<h2>10. Flujos de automatización</h2>
+<ul>
+<li>Se diseñan en este orden: Trigger → Actions → Conditions → Outputs → Error handling.</li>
+<li>Conexiones reutilizables y con el mínimo privilegio.</li>
+<li>Sin bucles innecesarios.</li>
+<li>Idempotencia y reintentos explícitos.</li>
+<li>Ninguna credencial dentro del flujo: va en la conexión.</li>
+</ul>
+
+<h2>11. Git</h2>
+<ul>
+<li>Push directo a main, lo hace Haz a mano.</li>
+<li>Mensajes de commit en español, en imperativo y con el qué.</li>
+<li>Nunca firmas de herramientas de IA (Co-Authored-By, "Generated with").</li>
+<li>Prohibido saltarse candados: --no-verify, git add -f, apagar los hooks.</li>
+</ul>
+
+</body></html>

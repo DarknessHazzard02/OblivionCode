@@ -1,0 +1,194 @@
+<!-- Made by: Hazzard -->
+<html><head><meta charset="utf-8"><title>Coding Standards</title>
+<style>body{font-family:Calibri,sans-serif;font-size:11pt}h1{font-size:18pt}h2{font-size:14pt}h3{font-size:12pt}table{border-collapse:collapse}td,th{border:1px solid #999;padding:3px 6px;vertical-align:top}th{background:#eee}pre{font-family:Consolas,monospace;font-size:9.5pt;background:#f4f4f4;padding:6px}</style></head><body>
+
+<h1>Coding Standards</h1>
+<p>Reference for VBA, Power Query (M), SQL, Oracle, Python, PySpark, DAX and automation flows. It applies to all code that is written or reviewed.</p>
+
+<h2>1. Principles</h2>
+<ul>
+<li><b>Maintainable first:</b> clean, modular and idempotent (running it twice gives the same result).</li>
+<li><b>No silently swallowed errors and no silent defaults:</b> anything missing or invalid must be visible. A value that cannot be read becomes null and is counted separately, never 0.</li>
+<li><b>Complete blocks</b>, ready to copy and paste, with no "..." left to fill in.</li>
+<li><b>Language:</b> names and code in English; explanations in the asker's language.</li>
+<li><b>Existing files:</b> when modifying one, its style wins over these rules.</li>
+</ul>
+
+<h2>2. Author signature</h2>
+<table>
+<tr><th>Destination</th><th>Rule</th></tr>
+<tr><td>Work (anything that belongs to the company)</td><td>No signature: no "Made by", no "Author", no "Updated by". No tool signatures either.</td></tr>
+<tr><td>Personal (Haz's own projects)</td><td>Signature is mandatory, as in the table below.</td></tr>
+</table>
+<p>When in doubt, no signature.</p>
+<table>
+<tr><th>Language</th><th>Signature</th><th>Where</th></tr>
+<tr><td>VBA</td><td>'Made by: Hazzard</td><td>Last line, after End Sub</td></tr>
+<tr><td>Power Query (M)</td><td>// Made by: Hazzard + one description line</td><td>First line</td></tr>
+<tr><td>Python</td><td>Banner with # Author: Haz</td><td>Header</td></tr>
+<tr><td>SQL</td><td>-- Made by: Hazzard</td><td>First line</td></tr>
+<tr><td>Oracle</td><td>-- Made by: Hazzard</td><td>Inside the query, after SELECT or WITH</td></tr>
+<tr><td>DAX</td><td>// Made by: Hazzard</td><td>Before the first VAR</td></tr>
+<tr><td>JS / TS / C# / Java</td><td>// Made by: Hazzard</td><td>First line, after anything the language requires at the top</td></tr>
+<tr><td>CSS</td><td>/* Made by: Hazzard */</td><td>First line</td></tr>
+<tr><td>HTML</td><td>&lt;!-- Made by: Hazzard --&gt;</td><td>After &lt;!DOCTYPE html&gt;</td></tr>
+<tr><td>YAML / Bash / PowerShell</td><td># Made by: Hazzard</td><td>First line, after the shebang</td></tr>
+<tr><td>JSON</td><td>—</td><td>Does not support comments</td></tr>
+</table>
+<p>In someone else's code, keep the original signature and add "Updated by Haz".</p>
+
+<h2>3. VBA</h2>
+<ul>
+<li><b>Option Explicit</b> on the first line of every module.</li>
+<li><b>On Error GoTo ErrorHandler.</b> The handler restores Application and says what failed.</li>
+<li><b>On Error Resume Next</b> wraps a single line only, followed by On Error GoTo 0.</li>
+<li><b>Section banners</b>, in this order: Variable Declaration → Application Settings → logic → Restore Application Settings.</li>
+<li><b>Application settings:</b> ScreenUpdating, Calculation (xlCalculationManual) and EnableEvents are turned off, and always restored, including in the handler.</li>
+<li><b>Names:</b> descriptive PascalCase variables (CurrentWorkbook, CurrentTable). Work with ListObject, not fixed ranges.</li>
+</ul>
+<pre>Option Explicit
+
+Sub ProcessInventoryData()
+    On Error GoTo ErrorHandler
+
+    '================================================================
+    ' Variable Declaration
+    '================================================================
+    Dim CurrentTable As ListObject
+
+    '================================================================
+    ' Application Settings
+    '================================================================
+    Application.ScreenUpdating = False
+    Application.Calculation = xlCalculationManual
+    Application.EnableEvents = False
+
+    ' Processing logic
+
+CleanExit:
+    '================================================================
+    ' Restore Application Settings
+    '================================================================
+    Application.ScreenUpdating = True
+    Application.Calculation = xlCalculationAutomatic
+    Application.EnableEvents = True
+    Exit Sub
+
+ErrorHandler:
+    MsgBox "Error " &amp; Err.Number &amp; ": " &amp; Err.Description, vbCritical
+    Resume CleanExit
+End Sub</pre>
+
+<h2>4. Power Query (M)</h2>
+<ul>
+<li><b>Step names:</b> English, CamelCase, short and descriptive (CleanedHeaders, FilteredRows, ChangedTypes). Never #"Changed Type1".</li>
+<li><b>No blank lines</b> between steps inside let ... in.</li>
+<li><b>Comments:</b> do not comment every step; the step name is the documentation. One description line at the top.</li>
+<li><b>Query folding:</b> filter and remove columns early to preserve it.</li>
+<li><b>Culture arguments:</b> none in conversions unless truly needed.</li>
+</ul>
+<pre>// Cleans the MB52 export and keeps unrestricted stock by plant
+let
+    Source = Csv.Document(File.Contents(FilePath), [Delimiter = ";", Encoding = 65001]),
+    PromotedHeaders = Table.PromoteHeaders(Source, [PromoteAllScalars = true]),
+    CleanedHeaders = Table.TransformColumnNames(PromotedHeaders, Text.Trim),
+    FilteredRows = Table.SelectRows(CleanedHeaders, each [Plant] &lt;&gt; null)
+in
+    FilteredRows</pre>
+
+<h2>5. SQL</h2>
+<ul>
+<li><b>CTEs (WITH)</b> instead of nested subqueries, each with a clear intent.</li>
+<li><b>Descriptive aliases</b> for tables and columns (inv_head, fact_ord, po_line). Never a, b or t1.</li>
+<li><b>Explicit columns:</b> no SELECT * in anything delivered.</li>
+<li><b>Layout:</b> one clause per line, with explicit, aligned joins.</li>
+<li><b>Nulls:</b> handled explicitly with COALESCE or NVL, depending on the engine.</li>
+</ul>
+
+<h2>6. Oracle (EBS, Blitz Report)</h2>
+<ul>
+<li><b>No comment before the first statement.</b> It causes ORA-24374: define not done before fetch or execute. The query starts directly with SELECT or WITH.</li>
+<li><b>No trailing ";".</b></li>
+<li><b>Documentation:</b> if needed, the comment goes inside the query, after SELECT or WITH, or outside the file that gets executed.</li>
+<li><b>Heavy queries</b> run only inside the window agreed with the DBA.</li>
+</ul>
+<pre>WITH open_po AS (
+    -- Open purchase order lines by item
+    SELECT po_line.item_id,
+           SUM(po_line.quantity) AS ordered_qty
+    FROM   po_lines_all po_line
+    WHERE  NVL(po_line.closed_code, 'OPEN') = 'OPEN'
+    GROUP  BY po_line.item_id
+)
+SELECT item_mst.segment1 AS item_number,
+       COALESCE(open_po.ordered_qty, 0) AS ordered_qty
+FROM   mtl_system_items_b item_mst
+LEFT   JOIN open_po ON open_po.item_id = item_mst.inventory_item_id
+WHERE  item_mst.organization_id = :org_id</pre>
+
+<h2>7. Python and pandas</h2>
+<ul>
+<li><b>ETL:</b> pandas + pyarrow, with .parquet output.</li>
+<li><b>Environment:</b> one virtual environment per project, with declared dependencies.</li>
+<li><b>Configuration</b> (paths, tables, expected columns) lives outside the code.</li>
+<li><b>Logging:</b> logging instead of print, with a final completion message.</li>
+<li><b>Section banners.</b></li>
+<li><b>Error handling:</b> try / except with a visible error around every file read and folder scan.</li>
+</ul>
+<pre># ===============================================
+# Validate Schema
+# ===============================================
+expected_columns = ["PO_NUM", "VENDOR_NUM", "ITEM_NUM", "QUANTITY", "NEED_BY_DATE"]
+missing = [c for c in expected_columns if c not in df.columns]
+if missing:
+    raise ValueError(f"Missing columns: {missing}")</pre>
+
+<h2>8. PySpark in Fabric: traps that already cost us</h2>
+<table>
+<tr><th>Trap</th><th>What happens</th><th>How to do it right</th></tr>
+<tr><td>NULL == "x" inside a filter</td><td>It returns NULL, not False, and the filter drops the row. A whole table can come out nearly empty.</td><td>F.col(c).eqNullSafe("x"), or COALESCE before comparing.</td></tr>
+<tr><td>Row has no .get()</td><td>AttributeError: get, without saying where.</td><td>.asDict() when building dictionaries from collect() or first().</td></tr>
+<tr><td>spark.table("name") without an attached lakehouse</td><td>Fails when run from a pipeline. Its sibling spark.catalog.tableExists() silently returns False, and the process continues without the table.</td><td>Read by path: spark.read.format("delta").load(f"{base_path}/Tables/{name}").</td></tr>
+<tr><td>Join alias plus several withColumn calls</td><td>A new column with the same name shadows the aliased one, which stops resolving midway through the chain.</td><td>Prefix columns before joining instead of qualifying with aliases.</td></tr>
+<tr><td>sorted() with None after collect()</td><td>TypeError between NoneType and str. Filtering the nulls out silently drops them from the catalog.</td><td>Set nulls aside before sorting and append them at the end: key=lambda x: (x is None, x or "").</td></tr>
+<tr><td>mssparkutils.fs.head</td><td>Silently truncates at 100 KB, even if more is requested.</td><td>open() from /lakehouse/default/..., and compare the bytes read against the file size.</td></tr>
+<tr><td>option("wholetext", True)</td><td>option() expects a string: the bool is ignored and only one line is read.</td><td>Read with open() from the local mount.</td></tr>
+<tr><td>OneLake paths</td><td>They are case-sensitive.</td><td>List the folder before writing the path into the config.</td></tr>
+<tr><td>Missing field in a row</td><td>r["X"] on a missing column raises an error that only shows the name.</td><td>Before reading field by field, check that the DataFrame has the columns; if not, say which ones it does have.</td></tr>
+</table>
+<p><b>Safety net:</b> when a process splits rows into buckets, check that the buckets add up to the input, and abort if they do not.</p>
+<pre>if n_rejected + n_invoiced + output != input_rows:
+    raise ValueError(f"Rows lost: input {input_rows:,}, "
+                     f"buckets {n_rejected + n_invoiced + output:,}")</pre>
+<p><b>Aligning schemas</b> across sources: unionByName(other, allowMissingColumns=True).</p>
+
+<h2>9. DAX</h2>
+<ul>
+<li><b>Names:</b> readable business names (Schedule Adherence %).</li>
+<li><b>Steps:</b> one VAR per step, and DIVIDE() instead of /.</li>
+<li><b>Model:</b> star schema, with measures in a measures table.</li>
+</ul>
+<pre>Schedule Adherence % =
+VAR PlannedQty = SUM ( FactSchedule[PlannedQty] )
+VAR AdheredQty = SUMX ( FactSchedule, MIN ( FactSchedule[ActualQty], FactSchedule[PlannedQty] ) )
+RETURN
+    DIVIDE ( AdheredQty, PlannedQty )</pre>
+
+<h2>10. Automation flows</h2>
+<ul>
+<li><b>Design order:</b> Trigger → Actions → Conditions → Outputs → Error handling.</li>
+<li><b>Connections:</b> reusable, least-privilege.</li>
+<li><b>Loops:</b> no unnecessary ones.</li>
+<li><b>Idempotency and retries</b> made explicit.</li>
+<li><b>Credentials:</b> never inside the flow; they live in the connection.</li>
+</ul>
+
+<h2>11. Git</h2>
+<ul>
+<li>Direct push to main, done by Haz by hand.</li>
+<li>Commit messages in Spanish, imperative, saying what changed.</li>
+<li>Never AI tool signatures (Co-Authored-By, "Generated with").</li>
+<li>Bypassing locks is forbidden: --no-verify, git add -f, disabling hooks.</li>
+</ul>
+
+</body></html>
