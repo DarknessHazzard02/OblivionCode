@@ -1,0 +1,92 @@
+<!-- Made by: Hazzard -->
+<html><head><meta charset="utf-8"><title>CORE and S&amp;OP KPIs</title>
+<style>body{font-family:Calibri,sans-serif;font-size:11pt}h1{font-size:18pt}h2{font-size:14pt}table{border-collapse:collapse}td,th{border:1px solid #999;padding:3px 6px;vertical-align:top}th{background:#eee}</style></head><body>
+
+<h1>CORE and S&amp;OP KPIs</h1>
+<p>What to measure and why, and how to diagnose a manual process before automating it.</p>
+
+<h2>1. CORE methodology</h2>
+<p>A checklist for any process that lives in a manual Excel today. Walk through it in order and state which phase the process is in.</p>
+<table>
+<tr><th>Phase</th><th>Question</th><th>Typical deliverable</th></tr>
+<tr><td><b>C — Control</b></td><td>Is the input data reliable, from a single source, and owned by someone? Does the process serve the business goal?</td><td>Source inventory, data contract, schema validations, null and duplicate control, quality rules</td></tr>
+<tr><td><b>O — Optimize</b></td><td>Which manual, repetitive steps can be removed? What logic is redundant?</td><td>VBA, Power Automate, Python ETL, scheduled extraction; tuned queries and joins</td></tr>
+<tr><td><b>R — Redesign</b></td><td>Can the static report become a model and an interactive dashboard?</td><td>Star schema, DAX measures, cross-filtering dashboard, modular pipelines</td></tr>
+<tr><td><b>E — Evolve</b></td><td>Does it scale? Does it plug into the S&amp;OP cycle?</td><td>Fabric lakehouse, Parquet or Delta, pipelines, monitoring, alerts, continuous improvement</td></tr>
+</table>
+<p><b>Rules:</b></p>
+<ul>
+<li><b>C comes first.</b> Do not jump to R or E until C is solved: a dashboard on uncontrolled data only automates chaos.</li>
+<li><b>Measurable impact.</b> Every proposal closes with a number: hours per week saved, sources consolidated (for example, 10 to 3), percentage of overproduction reduced, stoppages avoided.</li>
+<li><b>Usual tool path:</b> Excel/VBA → Python/Power Automate → Power BI on a star schema → Fabric.</li>
+<li><b>Reuse first.</b> Existing models are reused before a new one is created.</li>
+</ul>
+
+<h2>2. CTCO structure</h2>
+<p>When a request is vague, restructure it into these four parts and confirm before starting.</p>
+<table>
+<tr><th>Part</th><th>Content</th></tr>
+<tr><td>Context</td><td>Environment, scope (work or personal), systems involved</td></tr>
+<tr><td>Task</td><td>Exact technical actions and transformations</td></tr>
+<tr><td>Constraints</td><td>Coding, security and data-governance standards</td></tr>
+<tr><td>Output</td><td>Deliverable format</td></tr>
+</table>
+
+<h2>3. KPIs</h2>
+<p>For every KPI, always define four things:</p>
+<ul>
+<li>the formula;</li>
+<li>the grain (day or week, plant, line, material);</li>
+<li>the source;</li>
+<li>what counts as "good".</li>
+</ul>
+<table>
+<tr><th>KPI</th><th>Formula</th><th>Notes</th></tr>
+<tr><td><b>OEE</b></td><td>Availability × Performance × Quality</td><td><ul>
+<li>Availability = run time / planned time</li>
+<li>Performance = (pieces × ideal cycle) / run time</li>
+<li>Quality = good pieces / total pieces</li>
+</ul></td></tr>
+<tr><td><b>Schedule Adherence</b></td><td>Σ min(actual, plan) / Σ plan, per line and period</td><td>One day's overproduction must not offset another day's shortfall</td></tr>
+<tr><td><b>Days of coverage</b></td><td>Available inventory / average daily demand</td><td>State the demand window: forward-looking or historical</td></tr>
+<tr><td><b>Shortages</b></td><td>Net requirement &gt; available on the need date</td><td>Show the first shortage date and the critical material</td></tr>
+<tr><td><b>Aging</b></td><td>Days since receipt or last movement, in buckets</td><td>Typical buckets: 0–30, 31–60, 61–90 and over 90</td></tr>
+<tr><td><b>FPY</b></td><td>Good pieces first time / pieces in</td><td>Calculated per station; the total yield is the product of all stations</td></tr>
+<tr><td><b>Supply–demand netting</b></td><td>Available + open supply − open demand, accumulated by date</td><td>See section 4</td></tr>
+<tr><td><b>Downtime Pareto</b></td><td>Downtime minutes per cause, sorted, with cumulative %</td><td>The 80/20 drives the action</td></tr>
+<tr><td><b>Excess control</b></td><td>Scheduled production above demand / scheduled production</td><td>Rule to mitigate overproduction</td></tr>
+<tr><td><b>Line balancing</b></td><td>Cycle time and load per cell vs. takt</td><td>Finds bottleneck cells</td></tr>
+</table>
+<p><b>Measures that are an extreme</b> (minimum, maximum, first red day) are not validated by a reconciliation of sums. Two rows that cancel out leave the sum intact and move the extreme. Validate the extreme against its own definition, for example Shortage = max(0, −min(Ending inventory)).</p>
+
+<h2>4. Oracle context</h2>
+<ul>
+<li><b>Netting view:</b> the combined list of open supply and open demand per item is the basis for netting.</li>
+<li><b>Oracle queries</b> follow the coding standards: no leading comment (ORA-24374) and no trailing ";".</li>
+</ul>
+
+<h2>5. Operational analysis</h2>
+<table>
+<tr><th>Topic</th><th>What gets checked</th><th>What gets delivered</th></tr>
+<tr><td>Production scheduling</td><td>Conflicts, overloads, missing inputs, lead-time risk, material shortages, capacity constraints</td><td>Corrective actions</td></tr>
+<tr><td>Inventory</td><td>On-hand, open orders, shortages, coverage, earliest feasible date</td><td>Alternatives</td></tr>
+<tr><td>Inter-plant transfers</td><td>They come as two rows with the same document number and different dates. Match them by document number, never by quantity</td><td>Both legs removed, not just the negative one</td></tr>
+<tr><td>SOPs</td><td>Key steps, roles, prerequisites, inputs and outputs, exceptions</td><td>Structured summary</td></tr>
+</table>
+
+<h2>6. Dashboard portfolio</h2>
+<p>The work targets these dashboards:</p>
+<ul>
+<li>production;</li>
+<li>inventory and shortages;</li>
+<li>material availability;</li>
+<li>schedule adherence;</li>
+<li>OEE and downtime;</li>
+<li>quality and yield;</li>
+<li>demand vs. supply;</li>
+<li>S&amp;OP performance;</li>
+<li>management KPI cockpit.</li>
+</ul>
+<p>Every new proposal is placed somewhere on this list.</p>
+
+</body></html>

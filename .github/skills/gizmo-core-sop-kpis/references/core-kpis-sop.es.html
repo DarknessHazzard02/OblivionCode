@@ -1,0 +1,92 @@
+<!-- Made by: Hazzard -->
+<html><head><meta charset="utf-8"><title>CORE y KPIs de S&amp;OP</title>
+<style>body{font-family:Calibri,sans-serif;font-size:11pt}h1{font-size:18pt}h2{font-size:14pt}table{border-collapse:collapse}td,th{border:1px solid #999;padding:3px 6px;vertical-align:top}th{background:#eee}</style></head><body>
+
+<h1>CORE y KPIs de S&amp;OP</h1>
+<p>Este documento dice qué medir y por qué, y cómo diagnosticar un proceso manual antes de automatizarlo.</p>
+
+<h2>1. Metodología CORE</h2>
+<p>CORE es el checklist para cualquier proceso que hoy vive en un Excel manual. Se recorre en orden, y se dice en qué fase está el proceso.</p>
+<table>
+<tr><th>Fase</th><th>Pregunta</th><th>Entregable típico</th></tr>
+<tr><td><b>C — Controlar</b></td><td>¿Los datos de entrada son confiables, vienen de una sola fuente y tienen dueño? ¿El proceso responde al objetivo de negocio?</td><td>Inventario de fuentes, contrato de datos, validaciones de esquema, control de nulos y duplicados, reglas de calidad</td></tr>
+<tr><td><b>O — Optimizar</b></td><td>¿Qué pasos manuales y repetitivos se pueden quitar? ¿Qué lógica sobra?</td><td>VBA, Power Automate, ETL en Python, extracción programada; consultas y joins afinados</td></tr>
+<tr><td><b>R — Rediseñar</b></td><td>¿El reporte estático puede convertirse en un modelo y un tablero interactivo?</td><td>Modelo en estrella, medidas DAX, tablero con filtros cruzados, pipelines modulares</td></tr>
+<tr><td><b>E — Evolucionar</b></td><td>¿Escala? ¿Se integra al ciclo de S&amp;OP?</td><td>Lakehouse en Fabric, Parquet o Delta, pipelines, monitoreo, alertas, mejora continua</td></tr>
+</table>
+<p><b>Reglas:</b></p>
+<ul>
+<li>No se salta a R ni a E si C no está resuelto: un tablero sobre datos sin control solo automatiza el caos.</li>
+<li>Cada propuesta cierra con un <b>impacto medible</b>: horas por semana ahorradas, fuentes consolidadas (por ejemplo, de 10 a 3), porcentaje de exceso de producción reducido, paros evitados.</li>
+<li>Ruta habitual de herramientas: Excel/VBA → Python/Power Automate → Power BI en estrella → Fabric.</li>
+<li>Antes de crear un modelo nuevo, se reutilizan los modelos que ya existen.</li>
+</ul>
+
+<h2>2. Estructura CTCO</h2>
+<p>Cuando una petición llega vaga, se reestructura en estas cuatro partes y se confirma antes de empezar.</p>
+<table>
+<tr><th>Parte</th><th>Qué contiene</th></tr>
+<tr><td>Context</td><td>Entorno, alcance (laboral o personal), sistemas involucrados</td></tr>
+<tr><td>Task</td><td>Acciones técnicas exactas y transformaciones</td></tr>
+<tr><td>Constraints</td><td>Estándares de código, seguridad, gobierno de datos</td></tr>
+<tr><td>Output</td><td>Formato del entregable</td></tr>
+</table>
+
+<h2>3. KPIs</h2>
+<p>De cada KPI se define siempre:</p>
+<ul>
+<li>la fórmula;</li>
+<li>el grano (día o semana, planta, línea, material);</li>
+<li>la fuente;</li>
+<li>qué cuenta como "bueno".</li>
+</ul>
+<table>
+<tr><th>KPI</th><th>Fórmula</th><th>Notas</th></tr>
+<tr><td><b>OEE</b></td><td>Disponibilidad × Rendimiento × Calidad</td><td><ul>
+<li>Disponibilidad = tiempo operando / tiempo planeado</li>
+<li>Rendimiento = (piezas × ciclo ideal) / tiempo operando</li>
+<li>Calidad = piezas buenas / piezas totales</li>
+</ul></td></tr>
+<tr><td><b>Schedule Adherence</b></td><td>Σ min(real, plan) / Σ plan, por línea y periodo</td><td>Que la sobreproducción de un día no compense el faltante de otro</td></tr>
+<tr><td><b>Días de cobertura</b></td><td>Inventario disponible / demanda diaria promedio</td><td>Declarar la ventana de demanda: hacia adelante o histórica</td></tr>
+<tr><td><b>Faltantes (shortages)</b></td><td>Requerimiento neto &gt; disponible en la fecha de necesidad</td><td>Mostrar la fecha del primer faltante y el material crítico</td></tr>
+<tr><td><b>Aging</b></td><td>Días desde la recepción o el último movimiento, en cubetas</td><td>Cubetas típicas: 0–30, 31–60, 61–90 y más de 90</td></tr>
+<tr><td><b>FPY</b></td><td>Piezas buenas a la primera / piezas que entraron</td><td>Se calcula por estación; el rendimiento total es el producto de las estaciones</td></tr>
+<tr><td><b>Netting supply–demand</b></td><td>Disponible + supply abierto − demanda abierta, acumulado por fecha</td><td>Ver la sección 4</td></tr>
+<tr><td><b>Pareto de paros</b></td><td>Minutos de paro por causa, ordenados, con % acumulado</td><td>El 80/20 marca la acción</td></tr>
+<tr><td><b>Control de excesos</b></td><td>Producción programada por encima de la demanda / producción programada</td><td>Regla para mitigar la sobreproducción</td></tr>
+<tr><td><b>Balanceo de líneas</b></td><td>Tiempo de ciclo y carga por celda contra el takt</td><td>Detecta celdas cuello de botella</td></tr>
+</table>
+<p><b>Si la medida es un extremo</b> (mínimo, máximo, primer día en rojo), un cuadre por sumas no la valida: dos renglones que se cancelan dejan la suma igual y mueven el extremo. El extremo se valida contra su propia definición; por ejemplo, Faltante = max(0, −min(Inventario final)).</p>
+
+<h2>4. Contexto de Oracle</h2>
+<ul>
+<li><b>Vista de netting:</b> la lista combinada de supply y demanda abiertos por item es la base del netting.</li>
+<li>Las consultas a Oracle siguen los estándares de código: sin comentario inicial (ORA-24374) y sin ";" al final.</li>
+</ul>
+
+<h2>5. Análisis operativo</h2>
+<table>
+<tr><th>Tema</th><th>Qué se revisa</th><th>Qué se entrega</th></tr>
+<tr><td>Programación de producción</td><td>Conflictos, sobrecargas, insumos faltantes, riesgo de lead time, faltantes de material, restricciones de capacidad</td><td>Acciones correctivas</td></tr>
+<tr><td>Inventario</td><td>On-hand, órdenes abiertas, faltantes, cobertura, primera fecha factible</td><td>Alternativas</td></tr>
+<tr><td>Traspasos entre plantas</td><td>Vienen como dos renglones con el mismo número de documento y fechas distintas. Se buscan por número de documento, nunca por cantidad</td><td>Se quitan las dos patas, no solo la negativa</td></tr>
+<tr><td>SOPs</td><td>Pasos clave, roles, prerrequisitos, entradas y salidas, excepciones</td><td>Resumen estructurado</td></tr>
+</table>
+
+<h2>6. Portafolio de tableros</h2>
+<p>El trabajo apunta a estos tableros:</p>
+<ul>
+<li>producción;</li>
+<li>inventario y faltantes;</li>
+<li>disponibilidad de material;</li>
+<li>schedule adherence;</li>
+<li>OEE y paros;</li>
+<li>calidad y yield;</li>
+<li>demanda contra supply;</li>
+<li>desempeño de S&amp;OP;</li>
+<li>cockpit de KPIs gerenciales.</li>
+</ul>
+<p>Toda propuesta nueva se ubica en esta lista.</p>
+
+</body></html>
