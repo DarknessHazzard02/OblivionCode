@@ -2,7 +2,7 @@
 -- FreeCodeCamp Relational Database Certification
 -- Project: Periodic Table Database (PostgreSQL)
 -- Final schema after the project's "fix the database" tasks.
--- Used by ../../Bash/freecodecamp/Periodic_Table_Element.sh
+-- Used by Periodic_Table_Element.sh (same folder)
 
 -- 1. Database
 CREATE DATABASE periodic_table;

@@ -2,7 +2,7 @@
 // FreeCodeCamp Data Visualization - Scatterplot Graph (D3)
 // Fastest times up Alpe d'Huez, colored by doping allegations.
 // Data: public freeCodeCamp reference dataset.
-// Run it: open ../../HTML/freecodecamp/FCC_JS_Runner.html?app=Scatterplot_Graph
+// Run it: open ../FCC_JS_Runner.html?app=Scatterplot_Graph
 
 const DATA_URL = "https://raw.githubusercontent.com/freeCodeCamp/ProjectReferenceData/master/cyclist-data.json";
 const W = 900, H = 500, M = { top: 40, right: 30, bottom: 40, left: 70 };

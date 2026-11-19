@@ -1,7 +1,7 @@
 // Made by: Hazzard
 // FreeCodeCamp Front End Development Libraries - Random Quote Machine (React)
 // No build step: uses React.createElement instead of JSX.
-// Run it: open ../../HTML/freecodecamp/FCC_JS_Runner.html?app=Random_Quote_Machine
+// Run it: open ../FCC_JS_Runner.html?app=Random_Quote_Machine
 
 const h = React.createElement;
 

@@ -2,7 +2,7 @@
 # Made by: Hazzard
 # FreeCodeCamp Relational Database Certification - Periodic Table Database
 # Looks up an element by atomic number, symbol or name.
-# Schema in ../../SQL/freecodecamp/Periodic_Table_Database.sql
+# Schema in Periodic_Table_Database.sql (same folder)
 # Usage: ./Periodic_Table_Element.sh 1 | H | Hydrogen
 
 PSQL="psql --username=freecodecamp --dbname=periodic_table -t --no-align -c"

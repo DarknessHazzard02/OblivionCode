@@ -1,7 +1,7 @@
 // Made by: Hazzard
 // FreeCodeCamp Data Visualization - Treemap Diagram (D3): video game sales by platform
 // Data: public freeCodeCamp reference dataset.
-// Run it: open ../../HTML/freecodecamp/FCC_JS_Runner.html?app=Treemap_Diagram
+// Run it: open ../FCC_JS_Runner.html?app=Treemap_Diagram
 
 const DATA_URL = "https://cdn.freecodecamp.org/testable-projects-fcc/data/tree_map/video-game-sales-data.json";
 const W = 1000, H = 600;

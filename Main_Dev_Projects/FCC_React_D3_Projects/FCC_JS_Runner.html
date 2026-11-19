@@ -1,14 +1,14 @@
 <!DOCTYPE html>
 <!-- Made by: Hazzard -->
 <!-- Runner for the freeCodeCamp React (Front End Libraries) and D3 (Data Visualization)
-     projects in ../../JavaScript/freecodecamp. Usage: FCC_JS_Runner.html?app=Bar_Chart
+     projects in ./apps. Usage: FCC_JS_Runner.html?app=Bar_Chart
      Only apps in the APPS list below can be loaded. Library versions are pinned. -->
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>FCC JS Runner</title>
-  <link rel="stylesheet" href="../../CSS/freecodecamp/FCC_JS_Runner.css">
+  <link rel="stylesheet" href="FCC_JS_Runner.css">
 </head>
 <body>
   <nav id="app-nav"></nav>
@@ -93,7 +93,7 @@
       document.title = app.replace(/_/g, " ");
       nav.querySelector('a[href="?app=' + app + '"]').classList.add("active");
       const scripts = APPS[app].flatMap((lib) => LIBS[lib]);
-      scripts.push({ src: "../../JavaScript/freecodecamp/" + app + ".js" });
+      scripts.push({ src: "apps/" + app + ".js" });
       scripts.reduce((chain, script) => chain.then(() => loadScript(script)), Promise.resolve())
         .catch((err) => showError(err.message));
     }
