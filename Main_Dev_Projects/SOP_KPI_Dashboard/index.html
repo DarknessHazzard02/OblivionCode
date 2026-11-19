@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<!-- Made by: Hazzard -->
+<!-- S&OP KPI dashboard: OEE, schedule adherence and coverage from invented data. No libraries, no CDN. -->
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>S&amp;OP KPI Dashboard</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="hdr">
+    <div>
+      <h1>S&amp;OP <span>KPI</span> Dashboard</h1>
+      <p id="freshness" class="muted">Loading data...</p>
+    </div>
+    <div class="filters" role="group" aria-label="Filter by line" id="line-filter"></div>
+  </header>
+  <p id="band" class="band" hidden></p>
+
+  <main class="grid">
+    <section class="kpis" id="kpis" aria-live="polite"></section>
+
+    <section class="card">
+      <h2>OEE by Line <span class="muted small">(click a bar to filter)</span></h2>
+      <div id="oee-chart" class="chart"></div>
+    </section>
+
+    <section class="card">
+      <h2>Schedule Adherence by Day</h2>
+      <div id="adherence-chart" class="chart"></div>
+    </section>
+
+    <section class="card card--wide">
+      <div class="table-head">
+        <h2>Production Detail</h2>
+        <button id="export" class="btn">Export CSV</button>
+      </div>
+      <div class="table-wrap">
+        <table id="detail">
+          <thead>
+            <tr><th>Date</th><th>Line</th><th>Item</th><th>Planned</th><th>Actual</th><th>Good</th><th>OEE</th></tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+      <div class="pager">
+        <button id="prev" class="btn btn--ghost">Previous</button>
+        <span id="page-info" class="muted"></span>
+        <button id="next" class="btn btn--ghost">Next</button>
+      </div>
+    </section>
+
+    <section class="card card--wide">
+      <h2>Inventory Coverage <span class="muted small">(latest day)</span></h2>
+      <div class="table-wrap">
+        <table id="coverage">
+          <thead>
+            <tr><th>Item</th><th>Family</th><th>On Hand</th><th>Daily Forecast</th><th>Days of Coverage</th><th>Status</th></tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+  <footer class="foot muted">Formulas: OEE = Availability x Performance x Quality; Schedule Adherence = sum(min(actual, planned)) / sum(planned); Days of Coverage = on hand / daily forecast.</footer>
+  <script src="app.js"></script>
+</body>
+</html>
