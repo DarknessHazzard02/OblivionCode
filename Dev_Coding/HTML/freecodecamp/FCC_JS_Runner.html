@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<!-- Made by: Hazzard -->
+<!-- Runner for the freeCodeCamp React (Front End Libraries) and D3 (Data Visualization)
+     projects in ../../JavaScript/freecodecamp. Usage: FCC_JS_Runner.html?app=Bar_Chart
+     Only apps in the APPS list below can be loaded. Library versions are pinned. -->
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FCC JS Runner</title>
+  <link rel="stylesheet" href="../../CSS/freecodecamp/FCC_JS_Runner.css">
+</head>
+<body>
+  <nav id="app-nav"></nav>
+  <main id="root"></main>
+
+  <script>
+  // IIFE: keeps the runner's names out of the global scope the apps share.
+  (() => {
+    // Pinned versions with Subresource Integrity: a changed CDN file is refused, not run.
+    const LIBS = {
+      react: [
+        { src: "https://unpkg.com/react@18.3.1/umd/react.production.min.js",
+          sri: "sha384-DGyLxAyjq0f9SPpVevD6IgztCFlnMF6oW/XQGmfe+IsZ8TqEiDrcHkMLKI6fiB/Z" },
+        { src: "https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js",
+          sri: "sha384-gTGxhz21lVGYNMcdJOyq01Edg0jhn/c22nsx0kyqP0TxaV5WVdsSH1fSDUf5YJj1" },
+      ],
+      markdown: [
+        { src: "https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js",
+          sri: "sha384-/TQbtLCAerC3jgaim+N78RZSDYV7ryeoBCVqTuzRrFec2akfBkHS7ACQ3PQhvMVi" },
+        { src: "https://cdn.jsdelivr.net/npm/dompurify@3.1.6/dist/purify.min.js",
+          sri: "sha384-+VfUPEb0PdtChMwmBcBmykRMDd+v6D/oFmB3rZM/puCMDYcIvF968OimRh4KQY9a" },
+      ],
+      d3: [
+        { src: "https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js",
+          sri: "sha384-CjloA8y00+1SDAUkjs099PVfnY2KmDC2BZnws9kh8D/lX1s46w6EPhpXdqMfjK6i" },
+      ],
+      topojson: [
+        { src: "https://cdn.jsdelivr.net/npm/topojson-client@3.1.0/dist/topojson-client.min.js",
+          sri: "sha384-Ukv1p/xTma6P4/2bY5KzWBw+ydSpXmhCMtyciIQVDJ1RmOxtCYNMF1uXT9T63H67" },
+      ],
+    };
+
+    const APPS = {
+      Random_Quote_Machine:  ["react"],
+      Markdown_Previewer:    ["react", "markdown"],
+      Drum_Machine:          ["react"],
+      JavaScript_Calculator: ["react"],
+      Pomodoro_25_5_Clock:   ["react"],
+      Bar_Chart:             ["d3"],
+      Scatterplot_Graph:     ["d3"],
+      Heat_Map:              ["d3"],
+      Choropleth_Map:        ["d3", "topojson"],
+      Treemap_Diagram:       ["d3"],
+    };
+
+    const loadScript = ({ src, sri }) => new Promise((resolve, reject) => {
+      const tag = document.createElement("script");
+      if (sri) {
+        tag.integrity = sri;
+        tag.crossOrigin = "anonymous";
+      }
+      tag.src = src;
+      tag.onload = resolve;
+      tag.onerror = () => reject(new Error("Failed to load " + src));
+      document.body.appendChild(tag);
+    });
+
+    const nav = document.getElementById("app-nav");
+    Object.keys(APPS).forEach((name) => {
+      const link = document.createElement("a");
+      link.href = "?app=" + name;
+      link.textContent = name.replace(/_/g, " ");
+      nav.appendChild(link);
+    });
+
+    const app = new URLSearchParams(location.search).get("app");
+    const root = document.getElementById("root");
+
+    // Any load or runtime error is shown on the page instead of leaving it blank.
+    const showError = (message) => {
+      const p = document.createElement("p");
+      p.className = "error";
+      p.textContent = message;
+      root.appendChild(p);
+    };
+    window.addEventListener("error", (event) => showError(event.message));
+    window.addEventListener("unhandledrejection", (event) => showError(String(event.reason)));
+
+    if (!app || !Object.prototype.hasOwnProperty.call(APPS, app)) {
+      root.innerHTML = '<p class="muted">Pick a project above.</p>';
+    } else {
+      document.title = app.replace(/_/g, " ");
+      nav.querySelector('a[href="?app=' + app + '"]').classList.add("active");
+      const scripts = APPS[app].flatMap((lib) => LIBS[lib]);
+      scripts.push({ src: "../../JavaScript/freecodecamp/" + app + ".js" });
+      scripts.reduce((chain, script) => chain.then(() => loadScript(script)), Promise.resolve())
+        .catch((err) => showError(err.message));
+    }
+  })();
+  </script>
+</body>
+</html>
