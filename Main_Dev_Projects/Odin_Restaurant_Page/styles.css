@@ -1,0 +1,27 @@
+/* Made by: Hazzard */
+/* Odin Restaurant Page - dark theme for a fictional grill. */
+:root { --bg: #0b0b0d; --panel: #141418; --line: #2a2a30; --text: #e8e8ea; --muted: #9a9aa2; --red: #d7263d; }
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--text); font-family: Georgia, "Times New Roman", serif; }
+header { position: sticky; top: 0; background: rgba(11, 11, 13, 0.95); border-bottom: 1px solid var(--line); }
+.tabs { display: flex; justify-content: center; gap: 8px; padding: 14px 16px; }
+.tabs button { padding: 8px 20px; border: 1px solid transparent; border-radius: 999px; background: transparent; color: var(--muted); font: inherit; cursor: pointer; }
+.tabs button:hover { color: var(--text); }
+.tabs button.active { border-color: var(--red); color: var(--text); }
+#content { max-width: 860px; margin: 0 auto; padding: 32px 16px 48px; }
+.hero { text-align: center; padding: 48px 16px; border: 1px solid var(--line); border-radius: 14px; background: radial-gradient(circle at 50% 0%, #3a0910, var(--panel) 70%); }
+.hero h1 { font-size: 3rem; margin: 0 0 8px; }
+.hero h1 span { color: var(--red); }
+.hero p { color: var(--muted); font-size: 1.1rem; }
+.hours { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; margin-top: 24px; }
+.hours div, .dish, .contact-card { padding: 16px; background: var(--panel); border: 1px solid var(--line); border-radius: 10px; }
+.hours strong { display: block; color: var(--red); }
+h2 { border-bottom: 1px solid var(--line); padding-bottom: 8px; }
+.menu-section { margin-bottom: 28px; }
+.dishes { display: grid; gap: 12px; }
+.dish { display: flex; justify-content: space-between; gap: 16px; }
+.dish h3 { margin: 0 0 4px; }
+.dish p { margin: 0; color: var(--muted); }
+.price { color: var(--red); font-weight: 700; white-space: nowrap; }
+.contact-card p { margin: 6px 0; }
+.note { color: var(--muted); font-size: 0.9rem; }

@@ -1,0 +1,27 @@
+/* Made by: Hazzard */
+/* Odin Library - dark theme, responsive card grid. */
+:root { --bg: #0b0b0d; --panel: #141418; --line: #2a2a30; --text: #e8e8ea; --muted: #9a9aa2; --red: #d7263d; --ok: #3fb950; }
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--text); font-family: "Segoe UI", Roboto, sans-serif; }
+.top { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 20px 24px; border-bottom: 1px solid var(--line); }
+h1 { margin: 0; }
+h1 span { color: var(--red); }
+.summary { padding: 0 24px; color: var(--muted); }
+.shelf { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 16px; padding: 0 24px 32px; }
+.card { display: flex; flex-direction: column; gap: 6px; padding: 18px; background: var(--panel); border: 1px solid var(--line); border-left: 4px solid var(--red); border-radius: 10px; }
+.card.is-read { border-left-color: var(--ok); }
+.card h3 { margin: 0; overflow-wrap: anywhere; }
+.card p { margin: 0; color: var(--muted); }
+.card .row { display: flex; gap: 8px; margin-top: 10px; }
+.empty { grid-column: 1 / -1; color: var(--muted); }
+.btn { padding: 8px 16px; border: 2px solid var(--red); border-radius: 8px; background: var(--red); color: #fff; font-weight: 600; cursor: pointer; }
+.btn:hover { filter: brightness(1.15); }
+.btn--ghost { background: transparent; color: var(--text); }
+.btn--small { padding: 4px 10px; font-size: 0.85rem; }
+dialog { width: min(420px, calc(100vw - 32px)); padding: 24px; border: 1px solid var(--line); border-radius: 12px; background: var(--panel); color: var(--text); }
+dialog::backdrop { background: rgba(0, 0, 0, 0.7); }
+dialog h2 { margin-top: 0; }
+label { display: flex; flex-direction: column; gap: 4px; margin-bottom: 12px; color: var(--muted); }
+label.check { flex-direction: row; align-items: center; gap: 8px; }
+input:not([type="checkbox"]) { padding: 8px; border: 1px solid var(--line); border-radius: 6px; background: var(--bg); color: var(--text); font-size: 1rem; }
+.actions { display: flex; justify-content: flex-end; gap: 8px; }

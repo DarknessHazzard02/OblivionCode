@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<!-- Made by: Hazzard -->
+<!-- The Odin Project - Full Stack JavaScript: Weather App (async/await, Open-Meteo, no API key). -->
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Weather</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body data-look="cloudy">
+  <main class="app">
+    <header class="head">
+      <h1>Weather<span>.</span></h1>
+      <form id="search" class="search">
+        <input name="city" placeholder="Search a city" aria-label="City" maxlength="60" required>
+        <button class="btn" type="submit">Search</button>
+        <button class="btn btn--ghost" type="button" id="unit" aria-label="Switch to Fahrenheit">&deg;F</button>
+      </form>
+    </header>
+    <p id="status" class="status" role="status" aria-live="polite"></p>
+    <div id="result"></div>
+    <footer class="foot">Data: <a href="https://open-meteo.com/" target="_blank" rel="noopener noreferrer">Open-Meteo</a> (free, no API key).</footer>
+  </main>
+  <script type="module" src="js/index.js"></script>
+</body>
+</html>

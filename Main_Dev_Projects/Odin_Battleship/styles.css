@@ -1,0 +1,25 @@
+/* Made by: Hazzard */
+/* Odin Battleship - dark theme, two 10x10 grids side by side, stacked on narrow screens. */
+:root { --bg: #0b0b0d; --panel: #141418; --line: #2a2a30; --text: #e8e8ea; --muted: #9a9aa2; --red: #d7263d; --sea: #10161f; --ship: #4a4f5a; --cell: min(34px, calc((100vw - 48px) / 10)); }
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--text); font-family: "Segoe UI", Roboto, sans-serif; }
+.app { max-width: 820px; margin: 0 auto; padding: 24px 16px; }
+.head { display: flex; justify-content: space-between; align-items: center; }
+h1 { margin: 0; }
+h1 span { color: var(--red); }
+h2 { font-size: 1rem; color: var(--muted); }
+.status { min-height: 1.4em; font-weight: 600; }
+.btn { padding: 8px 16px; border: none; border-radius: 8px; background: var(--red); color: #fff; font-weight: 600; cursor: pointer; }
+.boards { display: flex; flex-wrap: wrap; gap: 32px; justify-content: center; }
+.board { display: grid; grid-template-columns: repeat(10, var(--cell)); gap: 2px; padding: 4px; background: var(--line); border-radius: 6px; }
+.cell { width: var(--cell); height: var(--cell); padding: 0; border: none; border-radius: 2px; background: var(--sea); }
+.board--enemy .cell:not(:disabled) { cursor: crosshair; }
+.board--enemy .cell:not(:disabled):hover { outline: 2px solid var(--red); }
+.cell.ship { background: var(--ship); }
+.cell.hit { background: var(--red); }
+.cell.miss { background: var(--sea); background-image: radial-gradient(circle, var(--muted) 18%, transparent 22%); }
+.legend { display: flex; align-items: center; gap: 8px; color: var(--muted); font-size: 0.85rem; margin-top: 20px; }
+.sw { display: inline-block; width: 14px; height: 14px; border-radius: 2px; margin-left: 10px; }
+.sw.ship { background: var(--ship); }
+.sw.hit { background: var(--red); }
+.sw.miss { background: var(--sea); background-image: radial-gradient(circle, var(--muted) 18%, transparent 22%); }
