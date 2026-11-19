@@ -1,0 +1,13 @@
+id,RegDate,first_Name,last_Name,Email_Address,HomePhone,Street,City,State,Zipcode
+1,11/12/08 10:47,Ada,Example,ada.example@example.com,555-010-0101,1 Sample Ave,Faketown,ZZ,00501
+2,11/12/08 13:23,Ben,Sample,ben.sample@example.com,(555) 010-0102,22 Demo St,Mocksville,ZZ,501
+3,11/12/08 13:30,Cleo,Test,cleo.test@example.com,15550100103,3 Fiction Rd,Placeholder,ZZ,
+4,11/12/08 14:04,Dev,Fixture,dev.fixture@example.com,25550100104,44 Stub Ln,Faketown,ZZ,123456
+5,11/12/08 14:26,Eli,Dummy,eli.dummy@example.com,555.010.0105,5 Mock Blvd,Sampleton,ZZ,04210
+6,11/12/08 15:45,Fay,Placeholder,fay.placeholder@example.com,555010010,66 Null Way,Testburg,ZZ,7306
+7,11/12/08 16:25,Gus,Mock,gus.mock@example.com,555-010-0107,7 Demo St,Mocksville,ZZ,90210
+8,11/13/08 9:11,Hana,Stub,hana.stub@example.com,555 010 0108,8 Sample Ave,Faketown,ZZ,00501
+9,11/13/08 10:16,Ivo,Fake,ivo.fake@example.com,555-010-0109,9 Fiction Rd,Placeholder,ZZ,33139
+10,11/13/08 13:52,Jo,Sample,jo.sample@example.com,555-010-0110,10 Stub Ln,Faketown,ZZ,02138
+11,11/16/08 18:02,Kai,Test,kai.test@example.com,555-010-0111,11 Mock Blvd,Sampleton,ZZ,60614
+12,11/16/08 20:20,Lu,Fixture,lu.fixture@example.com,555-010-0112,12 Null Way,Testburg,ZZ,98101
