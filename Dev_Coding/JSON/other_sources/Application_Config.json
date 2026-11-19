@@ -1,0 +1,15 @@
+{
+  "app": {
+    "name": "OblivionCode App",
+    "version": "1.0.0",
+    "environment": "development"
+  },
+  "server": {
+    "port": 8080,
+    "host": "localhost"
+  },
+  "database": {
+    "dialect": "postgres",
+    "poolSize": 10
+  }
+}

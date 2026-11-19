@@ -1,0 +1,78 @@
+/* FreeCodeCamp Responsive Web Design - Tribute Page Stylesheet */
+
+html {
+  font-size: 10px;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+  font-size: 1.6rem;
+  line-height: 1.6;
+  text-align: center;
+  color: #333;
+  margin: 0;
+  background-color: #eee;
+}
+
+#main {
+  margin: 30px 10px;
+  padding: 15px;
+  border-radius: 5px;
+  background: #eee;
+}
+
+@media (max-width: 460px) {
+  #main {
+    margin: 0;
+  }
+}
+
+#img-div {
+  background: white;
+  padding: 10px;
+  margin: 0;
+}
+
+#image {
+  max-width: 100%;
+  display: block;
+  height: auto;
+  margin: 0 auto;
+}
+
+#img-caption {
+  margin: 15px 0 5px 0;
+  font-size: 1.4rem;
+  color: #555;
+}
+
+#tribute-info {
+  margin: 40px auto 0 auto;
+  max-width: 600px;
+  text-align: left;
+}
+
+#headline {
+  margin: 30px 0;
+  text-align: center;
+}
+
+ul {
+  max-width: 550px;
+  margin: 0 auto 50px auto;
+  padding-left: 20px;
+  line-height: 1.8;
+}
+
+li {
+  margin: 16px 0;
+}
+
+blockquote {
+  font-style: italic;
+  max-width: 540px;
+  margin: 0 auto 50px auto;
+  text-align: left;
+  border-left: 4px solid #aaa;
+  padding-left: 15px;
+}
