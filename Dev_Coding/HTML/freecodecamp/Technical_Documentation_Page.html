@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<!-- Made by: Hazzard -->
+<!-- FreeCodeCamp Responsive Web Design Certification Project - Technical Documentation Page -->
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bash Scripting Docs</title>
+  <link rel="stylesheet" href="../../CSS/freecodecamp/Technical_Documentation_Page.css">
+</head>
+<body>
+  <nav id="navbar">
+    <header>Bash Scripting</header>
+    <ul>
+      <li><a class="nav-link" href="#Introduction">Introduction</a></li>
+      <li><a class="nav-link" href="#Variables">Variables</a></li>
+      <li><a class="nav-link" href="#Conditionals">Conditionals</a></li>
+      <li><a class="nav-link" href="#Loops">Loops</a></li>
+      <li><a class="nav-link" href="#Functions">Functions</a></li>
+    </ul>
+  </nav>
+
+  <main id="main-doc">
+    <section class="main-section" id="Introduction">
+      <header>Introduction</header>
+      <p>Bash is a Unix shell and command language. A script is a plain text file with a list of commands that run in order.</p>
+      <p>Every script starts with a shebang that tells the system which interpreter to use:</p>
+      <code>#!/bin/bash</code>
+      <ul>
+        <li>Make it executable with <code>chmod +x script.sh</code>.</li>
+        <li>Run it with <code>./script.sh</code>.</li>
+      </ul>
+    </section>
+
+    <section class="main-section" id="Variables">
+      <header>Variables</header>
+      <p>Variables are assigned without spaces around the equals sign and read with a dollar sign.</p>
+      <code>NAME="Haz"
+echo "Hello, $NAME"</code>
+      <p>Command output can be stored with command substitution:</p>
+      <code>TODAY=$(date +%F)</code>
+    </section>
+
+    <section class="main-section" id="Conditionals">
+      <header>Conditionals</header>
+      <p>Use <code>[[ ]]</code> for string and file tests and <code>(( ))</code> for arithmetic.</p>
+      <code>if [[ -f config.txt ]]
+then
+  echo "Config found"
+elif (( COUNT &gt; 10 ))
+then
+  echo "Too many"
+else
+  echo "Nothing to do"
+fi</code>
+      <ul>
+        <li><code>-f</code> file exists</li>
+        <li><code>-z</code> string is empty</li>
+        <li><code>=~</code> regex match</li>
+      </ul>
+    </section>
+
+    <section class="main-section" id="Loops">
+      <header>Loops</header>
+      <p>Bash supports <code>for</code>, <code>while</code> and <code>until</code> loops.</p>
+      <code>for (( i = 1; i &lt;= 3; i++ ))
+do
+  echo "Pass $i"
+done</code>
+      <p>An <code>until</code> loop runs while its condition is false, which is handy for input validation.</p>
+    </section>
+
+    <section class="main-section" id="Functions">
+      <header>Functions</header>
+      <p>Functions group commands and read arguments as <code>$1</code>, <code>$2</code> and so on.</p>
+      <code>GREET() {
+  echo "Hi, $1"
+}
+GREET "camper"</code>
+      <p>Return a status with <code>return</code> and data with <code>echo</code>.</p>
+    </section>
+  </main>
+</body>
+</html>

@@ -43,16 +43,27 @@ My goal is to continuously improve my programming skills while building practica
 ```text
 Dev_Coding
 ├── Bash
+├── C#
 ├── CSS
-├── CSharp
+├── DAX
 ├── HTML
 ├── Java
 ├── JavaScript
 ├── JSON
+├── PowerQuery
 ├── PowerShell
 ├── Python
 ├── SQL
-├── TypeScript
+├── Typescript
 ├── VBA
 └── YAML
+```
+
+Each language folder follows the same layout:
+
+```text
+<Language>
+├── freecodecamp     ← freeCodeCamp curriculum exercises and projects
+├── other_sources    ← exercises from other sources and personal scripts
+└── blank.<ext>      ← scratch file
 ```

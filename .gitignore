@@ -1,6 +1,7 @@
 # Azure Synapse / Microsoft Fabric extension caches
 .stubs/
 .vfsmeta/
+.vfscache/
 
 # Operating System files
 Thumbs.db
