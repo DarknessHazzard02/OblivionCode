@@ -1,3 +1,4 @@
+# Author: Haz
 # FreeCodeCamp Scientific Computing with Python - Time Calculator
 # Adds a duration time to a start time and returns the result with optional starting day of the week
 

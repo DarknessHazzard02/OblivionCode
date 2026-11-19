@@ -1,3 +1,4 @@
+// Made by: Hazzard
 // FreeCodeCamp Quality Assurance - Sudoku Solver
 // Validates 81-character puzzle strings and solves using recursive backtracking algorithm
 

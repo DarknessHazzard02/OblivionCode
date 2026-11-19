@@ -1,4 +1,5 @@
 #!/bin/bash
+# Made by: Hazzard
 # FreeCodeCamp: Learn Git by Building an SQL Reference Object
 # Demonstrates iterative Git workflow: init, add, commit, branch, merge, rebase, stash, log
 

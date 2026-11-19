@@ -1,3 +1,4 @@
+-- Made by: Hazzard
 -- FreeCodeCamp Relational Database Certification
 -- Project: Student Database Part 1 & 2
 -- Covers: Schema Design, Many-to-Many Relationships, Foreign Keys, Inner/Left/Right Joins

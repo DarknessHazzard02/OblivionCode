@@ -1,3 +1,4 @@
+-- Made by: Hazzard
 -- FreeCodeCamp Relational Database Certification
 -- Project: Celestial Bodies Database
 -- Features: Foreign key relations, constraints, diverse data types, sample data

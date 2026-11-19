@@ -1,3 +1,4 @@
+-- Made by: Hazzard
 -- FreeCodeCamp Relational Database Certification
 -- Project: World Cup Database
 -- Schema, Sample Data, and Analytical Queries

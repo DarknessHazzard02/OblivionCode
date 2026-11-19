@@ -1,6 +1,7 @@
 -- Other Sources: Month-over-Month (MoM) Growth Percentage
 
 Sales MoM % = 
+// Made by: Hazzard
 VAR CurrentMonthSales = SUM(Sales[SalesAmount])
 VAR PreviousMonthSales = 
     CALCULATE(

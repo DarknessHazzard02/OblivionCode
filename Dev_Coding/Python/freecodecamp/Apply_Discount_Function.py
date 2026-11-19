@@ -1,3 +1,4 @@
+# Author: Haz
 def apply_discount(price, discount):
     if type(price) not in (int, float):
         return "The price should be a number"

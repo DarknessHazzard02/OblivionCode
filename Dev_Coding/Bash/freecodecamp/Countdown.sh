@@ -1,4 +1,5 @@
 #!/bin/bash
+# Made by: Hazzard
 # FreeCodeCamp: Learn Bash Scripting by Building a Countdown Timer
 # Teaches: Command line arguments, While loops, Until loops, Conditionals
 

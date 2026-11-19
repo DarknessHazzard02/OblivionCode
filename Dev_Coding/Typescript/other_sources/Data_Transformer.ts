@@ -1,3 +1,4 @@
+// Made by: Hazzard
 // Other Sources: TypeScript Data Transformer Utility
 
 export function chunkArray<T>(items: T[], size: number): T[][] {

@@ -1,3 +1,4 @@
+// Made by: Hazzard
 /**
  * Stock Price Checker - freeCodeCamp Information Security Project
  *

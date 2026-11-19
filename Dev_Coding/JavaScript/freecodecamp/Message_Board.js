@@ -1,3 +1,4 @@
+// Made by: Hazzard
 /**
  * Anonymous Message Board - freeCodeCamp Information Security Project
  *

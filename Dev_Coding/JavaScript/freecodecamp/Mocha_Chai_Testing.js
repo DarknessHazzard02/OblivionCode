@@ -1,3 +1,4 @@
+// Made by: Hazzard
 /**
  * Mocha + Chai Testing Boilerplate - freeCodeCamp Quality Assurance
  *

@@ -1,4 +1,5 @@
 #!/bin/bash
+# Made by: Hazzard
 # Other Sources: System Resource and Health Check Utility
 # Summarizes system uptime, disk usage, memory, and top active processes
 

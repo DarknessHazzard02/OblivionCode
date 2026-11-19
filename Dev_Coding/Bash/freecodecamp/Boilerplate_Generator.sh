@@ -1,4 +1,5 @@
 #!/bin/bash
+# Made by: Hazzard
 # FreeCodeCamp: Learn Bash by Building a Boilerplate
 # Automates the creation of a standard frontend web project structure
 

@@ -1,3 +1,4 @@
+// Made by: Hazzard
 const sales = [1500, 2100, 1850, 3200, 2750];
 
 const totalSales = sales.reduce(

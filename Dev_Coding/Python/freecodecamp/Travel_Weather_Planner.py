@@ -1,3 +1,4 @@
+# Author: Haz
 distance_mi = 5
 is_raining = False
 has_bike = True

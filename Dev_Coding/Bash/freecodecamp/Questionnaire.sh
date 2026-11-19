@@ -1,4 +1,5 @@
 #!/bin/bash
+# Made by: Hazzard
 # FreeCodeCamp: Learn Bash Scripting by Building Five Programs (Questionnaire)
 # Teaches: User input with read, string variables, formatting
 

@@ -1,3 +1,4 @@
+// Made by: Hazzard
 // FreeCodeCamp - Gradebook App
 // Teaches: Functions, Arrays, Conditionals, Template Literals
 

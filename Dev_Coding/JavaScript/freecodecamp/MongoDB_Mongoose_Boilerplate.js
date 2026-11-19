@@ -1,3 +1,4 @@
+// Made by: Hazzard
 /**
  * MongoDB + Mongoose Boilerplate - freeCodeCamp Back End APIs
  *

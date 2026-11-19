@@ -1,3 +1,4 @@
+# Author: Haz
 ChorelistJ = ["Clean The Litter","Make Food","Organize Clothes","Clean The Room","Feed Cats","Clean Water"]
 Username2 = "Jj"
 Name = input("Enter your name: ")

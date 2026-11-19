@@ -1,4 +1,5 @@
 #!/bin/bash
+# Made by: Hazzard
 # FreeCodeCamp: Learn Bash and SQL by Building a Bike Rental Shop
 # Interactive CLI that queries a PostgreSQL database to manage bike rentals
 

@@ -1,3 +1,4 @@
+// Made by: Hazzard
 /**
  * Exercise Tracker Microservice - freeCodeCamp Back End APIs Project
  *
