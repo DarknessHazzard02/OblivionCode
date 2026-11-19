@@ -1,3 +1,4 @@
+// Made by: Hazzard
 // FreeCodeCamp - Role Playing Game (Dragon Repeller)
 // Teaches: Objects, Arrays of Objects, Game Logic, State Management
 

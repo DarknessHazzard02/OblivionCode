@@ -1,3 +1,4 @@
+// Made by: Hazzard
 // FreeCodeCamp & Microsoft C# Certification - Fraudulent Order Detector
 // Teaches: Arrays, Foreach iteration, String methods (StartsWith)
 

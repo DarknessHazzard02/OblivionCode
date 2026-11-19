@@ -1,3 +1,4 @@
+# Author: Haz
 # FreeCodeCamp Scientific Computing with Python - Arithmetic Formatter
 # Arranges arithmetic problems vertically and side-by-side with optional answer display
 

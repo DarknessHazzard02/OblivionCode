@@ -1,3 +1,4 @@
+# Author: Haz
 # FreeCodeCamp Data Analysis with Python - Sea Level Predictor
 # Performs linear regression on historical global sea level data (1880–present) and projects levels through 2050
 

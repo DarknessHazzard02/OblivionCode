@@ -1,3 +1,4 @@
+// Made by: Hazzard
 /**
  * Secure Real-Time Multiplayer Game - freeCodeCamp Information Security Project
  *

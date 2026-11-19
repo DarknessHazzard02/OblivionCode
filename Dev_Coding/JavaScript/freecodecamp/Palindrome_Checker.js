@@ -1,3 +1,4 @@
+// Made by: Hazzard
 // FreeCodeCamp Certification Project - Palindrome Checker
 // Return true if the given string is a palindrome. Otherwise, return false.
 // Must ignore all non-alphanumeric characters (punctuation, spaces and symbols) and case.

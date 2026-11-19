@@ -1,3 +1,4 @@
+// Made by: Hazzard
 // FreeCodeCamp Quality Assurance - American / British English Translator
 // Translates dialect vocabulary, spelling conventions, titles, and time notation between American and British English
 

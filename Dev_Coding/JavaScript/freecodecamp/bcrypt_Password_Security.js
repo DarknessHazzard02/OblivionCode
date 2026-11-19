@@ -1,3 +1,4 @@
+// Made by: Hazzard
 /**
  * bcrypt Password Security Boilerplate - freeCodeCamp Information Security
  *

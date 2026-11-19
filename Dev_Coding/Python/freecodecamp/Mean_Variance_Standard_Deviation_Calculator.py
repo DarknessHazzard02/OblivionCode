@@ -1,3 +1,4 @@
+# Author: Haz
 # FreeCodeCamp Data Analysis with Python - Mean-Variance-Standard Deviation Calculator
 # Calculates mean, variance, standard deviation, max, min, and sum of a 3x3 matrix along both axes and flattened
 

@@ -1,3 +1,4 @@
+# Author: Haz
 def remove_duplicates(s):
     write = 0
     for read in range(1, len(s)):

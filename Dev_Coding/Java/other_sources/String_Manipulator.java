@@ -1,3 +1,4 @@
+// Made by: Hazzard
 // Other Sources: String Reversal and Palindrome Checker in Java
 
 public class StringManipulator {

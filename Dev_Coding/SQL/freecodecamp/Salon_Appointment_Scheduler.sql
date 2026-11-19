@@ -1,3 +1,4 @@
+-- Made by: Hazzard
 -- FreeCodeCamp Relational Database Certification
 -- Project: Salon Appointment Scheduler
 -- Schema and interactive relational model for customers, salon services, and appointment bookings

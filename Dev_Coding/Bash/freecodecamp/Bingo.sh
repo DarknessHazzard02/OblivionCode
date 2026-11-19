@@ -1,4 +1,5 @@
 #!/bin/bash
+# Made by: Hazzard
 # FreeCodeCamp: Learn Bash Scripting by Building Five Programs (Bingo Generator)
 # Teaches: Random number generation, Variables, Case statement
 

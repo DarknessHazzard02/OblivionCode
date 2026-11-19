@@ -1,3 +1,4 @@
+// Made by: Hazzard
 public class SalesCalculator {
 
     public static void main(String[] args) {
