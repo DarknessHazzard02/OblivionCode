@@ -1,0 +1,92 @@
+-- S&OP KPI measures for a Power BI model built on the star schema in ../sql/schema.sql.
+-- Relationships: fact_production[date_key] -> dim_date, [line_key] -> dim_line, [item_key] -> dim_item;
+-- fact_inventory[date_key] -> dim_date, [item_key] -> dim_item. All measures live in a _Measures table.
+
+Availability % =
+// Made by: Hazzard
+VAR RunMinutes = SUM ( fact_production[run_time_min] )
+VAR PlannedMinutes = SUM ( fact_production[planned_time_min] )
+RETURN
+    DIVIDE ( RunMinutes, PlannedMinutes )
+
+Performance % =
+// Made by: Hazzard
+VAR IdealMinutes = SUMX ( fact_production, fact_production[ideal_cycle_sec] * fact_production[actual_qty] ) / 60
+VAR RunMinutes = SUM ( fact_production[run_time_min] )
+RETURN
+    DIVIDE ( IdealMinutes, RunMinutes )
+
+Quality % =
+// Made by: Hazzard
+VAR GoodUnits = SUM ( fact_production[good_qty] )
+VAR ActualUnits = SUM ( fact_production[actual_qty] )
+RETURN
+    DIVIDE ( GoodUnits, ActualUnits )
+
+OEE % =
+// Made by: Hazzard
+VAR AvailabilityValue = [Availability %]
+VAR PerformanceValue = [Performance %]
+VAR QualityValue = [Quality %]
+RETURN
+    IF (
+        NOT ISBLANK ( AvailabilityValue ) && NOT ISBLANK ( PerformanceValue ) && NOT ISBLANK ( QualityValue ),
+        AvailabilityValue * PerformanceValue * QualityValue
+    )
+
+Schedule Adherence % =
+// Made by: Hazzard
+VAR OnPlanUnits =
+    SUMX (
+        fact_production,
+        MIN ( fact_production[actual_qty], fact_production[planned_qty] )
+    )
+VAR PlannedUnits = SUM ( fact_production[planned_qty] )
+RETURN
+    DIVIDE ( OnPlanUnits, PlannedUnits )
+
+Overproduction Units =
+// Made by: Hazzard
+VAR ExtraUnits =
+    SUMX (
+        fact_production,
+        MAX ( fact_production[actual_qty] - fact_production[planned_qty], 0 )
+    )
+RETURN
+    ExtraUnits
+
+-- Same definition as the SQL query and the dashboard: per item, on hand / daily forecast on the
+-- latest date; above one item, the average of those values over items that have demand.
+-- Items without demand (or without a row on the latest date) are left out, never counted as 0.
+Days of Coverage =
+// Made by: Hazzard
+VAR LatestDate = CALCULATE ( MAX ( fact_inventory[date_key] ), ALL ( dim_date ) )
+VAR ItemsWithDemand =
+    FILTER (
+        ADDCOLUMNS (
+            VALUES ( dim_item[item_key] ),
+            "@OnHand", CALCULATE ( SUM ( fact_inventory[on_hand_qty] ), ALL ( dim_date ), fact_inventory[date_key] = LatestDate ),
+            "@Demand", CALCULATE ( SUM ( fact_inventory[forecast_daily_qty] ), ALL ( dim_date ), fact_inventory[date_key] = LatestDate )
+        ),
+        NOT ISBLANK ( [@OnHand] ) && [@Demand] > 0
+    )
+VAR AverageCoverage = AVERAGEX ( ItemsWithDemand, DIVIDE ( [@OnHand], [@Demand] ) )
+RETURN
+    AverageCoverage
+
+-- Same rule as the SQL coverage_status and the dashboard: below safety only counts items that
+-- have demand and a row on the latest date, so missing data is never shown as an alert.
+Items Below Safety Stock =
+// Made by: Hazzard
+VAR LatestDate = CALCULATE ( MAX ( fact_inventory[date_key] ), ALL ( dim_date ) )
+VAR LatestStock =
+    ADDCOLUMNS (
+        VALUES ( dim_item[item_key] ),
+        "@OnHand", CALCULATE ( SUM ( fact_inventory[on_hand_qty] ), ALL ( dim_date ), fact_inventory[date_key] = LatestDate ),
+        "@Demand", CALCULATE ( SUM ( fact_inventory[forecast_daily_qty] ), ALL ( dim_date ), fact_inventory[date_key] = LatestDate ),
+        "@Safety", CALCULATE ( MAX ( dim_item[safety_stock] ) )
+    )
+VAR BelowSafety =
+    FILTER ( LatestStock, NOT ISBLANK ( [@OnHand] ) && [@Demand] > 0 && [@OnHand] < [@Safety] )
+RETURN
+    COUNTROWS ( BelowSafety ) + 0

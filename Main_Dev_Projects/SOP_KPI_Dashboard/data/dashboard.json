@@ -1,0 +1,750 @@
+{
+ "production": [
+  {
+   "date": "2026-01-05",
+   "line": "LINE_01",
+   "item": "ITM-011",
+   "planned_qty": 600,
+   "actual_qty": 580,
+   "good_qty": 576,
+   "planned_min": 450,
+   "run_min": 345.6,
+   "ideal_cycle_sec": 33.07
+  },
+  {
+   "date": "2026-01-05",
+   "line": "LINE_02",
+   "item": "ITM-008",
+   "planned_qty": 400,
+   "actual_qty": 372,
+   "good_qty": 371,
+   "planned_min": 450,
+   "run_min": 357.0,
+   "ideal_cycle_sec": 50.18
+  },
+  {
+   "date": "2026-01-05",
+   "line": "LINE_03",
+   "item": "ITM-008",
+   "planned_qty": 400,
+   "actual_qty": 422,
+   "good_qty": 406,
+   "planned_min": 450,
+   "run_min": 345.7,
+   "ideal_cycle_sec": 46.29
+  },
+  {
+   "date": "2026-01-05",
+   "line": "LINE_04",
+   "item": "ITM-002",
+   "planned_qty": 400,
+   "actual_qty": 410,
+   "good_qty": 404,
+   "planned_min": 450,
+   "run_min": 380.5,
+   "ideal_cycle_sec": 47.59
+  },
+  {
+   "date": "2026-01-06",
+   "line": "LINE_01",
+   "item": "ITM-003",
+   "planned_qty": 500,
+   "actual_qty": 435,
+   "good_qty": 430,
+   "planned_min": 450,
+   "run_min": 404.6,
+   "ideal_cycle_sec": 49.91
+  },
+  {
+   "date": "2026-01-06",
+   "line": "LINE_02",
+   "item": "ITM-003",
+   "planned_qty": 400,
+   "actual_qty": 363,
+   "good_qty": 353,
+   "planned_min": 450,
+   "run_min": 360.7,
+   "ideal_cycle_sec": 49.88
+  },
+  {
+   "date": "2026-01-06",
+   "line": "LINE_03",
+   "item": "ITM-003",
+   "planned_qty": 400,
+   "actual_qty": 349,
+   "good_qty": 333,
+   "planned_min": 450,
+   "run_min": 355.3,
+   "ideal_cycle_sec": 57.76
+  },
+  {
+   "date": "2026-01-06",
+   "line": "LINE_04",
+   "item": "ITM-008",
+   "planned_qty": 600,
+   "actual_qty": 599,
+   "good_qty": 595,
+   "planned_min": 450,
+   "run_min": 351.1,
+   "ideal_cycle_sec": 33.41
+  },
+  {
+   "date": "2026-01-07",
+   "line": "LINE_01",
+   "item": "ITM-010",
+   "planned_qty": 400,
+   "actual_qty": 364,
+   "good_qty": 364,
+   "planned_min": 450,
+   "run_min": 358.3,
+   "ideal_cycle_sec": 53.07
+  },
+  {
+   "date": "2026-01-07",
+   "line": "LINE_02",
+   "item": "ITM-003",
+   "planned_qty": 600,
+   "actual_qty": 555,
+   "good_qty": 543,
+   "planned_min": 450,
+   "run_min": 360.3,
+   "ideal_cycle_sec": 35.47
+  },
+  {
+   "date": "2026-01-07",
+   "line": "LINE_03",
+   "item": "ITM-003",
+   "planned_qty": 500,
+   "actual_qty": 406,
+   "good_qty": 387,
+   "planned_min": 450,
+   "run_min": 378.9,
+   "ideal_cycle_sec": 43.8
+  },
+  {
+   "date": "2026-01-07",
+   "line": "LINE_04",
+   "item": "ITM-012",
+   "planned_qty": 400,
+   "actual_qty": 334,
+   "good_qty": 329,
+   "planned_min": 450,
+   "run_min": 374.7,
+   "ideal_cycle_sec": 53.83
+  },
+  {
+   "date": "2026-01-08",
+   "line": "LINE_01",
+   "item": "ITM-005",
+   "planned_qty": 600,
+   "actual_qty": 552,
+   "good_qty": 547,
+   "planned_min": 450,
+   "run_min": 404.0,
+   "ideal_cycle_sec": 40.0
+  },
+  {
+   "date": "2026-01-08",
+   "line": "LINE_02",
+   "item": "ITM-009",
+   "planned_qty": 500,
+   "actual_qty": 458,
+   "good_qty": 454,
+   "planned_min": 450,
+   "run_min": 393.6,
+   "ideal_cycle_sec": 41.87
+  },
+  {
+   "date": "2026-01-08",
+   "line": "LINE_03",
+   "item": "ITM-006",
+   "planned_qty": 400,
+   "actual_qty": 409,
+   "good_qty": 391,
+   "planned_min": 450,
+   "run_min": 383.0,
+   "ideal_cycle_sec": 52.15
+  },
+  {
+   "date": "2026-01-08",
+   "line": "LINE_04",
+   "item": "ITM-012",
+   "planned_qty": 400,
+   "actual_qty": 328,
+   "good_qty": 321,
+   "planned_min": 450,
+   "run_min": 398.4,
+   "ideal_cycle_sec": 68.14
+  },
+  {
+   "date": "2026-01-09",
+   "line": "LINE_01",
+   "item": "ITM-002",
+   "planned_qty": 500,
+   "actual_qty": 470,
+   "good_qty": 465,
+   "planned_min": 450,
+   "run_min": 396.7,
+   "ideal_cycle_sec": 47.57
+  },
+  {
+   "date": "2026-01-09",
+   "line": "LINE_02",
+   "item": "ITM-009",
+   "planned_qty": 600,
+   "actual_qty": 588,
+   "good_qty": 568,
+   "planned_min": 450,
+   "run_min": 360.8,
+   "ideal_cycle_sec": 31.16
+  },
+  {
+   "date": "2026-01-09",
+   "line": "LINE_03",
+   "item": "ITM-009",
+   "planned_qty": 600,
+   "actual_qty": 529,
+   "good_qty": 500,
+   "planned_min": 450,
+   "run_min": 350.6,
+   "ideal_cycle_sec": 35.67
+  },
+  {
+   "date": "2026-01-09",
+   "line": "LINE_04",
+   "item": "ITM-008",
+   "planned_qty": 600,
+   "actual_qty": 604,
+   "good_qty": 602,
+   "planned_min": 450,
+   "run_min": 385.6,
+   "ideal_cycle_sec": 36.34
+  },
+  {
+   "date": "2026-01-12",
+   "line": "LINE_01",
+   "item": "ITM-005",
+   "planned_qty": 600,
+   "actual_qty": 514,
+   "good_qty": 508,
+   "planned_min": 450,
+   "run_min": 382.7,
+   "ideal_cycle_sec": 43.04
+  },
+  {
+   "date": "2026-01-12",
+   "line": "LINE_02",
+   "item": "ITM-001",
+   "planned_qty": 500,
+   "actual_qty": 472,
+   "good_qty": 460,
+   "planned_min": 450,
+   "run_min": 378.0,
+   "ideal_cycle_sec": 43.34
+  },
+  {
+   "date": "2026-01-12",
+   "line": "LINE_03",
+   "item": "ITM-007",
+   "planned_qty": 600,
+   "actual_qty": 472,
+   "good_qty": 450,
+   "planned_min": 450,
+   "run_min": 377.9,
+   "ideal_cycle_sec": 37.86
+  },
+  {
+   "date": "2026-01-12",
+   "line": "LINE_04",
+   "item": "ITM-011",
+   "planned_qty": 500,
+   "actual_qty": 470,
+   "good_qty": 463,
+   "planned_min": 450,
+   "run_min": 363.4,
+   "ideal_cycle_sec": 44.44
+  },
+  {
+   "date": "2026-01-13",
+   "line": "LINE_01",
+   "item": "ITM-010",
+   "planned_qty": 400,
+   "actual_qty": 361,
+   "good_qty": 356,
+   "planned_min": 450,
+   "run_min": 401.4,
+   "ideal_cycle_sec": 56.96
+  },
+  {
+   "date": "2026-01-13",
+   "line": "LINE_02",
+   "item": "ITM-002",
+   "planned_qty": 400,
+   "actual_qty": 387,
+   "good_qty": 372,
+   "planned_min": 450,
+   "run_min": 371.6,
+   "ideal_cycle_sec": 50.21
+  },
+  {
+   "date": "2026-01-13",
+   "line": "LINE_03",
+   "item": "ITM-011",
+   "planned_qty": 500,
+   "actual_qty": 391,
+   "good_qty": 381,
+   "planned_min": 450,
+   "run_min": 411.3,
+   "ideal_cycle_sec": 51.65
+  },
+  {
+   "date": "2026-01-13",
+   "line": "LINE_04",
+   "item": "ITM-001",
+   "planned_qty": 500,
+   "actual_qty": 456,
+   "good_qty": 448,
+   "planned_min": 450,
+   "run_min": 377.7,
+   "ideal_cycle_sec": 46.87
+  },
+  {
+   "date": "2026-01-14",
+   "line": "LINE_01",
+   "item": "ITM-012",
+   "planned_qty": 600,
+   "actual_qty": 479,
+   "good_qty": 467,
+   "planned_min": 450,
+   "run_min": 403.1,
+   "ideal_cycle_sec": 39.71
+  },
+  {
+   "date": "2026-01-14",
+   "line": "LINE_02",
+   "item": "ITM-002",
+   "planned_qty": 400,
+   "actual_qty": 351,
+   "good_qty": 341,
+   "planned_min": 450,
+   "run_min": 388.9,
+   "ideal_cycle_sec": 60.28
+  },
+  {
+   "date": "2026-01-14",
+   "line": "LINE_03",
+   "item": "ITM-005",
+   "planned_qty": 600,
+   "actual_qty": 621,
+   "good_qty": 606,
+   "planned_min": 450,
+   "run_min": 422.2,
+   "ideal_cycle_sec": 35.1
+  },
+  {
+   "date": "2026-01-14",
+   "line": "LINE_04",
+   "item": "ITM-002",
+   "planned_qty": 500,
+   "actual_qty": 411,
+   "good_qty": 411,
+   "planned_min": 450,
+   "run_min": 382.7,
+   "ideal_cycle_sec": 46.79
+  },
+  {
+   "date": "2026-01-15",
+   "line": "LINE_01",
+   "item": "ITM-006",
+   "planned_qty": 400,
+   "actual_qty": 373,
+   "good_qty": 372,
+   "planned_min": 450,
+   "run_min": 377.1,
+   "ideal_cycle_sec": 49.66
+  },
+  {
+   "date": "2026-01-15",
+   "line": "LINE_02",
+   "item": "ITM-006",
+   "planned_qty": 600,
+   "actual_qty": 470,
+   "good_qty": 461,
+   "planned_min": 450,
+   "run_min": 376.5,
+   "ideal_cycle_sec": 40.07
+  },
+  {
+   "date": "2026-01-15",
+   "line": "LINE_03",
+   "item": "ITM-008",
+   "planned_qty": 600,
+   "actual_qty": 523,
+   "good_qty": 505,
+   "planned_min": 450,
+   "run_min": 393.0,
+   "ideal_cycle_sec": 40.8
+  },
+  {
+   "date": "2026-01-15",
+   "line": "LINE_04",
+   "item": "ITM-012",
+   "planned_qty": 600,
+   "actual_qty": 515,
+   "good_qty": 508,
+   "planned_min": 450,
+   "run_min": 400.7,
+   "ideal_cycle_sec": 42.84
+  },
+  {
+   "date": "2026-01-16",
+   "line": "LINE_01",
+   "item": "ITM-008",
+   "planned_qty": 400,
+   "actual_qty": 315,
+   "good_qty": 312,
+   "planned_min": 450,
+   "run_min": 343.9,
+   "ideal_cycle_sec": 61.37
+  },
+  {
+   "date": "2026-01-16",
+   "line": "LINE_02",
+   "item": "ITM-002",
+   "planned_qty": 400,
+   "actual_qty": 377,
+   "good_qty": 360,
+   "planned_min": 450,
+   "run_min": 389.4,
+   "ideal_cycle_sec": 55.67
+  },
+  {
+   "date": "2026-01-16",
+   "line": "LINE_03",
+   "item": "ITM-004",
+   "planned_qty": 500,
+   "actual_qty": 433,
+   "good_qty": 418,
+   "planned_min": 450,
+   "run_min": 387.7,
+   "ideal_cycle_sec": 47.16
+  },
+  {
+   "date": "2026-01-16",
+   "line": "LINE_04",
+   "item": "ITM-007",
+   "planned_qty": 600,
+   "actual_qty": 561,
+   "good_qty": 552,
+   "planned_min": 450,
+   "run_min": 395.9,
+   "ideal_cycle_sec": 33.17
+  },
+  {
+   "date": "2026-01-19",
+   "line": "LINE_01",
+   "item": "ITM-011",
+   "planned_qty": 400,
+   "actual_qty": 360,
+   "good_qty": 354,
+   "planned_min": 450,
+   "run_min": 362.4,
+   "ideal_cycle_sec": 57.6
+  },
+  {
+   "date": "2026-01-19",
+   "line": "LINE_02",
+   "item": "ITM-012",
+   "planned_qty": 600,
+   "actual_qty": 594,
+   "good_qty": 577,
+   "planned_min": 450,
+   "run_min": 406.9,
+   "ideal_cycle_sec": 35.55
+  },
+  {
+   "date": "2026-01-19",
+   "line": "LINE_03",
+   "item": "ITM-008",
+   "planned_qty": 600,
+   "actual_qty": 504,
+   "good_qty": 482,
+   "planned_min": 450,
+   "run_min": 412.0,
+   "ideal_cycle_sec": 40.09
+  },
+  {
+   "date": "2026-01-19",
+   "line": "LINE_04",
+   "item": "ITM-004",
+   "planned_qty": 600,
+   "actual_qty": 573,
+   "good_qty": 572,
+   "planned_min": 450,
+   "run_min": 389.6,
+   "ideal_cycle_sec": 39.56
+  },
+  {
+   "date": "2026-01-20",
+   "line": "LINE_01",
+   "item": "ITM-004",
+   "planned_qty": 600,
+   "actual_qty": 505,
+   "good_qty": 496,
+   "planned_min": 450,
+   "run_min": 372.8,
+   "ideal_cycle_sec": 35.86
+  },
+  {
+   "date": "2026-01-20",
+   "line": "LINE_02",
+   "item": "ITM-008",
+   "planned_qty": 500,
+   "actual_qty": 468,
+   "good_qty": 458,
+   "planned_min": 450,
+   "run_min": 366.9,
+   "ideal_cycle_sec": 38.53
+  },
+  {
+   "date": "2026-01-20",
+   "line": "LINE_03",
+   "item": "ITM-007",
+   "planned_qty": 600,
+   "actual_qty": 577,
+   "good_qty": 555,
+   "planned_min": 450,
+   "run_min": 403.6,
+   "ideal_cycle_sec": 36.3
+  },
+  {
+   "date": "2026-01-20",
+   "line": "LINE_04",
+   "item": "ITM-002",
+   "planned_qty": 600,
+   "actual_qty": 505,
+   "good_qty": 495,
+   "planned_min": 450,
+   "run_min": 399.3,
+   "ideal_cycle_sec": 44.45
+  },
+  {
+   "date": "2026-01-21",
+   "line": "LINE_01",
+   "item": "ITM-003",
+   "planned_qty": 500,
+   "actual_qty": 492,
+   "good_qty": 489,
+   "planned_min": 450,
+   "run_min": 343.8,
+   "ideal_cycle_sec": 34.89
+  },
+  {
+   "date": "2026-01-21",
+   "line": "LINE_02",
+   "item": "ITM-010",
+   "planned_qty": 600,
+   "actual_qty": 493,
+   "good_qty": 475,
+   "planned_min": 450,
+   "run_min": 344.8,
+   "ideal_cycle_sec": 33.92
+  },
+  {
+   "date": "2026-01-21",
+   "line": "LINE_03",
+   "item": "ITM-008",
+   "planned_qty": 600,
+   "actual_qty": 594,
+   "good_qty": 566,
+   "planned_min": 450,
+   "run_min": 368.5,
+   "ideal_cycle_sec": 34.92
+  },
+  {
+   "date": "2026-01-21",
+   "line": "LINE_04",
+   "item": "ITM-009",
+   "planned_qty": 600,
+   "actual_qty": 559,
+   "good_qty": 554,
+   "planned_min": 450,
+   "run_min": 362.0,
+   "ideal_cycle_sec": 30.75
+  },
+  {
+   "date": "2026-01-22",
+   "line": "LINE_01",
+   "item": "ITM-012",
+   "planned_qty": 600,
+   "actual_qty": 530,
+   "good_qty": 518,
+   "planned_min": 450,
+   "run_min": 361.3,
+   "ideal_cycle_sec": 38.69
+  },
+  {
+   "date": "2026-01-22",
+   "line": "LINE_02",
+   "item": "ITM-004",
+   "planned_qty": 400,
+   "actual_qty": 336,
+   "good_qty": 327,
+   "planned_min": 450,
+   "run_min": 421.1,
+   "ideal_cycle_sec": 68.07
+  },
+  {
+   "date": "2026-01-22",
+   "line": "LINE_03",
+   "item": "ITM-005",
+   "planned_qty": 600,
+   "actual_qty": 557,
+   "good_qty": 538,
+   "planned_min": 450,
+   "run_min": 362.1,
+   "ideal_cycle_sec": 31.75
+  },
+  {
+   "date": "2026-01-22",
+   "line": "LINE_04",
+   "item": "ITM-006",
+   "planned_qty": 500,
+   "actual_qty": 451,
+   "good_qty": 444,
+   "planned_min": 450,
+   "run_min": 374.2,
+   "ideal_cycle_sec": 46.21
+  },
+  {
+   "date": "2026-01-23",
+   "line": "LINE_01",
+   "item": "ITM-006",
+   "planned_qty": 400,
+   "actual_qty": 361,
+   "good_qty": 355,
+   "planned_min": 450,
+   "run_min": 386.2,
+   "ideal_cycle_sec": 54.81
+  },
+  {
+   "date": "2026-01-23",
+   "line": "LINE_02",
+   "item": "ITM-007",
+   "planned_qty": 600,
+   "actual_qty": 474,
+   "good_qty": 459,
+   "planned_min": 450,
+   "run_min": 424.5,
+   "ideal_cycle_sec": 41.95
+  },
+  {
+   "date": "2026-01-23",
+   "line": "LINE_03",
+   "item": "ITM-012",
+   "planned_qty": 500,
+   "actual_qty": 433,
+   "good_qty": 412,
+   "planned_min": 450,
+   "run_min": 416.8,
+   "ideal_cycle_sec": 46.23
+  },
+  {
+   "date": "2026-01-23",
+   "line": "LINE_04",
+   "item": "ITM-001",
+   "planned_qty": 400,
+   "actual_qty": 315,
+   "good_qty": 311,
+   "planned_min": 450,
+   "run_min": 361.4,
+   "ideal_cycle_sec": 58.59
+  }
+ ],
+ "inventory": [
+  {
+   "item": "ITM-001",
+   "family": "Family_B",
+   "on_hand": 440,
+   "forecast_daily": 20,
+   "safety_stock": 200
+  },
+  {
+   "item": "ITM-002",
+   "family": "Family_C",
+   "on_hand": 520,
+   "forecast_daily": 20,
+   "safety_stock": 100
+  },
+  {
+   "item": "ITM-003",
+   "family": "Family_A",
+   "on_hand": 1200,
+   "forecast_daily": 40,
+   "safety_stock": 100
+  },
+  {
+   "item": "ITM-004",
+   "family": "Family_B",
+   "on_hand": 80,
+   "forecast_daily": 40,
+   "safety_stock": 200
+  },
+  {
+   "item": "ITM-005",
+   "family": "Family_C",
+   "on_hand": 600,
+   "forecast_daily": 20,
+   "safety_stock": 200
+  },
+  {
+   "item": "ITM-006",
+   "family": "Family_A",
+   "on_hand": 280,
+   "forecast_daily": 10,
+   "safety_stock": 200
+  },
+  {
+   "item": "ITM-007",
+   "family": "Family_B",
+   "on_hand": 230,
+   "forecast_daily": 10,
+   "safety_stock": 50
+  },
+  {
+   "item": "ITM-008",
+   "family": "Family_C",
+   "on_hand": 360,
+   "forecast_daily": 20,
+   "safety_stock": 100
+  },
+  {
+   "item": "ITM-009",
+   "family": "Family_A",
+   "on_hand": 560,
+   "forecast_daily": 40,
+   "safety_stock": 100
+  },
+  {
+   "item": "ITM-010",
+   "family": "Family_B",
+   "on_hand": 1120,
+   "forecast_daily": 40,
+   "safety_stock": 50
+  },
+  {
+   "item": "ITM-011",
+   "family": "Family_C",
+   "on_hand": 170,
+   "forecast_daily": 10,
+   "safety_stock": 100
+  },
+  {
+   "item": "ITM-012",
+   "family": "Family_A",
+   "on_hand": 50,
+   "forecast_daily": 0,
+   "safety_stock": 200
+  }
+ ]
+}
