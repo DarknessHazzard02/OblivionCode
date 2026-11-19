@@ -1,3 +1,4 @@
+// Made by: Hazzard
 // FreeCodeCamp: Java Programming Course
 // Project: Grade & Weighted Score Calculator
 

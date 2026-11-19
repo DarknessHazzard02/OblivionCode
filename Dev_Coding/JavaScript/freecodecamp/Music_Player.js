@@ -1,3 +1,4 @@
+// Made by: Hazzard
 // FreeCodeCamp - Music Player State Manager
 // Teaches: Array methods (map, filter, sort, forEach), Object mutation, State handling
 

@@ -1,3 +1,4 @@
+# Author: Haz
 # FreeCodeCamp Information Security with Python - SHA-1 Password Cracker
 # Verifies password hashes against common dictionary lists and salted variations
 

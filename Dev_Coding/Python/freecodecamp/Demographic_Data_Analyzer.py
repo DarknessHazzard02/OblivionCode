@@ -1,3 +1,4 @@
+# Author: Haz
 # FreeCodeCamp Data Analysis with Python - Demographic Data Analyzer
 # Analyzes demographic survey data using pandas (with pure Python fallback)
 

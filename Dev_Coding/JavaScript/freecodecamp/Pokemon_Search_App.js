@@ -1,3 +1,4 @@
+// Made by: Hazzard
 // FreeCodeCamp Certification Project - Pokémon Search App Logic
 // Teaches: Object lookup, normalization, Data Extraction, Stat formatting
 

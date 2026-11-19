@@ -1,3 +1,4 @@
+# Author: Haz
 # FreeCodeCamp Scientific Computing with Python - Budget App
 # Object-oriented Category class managing deposits, withdrawals, transfers, balances, and spend charts
 

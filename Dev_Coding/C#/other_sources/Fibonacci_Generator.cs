@@ -1,3 +1,4 @@
+// Made by: Hazzard
 // Utility - Fibonacci Sequence Generator
 // Demonstrates iterative calculation and array population in C#
 

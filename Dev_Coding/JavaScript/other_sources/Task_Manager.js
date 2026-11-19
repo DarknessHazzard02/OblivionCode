@@ -1,3 +1,4 @@
+// Made by: Hazzard
 // Utility - Task / Chore Manager
 // Simple in-memory task tracker with priority and status
 

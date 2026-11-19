@@ -1,3 +1,4 @@
+// Made by: Hazzard
 // FreeCodeCamp Quality Assurance - Issue Tracker
 // In-memory CRUD system for tracking project issues with filtering, updating, and deletion
 

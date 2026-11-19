@@ -1,0 +1,108 @@
+/* Made by: Hazzard */
+/* FreeCodeCamp Responsive Web Design - Product Landing Page Stylesheet */
+
+:root {
+  --bg: #0b0b0d;
+  --panel: #141418;
+  --text: #e6e6e6;
+  --muted: #9a9aa3;
+  --accent: #e0262e;
+  --border: #26262c;
+}
+
+* { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+
+#header {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 1.5rem;
+  background: rgba(11, 11, 13, 0.95);
+  border-bottom: 1px solid var(--border);
+  z-index: 10;
+}
+
+#header-img { width: 40px; height: 40px; }
+
+#nav-bar { display: flex; gap: 1.5rem; }
+
+.nav-link { color: var(--text); text-decoration: none; }
+.nav-link:hover { color: var(--accent); }
+
+main { padding-top: 70px; }
+
+section { padding: 3rem 1.5rem; text-align: center; }
+
+#hero h1 { font-size: 2.5rem; margin-bottom: 1.5rem; }
+
+#form { display: flex; justify-content: center; gap: 0.5rem; flex-wrap: wrap; }
+
+#email {
+  width: min(320px, 100%);
+  padding: 0.75rem;
+  border: 1px solid var(--border);
+  background: var(--panel);
+  color: var(--text);
+}
+
+#submit, .plan button {
+  padding: 0.75rem 1.25rem;
+  border: none;
+  background: var(--accent);
+  color: #fff;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+#submit:hover, .plan button:hover { filter: brightness(1.15); }
+
+#features {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1.5rem;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.feature { background: var(--panel); padding: 1.5rem; border-top: 3px solid var(--accent); }
+.feature p { color: var(--muted); }
+
+#video { max-width: 100%; height: auto; aspect-ratio: 16 / 9; background: var(--panel); }
+
+#pricing {
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.plan {
+  width: 220px;
+  padding: 1.5rem;
+  background: var(--panel);
+  border: 1px solid var(--border);
+}
+
+.plan.featured { border-color: var(--accent); }
+
+.price { font-size: 2rem; font-weight: 700; color: var(--accent); }
+
+footer { padding: 2rem; text-align: center; color: var(--muted); font-size: 0.85rem; }
+
+@media (max-width: 600px) {
+  #header { flex-direction: column; gap: 0.5rem; }
+  main { padding-top: 110px; }
+  #hero h1 { font-size: 1.8rem; }
+}

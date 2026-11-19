@@ -1,3 +1,4 @@
+-- Made by: Hazzard
 -- Other Sources: Advanced Sales Analytics Queries
 -- Features: Window functions (ROW_NUMBER, DENSE_RANK, SUM OVER PARTITION), CTEs, and Running Totals
 

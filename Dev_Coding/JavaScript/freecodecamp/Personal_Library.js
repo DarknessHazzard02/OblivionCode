@@ -1,3 +1,4 @@
+// Made by: Hazzard
 // FreeCodeCamp Quality Assurance - Personal Library
 // In-memory book management system with comment threads and deletion controls
 

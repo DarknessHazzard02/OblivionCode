@@ -1,3 +1,4 @@
+// Made by: Hazzard
 // FreeCodeCamp Quality Assurance - Metric-Imperial Converter
 // Converts units between Gallons <-> Liters, Miles <-> Kilometers, Pounds <-> Kilograms
 

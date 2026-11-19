@@ -1,0 +1,149 @@
+/* Made by: Hazzard */
+/* FreeCodeCamp React + D3 projects - shared stylesheet for FCC_JS_Runner.html */
+
+:root {
+  --bg: #0b0b0d;
+  --panel: #141418;
+  --text: #e6e6e6;
+  --muted: #9a9aa3;
+  --accent: #e0262e;
+  --border: #26262c;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+
+#app-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+  padding: 0.75rem 1rem;
+  border-bottom: 2px solid var(--accent);
+  background: var(--panel);
+}
+
+#app-nav a {
+  padding: 0.35rem 0.6rem;
+  color: var(--muted);
+  text-decoration: none;
+  font-size: 0.85rem;
+}
+
+#app-nav a:hover, #app-nav a.active { color: var(--text); background: var(--bg); }
+
+#root { padding: 1.5rem 1rem; display: flex; justify-content: center; }
+
+.card {
+  width: 100%;
+  max-width: 640px;
+  padding: 1.5rem;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-top: 3px solid var(--accent);
+}
+
+.chart { max-width: 1100px; }
+.chart svg { width: 100%; height: auto; display: block; }
+
+.muted { color: var(--muted); }
+.error { color: #ff6b70; font-weight: 600; }
+
+.row { display: flex; gap: 0.75rem; align-items: center; justify-content: center; flex-wrap: wrap; }
+
+.btn {
+  padding: 0.6rem 1.1rem;
+  border: 1px solid var(--accent);
+  background: var(--accent);
+  color: #fff;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.btn.ghost { background: transparent; color: var(--text); border-color: var(--border); }
+.btn:hover { filter: brightness(1.15); }
+.btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+.display { font-family: ui-monospace, Consolas, monospace; font-size: 1.6rem; }
+.display.big { font-size: 3.5rem; margin: 0.25rem 0 1rem; }
+.display.warn { color: var(--accent); }
+
+/* Quote machine */
+.quote { font-size: 1.4rem; line-height: 1.5; }
+
+/* Markdown previewer */
+.split { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; width: 100%; max-width: 1200px; }
+.split .card { max-width: none; }
+#editor {
+  width: 100%;
+  min-height: 420px;
+  background: var(--bg);
+  color: var(--text);
+  border: 1px solid var(--border);
+  font-family: ui-monospace, Consolas, monospace;
+  padding: 0.75rem;
+}
+.md code { color: #ff6b70; }
+.md pre { background: var(--bg); padding: 0.75rem; overflow-x: auto; }
+.md blockquote { border-left: 3px solid var(--accent); margin-left: 0; padding-left: 1rem; color: var(--muted); }
+.md a { color: var(--accent); }
+
+/* Drum machine */
+.pad-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem; }
+.drum-pad {
+  height: 80px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  color: var(--text);
+  font-size: 1.4rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+.drum-pad.active, .drum-pad:active { background: var(--accent); }
+.controls { margin-top: 1rem; text-align: center; }
+
+/* Calculator */
+.calc { max-width: 340px; }
+.calc .formula { min-height: 1.2rem; text-align: right; font-family: ui-monospace, Consolas, monospace; }
+.calc #display { text-align: right; margin-bottom: 0.75rem; overflow-x: auto; }
+.calc-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.4rem; }
+.calc-grid .btn { padding: 1rem 0; }
+#clear { grid-column: span 2; }
+#equals { grid-row: span 2; }
+#zero { grid-column: span 2; }
+
+/* 25 + 5 clock */
+.clock { text-align: center; max-width: 480px; }
+.length { margin: 0 0.75rem; }
+
+/* D3 charts */
+.bar, .dot, .cell, .tile, .county { cursor: pointer; }
+.bar { fill: var(--accent); }
+.bar:hover, .dot:hover, .cell:hover, .county:hover { opacity: 0.7; }
+.tile { stroke: var(--bg); }
+.tile-text { font-size: 9px; fill: #fff; pointer-events: none; }
+.state-border { fill: none; stroke: var(--bg); stroke-width: 1; stroke-linejoin: round; }
+.chart .tick text, .legend-text, .axis-label { fill: var(--muted); font-size: 11px; }
+.chart .domain, .chart .tick line { stroke: var(--border); }
+
+.tooltip {
+  position: absolute;
+  pointer-events: none;
+  white-space: pre-line;
+  padding: 0.5rem 0.75rem;
+  background: rgba(20, 20, 24, 0.95);
+  border: 1px solid var(--accent);
+  color: var(--text);
+  font-size: 0.8rem;
+  line-height: 1.4;
+}
+
+@media (max-width: 760px) {
+  .split { grid-template-columns: 1fr; }
+}

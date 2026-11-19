@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<!-- Made by: Hazzard -->
+<!-- FreeCodeCamp Responsive Web Design Certification Project - Product Landing Page -->
+<!-- "NightKey" is a fictional product invented for this exercise. -->
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NightKey Mechanical Keyboards</title>
+  <link rel="stylesheet" href="Product_Landing_Page.css">
+</head>
+<body>
+  <header id="header">
+    <img id="header-img" alt="NightKey logo"
+         src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Crect x='4' y='10' width='32' height='20' rx='4' fill='none' stroke='%23e0262e' stroke-width='3'/%3E%3Cpath d='M10 18h4M18 18h4M26 18h4M12 24h16' stroke='%23e0262e' stroke-width='3'/%3E%3C/svg%3E">
+    <nav id="nav-bar">
+      <a class="nav-link" href="#features">Features</a>
+      <a class="nav-link" href="#how-it-works">How It Works</a>
+      <a class="nav-link" href="#pricing">Pricing</a>
+    </nav>
+  </header>
+
+  <main>
+    <section id="hero">
+      <h1>Type in the dark. Beautifully.</h1>
+      <form id="form" action="https://www.freecodecamp.com/email-submit">
+        <input id="email" name="email" type="email" placeholder="Enter your email" required>
+        <input id="submit" type="submit" value="Get Early Access">
+      </form>
+    </section>
+
+    <section id="features">
+      <article class="feature">
+        <h2>Hot-swap switches</h2>
+        <p>Change every switch without soldering. Find the feel that fits you.</p>
+      </article>
+      <article class="feature">
+        <h2>Per-key red backlight</h2>
+        <p>Low-glare lighting tuned for late-night sessions.</p>
+      </article>
+      <article class="feature">
+        <h2>Aluminum frame</h2>
+        <p>Zero flex, zero rattle, built to last a decade.</p>
+      </article>
+    </section>
+
+    <section id="how-it-works">
+      <h2>How It Works</h2>
+      <video id="video" controls preload="none" width="560" height="315">
+        Your browser does not support embedded video.
+      </video>
+    </section>
+
+    <section id="pricing">
+      <div class="plan">
+        <h3>65%</h3>
+        <p class="price">$89</p>
+        <button type="button">Select</button>
+      </div>
+      <div class="plan featured">
+        <h3>TKL</h3>
+        <p class="price">$119</p>
+        <button type="button">Select</button>
+      </div>
+      <div class="plan">
+        <h3>Full Size</h3>
+        <p class="price">$139</p>
+        <button type="button">Select</button>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>NightKey is a fictional brand created for a coding exercise.</p>
+  </footer>
+</body>
+</html>

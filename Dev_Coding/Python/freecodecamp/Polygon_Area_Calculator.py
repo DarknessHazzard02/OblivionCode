@@ -1,3 +1,4 @@
+# Author: Haz
 # FreeCodeCamp Scientific Computing with Python - Polygon Area Calculator
 # Object-oriented Rectangle and Square classes with geometric calculations and picture representation
 
