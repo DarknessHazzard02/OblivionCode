@@ -1,0 +1,100 @@
+/* Made by: Hazzard */
+/* FreeCodeCamp Responsive Web Design - Personal Portfolio Stylesheet */
+
+:root {
+  --bg: #0b0b0d;
+  --panel: #141418;
+  --text: #e6e6e6;
+  --muted: #9a9aa3;
+  --accent: #e0262e;
+  --border: #26262c;
+}
+
+* { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+
+#navbar {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+  gap: 2rem;
+  padding: 1rem 2rem;
+  background: rgba(11, 11, 13, 0.95);
+  border-bottom: 2px solid var(--accent);
+  z-index: 10;
+}
+
+#navbar a { color: var(--text); text-decoration: none; font-weight: 600; }
+#navbar a:hover { color: var(--accent); }
+
+#welcome-section {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 0 1rem;
+}
+
+#welcome-section h1 { font-size: clamp(2.2rem, 6vw, 4rem); margin: 0; }
+#welcome-section p { color: var(--accent); font-style: italic; }
+
+#projects { padding: 5rem 1.5rem; background: var(--panel); text-align: center; }
+
+.project-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1.5rem;
+  max-width: 1100px;
+  margin: 2rem auto 0;
+}
+
+.project-tile {
+  display: block;
+  padding: 1.5rem;
+  text-align: left;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  color: var(--text);
+  text-decoration: none;
+  transition: border-color 0.2s, transform 0.2s;
+}
+
+.project-tile:hover { border-color: var(--accent); transform: translateY(-3px); }
+.project-tile p { color: var(--muted); }
+
+.tag {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--accent);
+}
+
+#contact { padding: 5rem 1.5rem; text-align: center; }
+
+#profile-link {
+  display: inline-block;
+  padding: 0.75rem 1.5rem;
+  border: 2px solid var(--accent);
+  color: var(--text);
+  text-decoration: none;
+}
+
+#profile-link:hover { background: var(--accent); }
+
+footer { padding: 1.5rem; text-align: center; color: var(--muted); font-size: 0.85rem; }
+
+@media (max-width: 500px) {
+  #navbar { justify-content: center; gap: 1.25rem; }
+}
