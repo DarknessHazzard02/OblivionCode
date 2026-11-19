@@ -1,3 +1,4 @@
+-- Made by: Hazzard
 -- FreeCodeCamp Relational Database Certification
 -- Project: Learn SQL by Building a Student Database - Part 2
 -- Advanced Queries: JOINs, subqueries, aggregation, sorting

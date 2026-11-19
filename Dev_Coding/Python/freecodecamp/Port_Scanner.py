@@ -1,3 +1,4 @@
+# Author: Haz
 # FreeCodeCamp Information Security with Python - Port Scanner
 # Scans targeted IP addresses or hostnames across a specified port range and detects open services
 

@@ -1,3 +1,4 @@
+-- Made by: Hazzard
 -- FreeCodeCamp Relational Database Certification
 -- Project: Bike Rental Shop Database
 -- Relational schema for bikes inventory, customers, and active/completed rentals

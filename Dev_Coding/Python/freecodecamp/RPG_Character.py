@@ -1,3 +1,4 @@
+# Author: Haz
 def create_character(name, strength, intelligence, charisma):
     if type(name) is not str:
         return "The character name should be a string."

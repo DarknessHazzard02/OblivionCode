@@ -1,3 +1,4 @@
+-- Made by: Hazzard
 -- FreeCodeCamp Relational Database Certification
 -- Project: Learn Git by Building an SQL Reference Object
 -- A self-documenting SQL reference table covering core SQL commands with examples

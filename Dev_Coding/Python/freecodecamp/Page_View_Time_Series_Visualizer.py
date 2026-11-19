@@ -1,3 +1,4 @@
+# Author: Haz
 # FreeCodeCamp Data Analysis with Python - Page View Time Series Visualizer
 # Cleans daily website traffic by filtering 2.5% percentiles and computes monthly/yearly trend distributions
 

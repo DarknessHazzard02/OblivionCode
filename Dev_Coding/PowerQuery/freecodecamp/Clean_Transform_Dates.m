@@ -1,3 +1,4 @@
+// Made by: Hazzard
 // FreeCodeCamp: Power Query (M Language)
 // Transformation: Parse dates, trim whitespace, uppercase status
 

@@ -1,3 +1,4 @@
+// Made by: Hazzard
 // FreeCodeCamp - Calorie Counter
 // Teaches: Regular Expressions, String Parsing, Arithmetic Validation
 

@@ -1,3 +1,4 @@
+// Made by: Hazzard
 // Other Sources: Remove blank or null rows from critical columns
 
 let

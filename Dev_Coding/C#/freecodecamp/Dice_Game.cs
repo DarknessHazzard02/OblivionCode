@@ -1,3 +1,4 @@
+// Made by: Hazzard
 // FreeCodeCamp & Microsoft C# Certification - Dice Game
 // Teaches: Random class, if-else conditional evaluation, logic operators
 

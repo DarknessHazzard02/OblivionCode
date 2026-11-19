@@ -1,3 +1,4 @@
+# Author: Haz
 # FreeCodeCamp Scientific Computing with Python - Probability Calculator
 # Simulates drawing balls at random from a hat to estimate probability of specific outcomes using Monte Carlo experiment
 

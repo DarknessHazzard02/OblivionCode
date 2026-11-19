@@ -1,3 +1,4 @@
+// Made by: Hazzard
 // FreeCodeCamp & Microsoft C# Certification - Student Grading Calculator
 // Teaches: Variables, Arrays, Foreach loops, Arithmetic operations, String formatting
 

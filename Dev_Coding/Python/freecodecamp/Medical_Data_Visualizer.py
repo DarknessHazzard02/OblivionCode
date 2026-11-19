@@ -1,3 +1,4 @@
+# Author: Haz
 # FreeCodeCamp Data Analysis with Python - Medical Examination Data Visualizer
 # Processes patient health metrics, calculates BMI overweight category, normalizes indicators, and computes correlation matrix
 

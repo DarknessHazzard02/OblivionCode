@@ -1,3 +1,4 @@
+// Made by: Hazzard
 // FreeCodeCamp - Pyramid Generator
 // Teaches: Arrays, Loops (for, for...of), Functions, String manipulation
 

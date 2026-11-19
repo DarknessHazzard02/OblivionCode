@@ -1,3 +1,4 @@
+// Made by: Hazzard
 // FreeCodeCamp - Rock, Paper, Scissors Game
 // Teaches: Randomization, Conditional Branching, Game Evaluation
 

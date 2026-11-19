@@ -1,3 +1,4 @@
+// Made by: Hazzard
 // FreeCodeCamp: TypeScript Course
 // Project: Interface Modeling, Generics, and Union Types
 

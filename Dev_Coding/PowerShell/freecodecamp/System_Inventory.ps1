@@ -1,3 +1,4 @@
+# Made by: Hazzard
 # FreeCodeCamp: PowerShell Automation and Scripting
 # Project: System Inventory & Hardware Profile Generator
 
