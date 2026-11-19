@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<!-- Made by: Hazzard -->
+<!-- The Odin Project - Foundations: Etch-a-Sketch (DOM grid built with Flexbox). -->
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Etch-a-Sketch</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main class="app">
+    <h1>Etch<span>-a-</span>Sketch</h1>
+    <div class="toolbar">
+      <button id="resize">New grid</button>
+      <button id="mode" aria-pressed="false">Mode: red</button>
+      <button id="clear">Clear</button>
+      <span id="size-label" class="muted"></span>
+    </div>
+    <div id="grid" class="grid" aria-label="Drawing grid"></div>
+    <p class="muted hint">Hover over the grid to draw. Rainbow mode paints a random color and adds 10% opacity on every pass.</p>
+  </main>
+  <script src="script.js"></script>
+</body>
+</html>

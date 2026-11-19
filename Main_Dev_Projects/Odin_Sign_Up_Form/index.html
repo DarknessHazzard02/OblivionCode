@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<!-- Made by: Hazzard -->
+<!-- The Odin Project - Foundations: Sign-up Form (HTML validation, CSS states, small JS password check). -->
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign Up</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <aside class="side">
+    <div class="brand">Oblivion<span>Code</span></div>
+    <p class="side__note">Practice form. Nothing you type here is sent anywhere.</p>
+  </aside>
+  <main class="main">
+    <section class="intro">
+      <p>Fill in the form to see the validation states: a field turns red when it is invalid after you leave it, and the two passwords must match.</p>
+      <p><strong>Let's do this!</strong></p>
+    </section>
+    <form id="signup" class="form" novalidate>
+      <h2>Let's get started</h2>
+      <div class="grid">
+        <label>First name <input name="first_name" required autocomplete="given-name"></label>
+        <label>Last name <input name="last_name" required autocomplete="family-name"></label>
+        <label>Email <input type="email" name="email" required autocomplete="email"></label>
+        <label>Phone number <input type="tel" name="phone" pattern="[0-9+ \-]{7,15}" autocomplete="tel"></label>
+        <label>Password <input type="password" name="password" id="password" required minlength="8" autocomplete="new-password"></label>
+        <label>Confirm password <input type="password" name="password_confirm" id="password_confirm" required autocomplete="new-password"></label>
+      </div>
+      <p id="message" class="message" role="status" aria-live="polite"></p>
+      <button type="submit" class="btn">Create account</button>
+    </form>
+    <p class="login">Already have an account? <a href="#">Log in</a></p>
+  </main>
+  <script src="script.js"></script>
+</body>
+</html>
