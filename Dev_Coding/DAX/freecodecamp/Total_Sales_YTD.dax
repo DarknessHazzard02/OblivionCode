@@ -1,0 +1,8 @@
+-- FreeCodeCamp: Power BI & DAX Essentials
+-- Measure: Year-To-Date (YTD) Sales Calculation
+
+Total Sales YTD = 
+TOTALYTD(
+    SUM(Sales[SalesAmount]),
+    'Calendar'[Date]
+)
