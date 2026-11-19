@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<!-- Made by: Hazzard -->
+<!-- The Odin Project - Full Stack JavaScript: Tic Tac Toe (factory functions and the module pattern). -->
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tic Tac Toe</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main class="app">
+    <h1>Tic <span>Tac</span> Toe</h1>
+    <form id="players" class="players">
+      <label>Player X <input name="x" value="Player 1" maxlength="20" required></label>
+      <label>Player O <input name="o" value="Player 2" maxlength="20" required></label>
+      <button class="btn" type="submit">Start / Restart</button>
+    </form>
+    <p id="status" class="status" aria-live="polite"></p>
+    <div id="board" class="board" role="grid" aria-label="Game board"></div>
+  </main>
+  <script type="module" src="app.js"></script>
+</body>
+</html>
