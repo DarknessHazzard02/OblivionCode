@@ -2,7 +2,7 @@
 // FreeCodeCamp Front End Development Libraries - JavaScript Calculator (React)
 // Uses formula logic (3 + 5 * 6 = 33). Expressions are evaluated with a
 // shunting-yard parser instead of eval().
-// Run it: open ../../HTML/freecodecamp/FCC_JS_Runner.html?app=JavaScript_Calculator
+// Run it: open ../FCC_JS_Runner.html?app=JavaScript_Calculator
 
 const h = React.createElement;
 

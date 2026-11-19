@@ -1,7 +1,7 @@
 // Made by: Hazzard
 // FreeCodeCamp Front End Development Libraries - 25 + 5 Clock (React)
 // Pomodoro timer: session/break lengths 1-60 min, start/stop, reset, beep.
-// Run it: open ../../HTML/freecodecamp/FCC_JS_Runner.html?app=Pomodoro_25_5_Clock
+// Run it: open ../FCC_JS_Runner.html?app=Pomodoro_25_5_Clock
 
 const h = React.createElement;
 

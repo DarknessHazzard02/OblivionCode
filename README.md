@@ -67,3 +67,24 @@ Each language folder follows the same layout:
 ├── other_sources    ← exercises from other sources and personal scripts
 └── blank.<ext>      ← scratch file
 ```
+
+`Dev_Coding` holds single-language exercises. A project that combines more than one language lives in `Main_Dev_Projects`, one folder per project, each with its own README and run steps:
+
+```text
+Main_Dev_Projects
+├── Bike_Rental_Shop               ← Bash + SQL (PostgreSQL)
+├── FCC_React_D3_Projects          ← HTML + CSS + JavaScript (10 React and D3 apps, one runner page)
+├── Number_Guessing_Game           ← Bash + SQL (PostgreSQL)
+├── Periodic_Table                 ← Bash + SQL (PostgreSQL)
+├── Personal_Portfolio             ← HTML + CSS
+├── Product_Landing_Page           ← HTML + CSS
+├── Survey_Form                    ← HTML + CSS
+├── Technical_Documentation_Page   ← HTML + CSS
+└── Tribute_Page                   ← HTML + CSS
+```
+
+To view the web projects, serve the repo root and open a page under `Main_Dev_Projects/`:
+
+```bash
+"C:/Program Files/Python315/python.exe" -m http.server 8765 --bind 127.0.0.1
+```

@@ -1,7 +1,7 @@
 #!/bin/bash
 # Made by: Hazzard
 # FreeCodeCamp Relational Database Certification - Number Guessing Game
-# Bash + PostgreSQL. Schema in ../../SQL/freecodecamp/Number_Guessing_Game.sql
+# Bash + PostgreSQL. Schema in Number_Guessing_Game.sql (same folder)
 # Teaches: psql from Bash, input validation, persisting game stats.
 # Set NO_DB=1 to play without a database.
 

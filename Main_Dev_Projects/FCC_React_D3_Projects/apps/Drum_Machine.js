@@ -3,7 +3,7 @@
 // Sounds are synthesized in code and encoded as in-memory WAV files, so no audio
 // files are needed. Each pad plays its own <audio class="clip"> element, as the
 // challenge tests expect.
-// Run it: open ../../HTML/freecodecamp/FCC_JS_Runner.html?app=Drum_Machine
+// Run it: open ../FCC_JS_Runner.html?app=Drum_Machine
 
 const h = React.createElement;
 

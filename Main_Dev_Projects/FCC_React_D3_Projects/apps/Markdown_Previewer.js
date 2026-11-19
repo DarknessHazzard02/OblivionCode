@@ -1,7 +1,7 @@
 // Made by: Hazzard
 // FreeCodeCamp Front End Development Libraries - Markdown Previewer (React + marked)
 // The preview HTML is sanitized with DOMPurify before it is injected.
-// Run it: open ../../HTML/freecodecamp/FCC_JS_Runner.html?app=Markdown_Previewer
+// Run it: open ../FCC_JS_Runner.html?app=Markdown_Previewer
 
 const h = React.createElement;
 

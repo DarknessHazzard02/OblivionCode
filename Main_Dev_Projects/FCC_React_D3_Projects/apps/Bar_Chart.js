@@ -1,7 +1,7 @@
 // Made by: Hazzard
 // FreeCodeCamp Data Visualization - Bar Chart (D3): US GDP by quarter
 // Data: public freeCodeCamp reference dataset.
-// Run it: open ../../HTML/freecodecamp/FCC_JS_Runner.html?app=Bar_Chart
+// Run it: open ../FCC_JS_Runner.html?app=Bar_Chart
 
 const DATA_URL = "https://raw.githubusercontent.com/freeCodeCamp/ProjectReferenceData/master/GDP-data.json";
 const W = 900, H = 460, M = { top: 40, right: 20, bottom: 40, left: 70 };

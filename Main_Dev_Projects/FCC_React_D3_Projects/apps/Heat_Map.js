@@ -1,7 +1,7 @@
 // Made by: Hazzard
 // FreeCodeCamp Data Visualization - Heat Map (D3): monthly global land temperature
 // Data: public freeCodeCamp reference dataset.
-// Run it: open ../../HTML/freecodecamp/FCC_JS_Runner.html?app=Heat_Map
+// Run it: open ../FCC_JS_Runner.html?app=Heat_Map
 
 const DATA_URL = "https://raw.githubusercontent.com/freeCodeCamp/ProjectReferenceData/master/global-temperature.json";
 const W = 1000, H = 480, M = { top: 30, right: 20, bottom: 90, left: 90 };

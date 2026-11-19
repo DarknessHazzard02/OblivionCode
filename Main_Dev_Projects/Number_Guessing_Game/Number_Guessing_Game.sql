@@ -1,7 +1,7 @@
 -- Made by: Hazzard
 -- FreeCodeCamp Relational Database Certification
 -- Project: Number Guessing Game (PostgreSQL)
--- Used by ../../Bash/freecodecamp/Number_Guessing_Game.sh
+-- Used by Number_Guessing_Game.sh (same folder)
 
 -- 1. Database
 CREATE DATABASE number_guess;

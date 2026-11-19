@@ -2,7 +2,7 @@
 // FreeCodeCamp Data Visualization - Choropleth Map (D3 + topojson)
 // US counties colored by % of adults with a bachelor's degree or higher.
 // Data: public freeCodeCamp reference datasets.
-// Run it: open ../../HTML/freecodecamp/FCC_JS_Runner.html?app=Choropleth_Map
+// Run it: open ../FCC_JS_Runner.html?app=Choropleth_Map
 
 const BASE = "https://cdn.freecodecamp.org/testable-projects-fcc/data/choropleth_map/";
 const COUNTY_URL = BASE + "counties.json";
