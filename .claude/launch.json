@@ -4,6 +4,12 @@
     {
       "name": "portal-local",
       "url": "http://127.0.0.1:8080"
+    },
+    {
+      "name": "dev-coding-static",
+      "runtimeExecutable": "C:\\Program Files\\Python315\\python.exe",
+      "runtimeArgs": ["-m", "http.server", "8765", "--bind", "127.0.0.1", "--directory", "Dev_Coding"],
+      "port": 8765
     }
   ]
 }
