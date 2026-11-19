@@ -1,90 +1,99 @@
-
 # OblivionCode
 
-Welcome to OblivionCode, my personal software development portfolio.
+Hi, I'm **Hazzard**: a BI analyst and planner in manufacturing who builds the bridge between the shop floor and the data. My day-to-day is turning fragile, manual spreadsheets into pipelines, models and dashboards people can trust.
 
-This repository contains coding exercises, technical examples, automation scripts, and learning projects focused on Software Engineering and Full Stack Development.
-
-My goal is to continuously improve my programming skills while building practical solutions through code, automation, and modern development practices.
+This repo is my public portfolio: data and BI showcase projects, plus everything I build while working through **freeCodeCamp** and **The Odin Project**. Everything here is my own practice work. All data is invented, and nothing comes from any employer.
 
 ---
 
-## Technologies
+## Skills
 
-### Frontend
-
-- HTML
-- CSS
-- JavaScript
-- TypeScript
-
-### Backend
-
-- Python
-- Java
-- C#
-
-### Data & Automation
-
-- SQL
-- PowerShell
-- VBA
-
-### Supporting Technologies
-
-- JSON
-- YAML
-- Bash
+| Area | What I use |
+|---|---|
+| Data & BI | SQL (CTEs, star schemas), DAX, Power Query (M), KPI design for S&OP (OEE, schedule adherence, coverage) |
+| Data engineering | Python ETL with schema validation, logging and data-quality reports; Parquet |
+| Front end | HTML, CSS (Flexbox, Grid, responsive), JavaScript (ES modules, async/await), React, D3 |
+| Back end & scripting | Node.js, Ruby, Bash, PowerShell, C#, Java, TypeScript |
+| Automation | VBA for Excel, GitHub Actions (YAML) |
+| Practices | No silent failures, invented data with a written data contract, tests with `node:test` / RSpec / self-checks |
 
 ---
 
-## Repository Structure
+## Featured projects
+
+| Project | What it is | Stack |
+|---|---|---|
+| [S&OP KPI Dashboard](Main_Dev_Projects/SOP_KPI_Dashboard/) | OEE, schedule adherence and coverage with cross-filtering SVG charts, a paginated table, a safe CSV export and a visible degraded state. No libraries | HTML, CSS, JavaScript |
+| [S&OP Star Schema](Main_Dev_Projects/SOP_Star_Schema/) | Star schema with the same KPIs in SQL and DAX, verified end to end in SQLite | SQL, DAX, Python |
+| [Inventory Coverage ETL](Main_Dev_Projects/Inventory_Coverage_ETL/) | Days of coverage and projected shortage date per item, with a data-quality report that counts every dropped row | Python |
+| [freeCodeCamp React & D3](Main_Dev_Projects/FCC_React_D3_Projects/) | 10 front-end projects (calculator, drum machine, choropleth, treemap...) behind one runner page | React, D3 |
+| [Battleship](Main_Dev_Projects/Odin_Battleship/) | Battleship against a computer that hunts after a hit; game logic tested with `node:test` | JavaScript |
+| [Weather App](Main_Dev_Projects/Odin_Weather_App/) | City search and 5-day forecast from Open-Meteo (no API key), with loading and error states | JavaScript |
+
+---
+
+## Curriculum progress
+
+Counts are of the exercises and projects in this repo. They are not certifications.
+
+### freeCodeCamp
+
+| Area | In this repo | Where |
+|---|---|---|
+| Responsive Web Design | 5 projects + Cat Photo App | `Main_Dev_Projects/` (Tribute, Survey, Product Landing, Technical Docs, Portfolio), `HTML/freecodecamp` |
+| JavaScript Algorithms & Front End | 30 exercises and projects | `JavaScript/freecodecamp` |
+| Front End Libraries & Data Visualization | 10 projects | `Main_Dev_Projects/FCC_React_D3_Projects` |
+| Back End & APIs, QA, Security (Node) | included in the 30 above | `JavaScript/freecodecamp` |
+| Relational Database (Bash + SQL) | 7 SQL + 8 Bash exercises, 3 Bash + SQL projects | `SQL/`, `Bash/`, `Main_Dev_Projects/` |
+| Python (scientific computing, data analysis, ML) | 26 exercises and projects | `Python/freecodecamp` |
+| Other languages | C# (5), Java, TypeScript, DAX, Power Query, PowerShell, VBA, YAML, JSON | `<Language>/freecodecamp` |
+
+### The Odin Project
+
+| Path | In this repo | Where |
+|---|---|---|
+| Foundations | 6 projects: Recipes, Landing Page, Rock Paper Scissors, Etch-a-Sketch, Calculator, Sign-up Form | `HTML/odin_project`, `Main_Dev_Projects/Odin_*` |
+| Full Stack JavaScript | 6 projects: Library, Tic Tac Toe, Restaurant Page, Todo List, Weather App, Battleship; 5 CS exercises | `Main_Dev_Projects/Odin_*`, `JavaScript/odin_project` |
+| Ruby | 4 basics, 5 CS exercises, 5 projects: Mastermind, Hangman, Event Manager, Connect Four, Chess | `Ruby/odin_project` (written without a Ruby install; each has a self-check or spec to run) |
+
+Odin projects that use a bundler or test framework in the original curriculum (webpack, Jest) are built here with native ES modules and `node:test`, so nothing needs installing.
+
+---
+
+## Repository structure
 
 ```text
-Dev_Coding
-├── Bash
-├── C#
-├── CSS
-├── DAX
-├── HTML
-├── Java
-├── JavaScript
-├── JSON
-├── PowerQuery
-├── PowerShell
-├── Python
-├── SQL
-├── Typescript
-├── VBA
-└── YAML
+OblivionCode
+├── Dev_Coding            ← single-language exercises
+│   └── <Language>        (Bash, C#, CSS, DAX, HTML, Java, JavaScript, JSON, PowerQuery,
+│                          PowerShell, Python, Ruby, SQL, Typescript, VBA, YAML)
+│       ├── freecodecamp     ← freeCodeCamp exercises and projects
+│       ├── odin_project     ← The Odin Project (only where there is content)
+│       ├── other_sources    ← other courses and personal scripts
+│       └── blank.<ext>      ← scratch file
+└── Main_Dev_Projects     ← anything that combines languages, one folder per project
+    ├── Inventory_Coverage_ETL, SOP_Star_Schema, SOP_KPI_Dashboard   ← data & BI showcase
+    ├── Odin_*                                                         ← The Odin Project web projects
+    ├── Bike_Rental_Shop, FCC_React_D3_Projects, Number_Guessing_Game, Periodic_Table,
+    │   Personal_Portfolio, Product_Landing_Page, Survey_Form,
+    │   Technical_Documentation_Page, Tribute_Page                      ← freeCodeCamp projects
+    └── Main_Proj_A, Main_Proj_B                                       ← placeholders for future projects
 ```
 
-Each language folder follows the same layout:
+Every project folder (all but the two placeholders) has its own README with what it does and how to run it.
 
-```text
-<Language>
-├── freecodecamp     ← freeCodeCamp curriculum exercises and projects
-├── other_sources    ← exercises from other sources and personal scripts
-└── blank.<ext>      ← scratch file
-```
+---
 
-`Dev_Coding` holds single-language exercises. A project that combines more than one language lives in `Main_Dev_Projects`, one folder per project, each with its own README and run steps:
+## How to run things
 
-```text
-Main_Dev_Projects
-├── Bike_Rental_Shop               ← Bash + SQL (PostgreSQL)
-├── FCC_React_D3_Projects          ← HTML + CSS + JavaScript (10 React and D3 apps, one runner page)
-├── Number_Guessing_Game           ← Bash + SQL (PostgreSQL)
-├── Periodic_Table                 ← Bash + SQL (PostgreSQL)
-├── Personal_Portfolio             ← HTML + CSS
-├── Product_Landing_Page           ← HTML + CSS
-├── Survey_Form                    ← HTML + CSS
-├── Technical_Documentation_Page   ← HTML + CSS
-└── Tribute_Page                   ← HTML + CSS
-```
+| Kind | How |
+|---|---|
+| Web pages and dashboards | From the repo root: `python -m http.server 8765 --bind 127.0.0.1`, then open `http://127.0.0.1:8765/Main_Dev_Projects/<Project>/` |
+| Python | `python <file>.py` (the BI projects use only the standard library; `pyarrow` is optional) |
+| Node exercises | `node <file>.js`; Battleship tests: `node --test` in its folder |
+| Ruby | `ruby <file>.rb` or `ruby <file>.rb --check`; specs: `rspec spec/<file>_spec.rb` from the project folder |
+| Bash + SQL | PostgreSQL with a `freecodecamp` user; steps in each project README |
 
-To view the web projects, serve the repo root and open a page under `Main_Dev_Projects/`:
+---
 
-```bash
-"C:/Program Files/Python315/python.exe" -m http.server 8765 --bind 127.0.0.1
-```
+*Made by: Hazzard*
