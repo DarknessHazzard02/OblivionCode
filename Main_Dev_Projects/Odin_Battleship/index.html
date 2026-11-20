@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<!-- Made by: Hazzard -->
+<!-- The Odin Project - Full Stack JavaScript: Battleship (logic tested with node:test, UI in ES modules). -->
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Battleship</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main class="app">
+    <header class="head">
+      <h1>Battle<span>ship</span></h1>
+      <button id="new-game" class="btn">New game</button>
+    </header>
+    <p id="status" class="status" aria-live="polite"></p>
+    <div class="boards">
+      <section>
+        <h2>Your fleet</h2>
+        <div id="human-board" class="board"></div>
+      </section>
+      <section>
+        <h2>Enemy waters</h2>
+        <div id="enemy-board" class="board board--enemy"></div>
+      </section>
+    </div>
+    <p class="legend"><span class="sw ship"></span>Ship <span class="sw hit"></span>Hit <span class="sw miss"></span>Miss</p>
+  </main>
+  <script type="module" src="js/index.js"></script>
+</body>
+</html>

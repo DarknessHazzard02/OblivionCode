@@ -1,0 +1,9 @@
+{
+  "name": "odin-battleship",
+  "private": true,
+  "type": "module",
+  "description": "The Odin Project Battleship. No dependencies: the browser loads native ES modules and the tests use node:test.",
+  "scripts": {
+    "test": "node --test"
+  }
+}

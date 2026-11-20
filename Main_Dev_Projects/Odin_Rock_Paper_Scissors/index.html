@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<!-- Made by: Hazzard -->
+<!-- The Odin Project - Foundations: Rock Paper Scissors with a UI (first to 5 wins). -->
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rock Paper Scissors</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main class="game">
+    <h1>Rock <span>Paper</span> Scissors</h1>
+    <p class="muted">First to 5 wins.</p>
+    <div class="score">
+      <div><span class="label">You</span><span id="human-score">0</span></div>
+      <div><span class="label">Computer</span><span id="computer-score">0</span></div>
+    </div>
+    <div class="choices">
+      <button class="choice" data-choice="rock">Rock</button>
+      <button class="choice" data-choice="paper">Paper</button>
+      <button class="choice" data-choice="scissors">Scissors</button>
+    </div>
+    <p id="round" class="round" aria-live="polite">Pick a move to start.</p>
+    <p id="winner" class="winner" aria-live="polite"></p>
+    <button id="reset" class="reset" hidden>Play again</button>
+  </main>
+  <script src="script.js"></script>
+</body>
+</html>
