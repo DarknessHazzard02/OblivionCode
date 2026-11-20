@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<!-- Made by: Hazzard -->
+<!-- The Odin Project - Full Stack JavaScript: Todo List (ES modules, logic split from DOM, localStorage). -->
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Todo List</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <aside class="sidebar">
+    <h1>To<span>do</span></h1>
+    <h2>Projects</h2>
+    <ul id="project-list" class="projects"></ul>
+    <form id="project-form" class="project-form">
+      <input name="name" placeholder="New project" maxlength="40" aria-label="New project name">
+      <button class="btn btn--small" type="submit">Add</button>
+    </form>
+  </aside>
+  <main class="main">
+    <p id="notice" class="notice" role="alert" hidden></p>
+    <div class="main__head">
+      <h2 id="project-title"></h2>
+      <div class="row">
+        <button id="new-todo" class="btn">+ Todo</button>
+        <button id="delete-project" class="btn btn--ghost">Delete project</button>
+      </div>
+    </div>
+    <ul id="todo-list" class="todos"></ul>
+  </main>
+
+  <dialog id="todo-dialog">
+    <form id="todo-form">
+      <h2 id="todo-dialog-title">New todo</h2>
+      <input type="hidden" name="id">
+      <label>Title <input name="title" required maxlength="80"></label>
+      <label>Description <textarea name="description" rows="2" maxlength="300"></textarea></label>
+      <label>Due date <input type="date" name="dueDate"></label>
+      <label>Priority <select name="priority"></select></label>
+      <label>Notes <textarea name="notes" rows="2" maxlength="300"></textarea></label>
+      <p id="todo-error" class="error" role="alert"></p>
+      <div class="row row--end">
+        <button type="button" id="cancel-todo" class="btn btn--ghost">Cancel</button>
+        <button type="submit" class="btn">Save</button>
+      </div>
+    </form>
+  </dialog>
+  <script type="module" src="js/index.js"></script>
+</body>
+</html>

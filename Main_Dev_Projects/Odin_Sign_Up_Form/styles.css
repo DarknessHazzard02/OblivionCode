@@ -1,0 +1,32 @@
+/* Made by: Hazzard */
+/* Odin Sign-up Form - two-column layout, dark theme, visible validation states. */
+:root { --bg: #0b0b0d; --panel: #141418; --line: #2a2a30; --text: #e8e8ea; --muted: #9a9aa2; --red: #d7263d; --ok: #3fb950; }
+* { box-sizing: border-box; }
+body { margin: 0; min-height: 100vh; display: flex; background: var(--bg); color: var(--text); font-family: "Segoe UI", Roboto, sans-serif; }
+.side { flex: 0 0 34%; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 24px; background: linear-gradient(160deg, #3a0910, #0b0b0d 70%); border-right: 1px solid var(--line); }
+.brand { font-size: 2.6rem; font-weight: 800; letter-spacing: 1px; }
+.brand span { color: var(--red); }
+.side__note { color: var(--muted); text-align: center; }
+.main { flex: 1; display: flex; flex-direction: column; justify-content: center; padding: 32px 0; }
+.intro { max-width: 640px; padding: 0 32px; color: var(--muted); }
+.form { margin: 16px 0; padding: 24px 32px; background: var(--panel); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+.form h2 { margin-top: 0; }
+.grid { display: grid; grid-template-columns: repeat(2, minmax(0, 260px)); gap: 16px 40px; }
+label { display: flex; flex-direction: column; gap: 4px; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); }
+input { padding: 8px 10px; border: 1px solid var(--line); border-radius: 6px; background: var(--bg); color: var(--text); font-size: 1rem; }
+input:focus { outline: none; border-color: var(--red); box-shadow: 0 0 0 3px rgba(215, 38, 61, 0.25); }
+input.touched:invalid { border-color: var(--red); }
+input.touched:valid { border-color: var(--ok); }
+.message { min-height: 1.2em; color: var(--red); }
+.message.ok { color: var(--ok); }
+.btn { padding: 12px 36px; border: none; border-radius: 8px; background: var(--red); color: #fff; font-weight: 700; cursor: pointer; }
+.btn:hover { filter: brightness(1.15); }
+.login { padding: 0 32px; color: var(--muted); }
+.login a { color: var(--red); font-weight: 600; }
+@media (max-width: 760px) {
+  body { flex-direction: column; }
+  .side { flex-basis: auto; padding: 32px 16px; border-right: none; border-bottom: 1px solid var(--line); }
+  .grid { grid-template-columns: 1fr; }
+  .intro, .login { padding: 0 16px; }
+  .form { padding: 20px 16px; }
+}

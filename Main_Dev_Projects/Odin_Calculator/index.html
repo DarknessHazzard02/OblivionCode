@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<!-- Made by: Hazzard -->
+<!-- The Odin Project - Foundations: Calculator (one operation at a time, left to right). -->
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculator</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main class="calc">
+    <div class="screen">
+      <div id="history" class="history"></div>
+      <div id="display" class="display" aria-live="polite">0</div>
+    </div>
+    <div class="keys">
+      <button data-action="clear" class="key key--wide key--alt">AC</button>
+      <button data-action="back" class="key key--alt">&#9003;</button>
+      <button data-op="/" class="key key--op">&divide;</button>
+      <button data-digit="7" class="key">7</button>
+      <button data-digit="8" class="key">8</button>
+      <button data-digit="9" class="key">9</button>
+      <button data-op="*" class="key key--op">&times;</button>
+      <button data-digit="4" class="key">4</button>
+      <button data-digit="5" class="key">5</button>
+      <button data-digit="6" class="key">6</button>
+      <button data-op="-" class="key key--op">&minus;</button>
+      <button data-digit="1" class="key">1</button>
+      <button data-digit="2" class="key">2</button>
+      <button data-digit="3" class="key">3</button>
+      <button data-op="+" class="key key--op">+</button>
+      <button data-digit="0" class="key key--wide">0</button>
+      <button data-action="dot" class="key">.</button>
+      <button data-action="equals" class="key key--eq">=</button>
+    </div>
+    <p class="hint">Keyboard works too: digits, + - * /, Enter, Backspace, Esc.</p>
+  </main>
+  <script src="script.js"></script>
+</body>
+</html>

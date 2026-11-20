@@ -1,0 +1,7 @@
+{
+  "demo": true,
+  "source": "Invented data (generar_demo.py)",
+  "data_as_of": "2026-01-25",
+  "production_rows": 60,
+  "inventory_rows": 12
+}
