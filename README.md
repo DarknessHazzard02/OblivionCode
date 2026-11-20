@@ -1,6 +1,19 @@
 # OblivionCode
 
-Hi, I'm **Hazzard**: a BI analyst and planner in manufacturing who builds the bridge between the shop floor and the data. My day-to-day is turning fragile, manual spreadsheets into pipelines, models and dashboards people can trust.
+> *Every manual spreadsheet is a pipeline that hasn't been written yet.*
+
+I'm **Hazzard**. I work where the production plan meets the data: the place where a late material, an overloaded line or a stale Excel file turns into a missed shipment. I learned to code because I got tired of copying and pasting the same report every Monday, and I haven't stopped since.
+
+I approach every problem with **CORE**, a four-step method I designed for myself:
+
+| | Step | What it means |
+|---|---|---|
+| **C** | Control | Audit the source first: schema, nulls, duplicates, and whether it answers the real business question |
+| **O** | Optimize | Automate the manual steps and remove whatever doesn't earn its place |
+| **R** | Redesign | Star schemas, clean measures, modular pipelines, visuals built around the decision |
+| **E** | Evolve | Monitoring, versioning, and making it ready for the next person |
+
+My one rule: **a number that failed should look like it failed.** No silent zeros, no fake "OK". You'll see that in every dashboard and ETL in this repo.
 
 This repo is my public portfolio: data and BI showcase projects, plus everything I build while working through **freeCodeCamp** and **The Odin Project**. Everything here is my own practice work. All data is invented, and nothing comes from any employer.
 
