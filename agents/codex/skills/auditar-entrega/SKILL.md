@@ -5,7 +5,7 @@ description: Auditoría independiente antes de dar por terminado un proyecto, ta
 
 # Auditar entrega
 
-> **Codex no lanza subagentes como Claude.** Carga la skill `rol-<agente>` y haz cada revisión en una pasada aparte, juzgando solo el diff y los archivos, no lo que sabes de la conversación.
+> **Codex y Gemini / Antigravity no lanzan subagentes como Claude.** Carga la skill `rol-<agente>` y haz cada revisión en una pasada aparte, juzgando solo el diff y los archivos, no lo que sabes de la conversación.
 
 El que hizo el cambio no se audita a sí mismo. El agente `auditor` corre con **otro modelo** y
 **sin la conversación**: solo ve lo que quedó escrito.
