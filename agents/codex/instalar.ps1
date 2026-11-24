@@ -8,10 +8,14 @@ param(
 $ErrorActionPreference = "Stop"
 $Origen = $PSScriptRoot
 
+. (Join-Path $PSScriptRoot "..\_comun\instalar_skills.ps1")
+
 $Pares = @(
-    @{ Origen = "AGENTS.md"; Destino = "AGENTS.md" },
-    @{ Origen = "skills"; Destino = ".agents\skills" }
+    @{ Origen = "AGENTS.md"; Destino = "AGENTS.md" }
 )
+
+# .agents\skills lo comparte con Gemini: se copia carpeta por carpeta, sin borrar las del otro
+Install-SharedSkills -Origen (Join-Path $Origen "skills") -Destino (Join-Path $Repo ".agents\skills") -Agente "codex" -Quitar:$Quitar
 
 foreach ($p in $Pares) {
     $destino = Join-Path $Repo $p.Destino
