@@ -52,9 +52,17 @@ EXT_TEXTO_DATOS = ('.txt', '.dat', '.xml', '.htm', '.html', '.rtf')
 # Campo de export: número (europeo, con signo al final, moneda o %) o fecha con hora opcional. Con una sola coma
 # por renglón separa una tabla de 2 columnas de la prosa, que trae una coma por renglón seguido.
 CAMPO_DATO = re.compile(r'[$€]?\s?-?(?=[\d.,]*\d)[\d.,]+-?\s?%?|\d{1,4}[/.-]\d{1,2}[/.-]\d{1,4}(?:[ T]\d{1,2}:\d{2}(?::\d{2})?)?')
-# Un solo ; por renglón que NO es columna: fin de sentencia (JS, SQL, C#) o marcador de entorno de requirements
-PYC_NO_COLUMNA = re.compile(r';\s*$|;\s*(//|/\*|--\s|#\s)|;\s*(python_version|python_full_version|sys_platform|platform_\w+|os_name|'
-                            r'implementation_\w+|extra)\b')
+# Un solo ; por renglón que NO es columna: comentario después (`//`, `/*`, `# x`, `-- x`) o marcador de entorno
+# de requirements. `--` pegado a texto solo es comentario en un renglón de SQL; `;--`, `;--N/A` o `;--4521` son
+# valores de un export.
+PYC_NO_COLUMNA = re.compile(r';\s*(//|/\*|--\s+\S|#\s)|;\s*(python_version|python_full_version|sys_platform|'
+                            r'platform_\w+|os_name|implementation_\w+|extra)\b')
+SQL_COMENTARIO = re.compile(r'^\s*(select|insert|update|delete|drop|create|alter|exec|with|merge)\b.*;\s*--[a-z]',
+                            re.I)
+# El ; al final cierra una sentencia solo si el renglón trae algo de código: operador (`=`, `+`, `:`, llaves,
+# `<>`) o una llamada (`f(`). `M00001;` o `Tornillo (M6);` (última columna vacía) siguen siendo export.
+PYC_FIN = re.compile(r';\s*$')
+CODIGO_EN_RENGLON = re.compile(r'[=*{}<>]|\+\+|--;|:\s+[a-z]|\w\(|^\s*(return|using|import|export)\b')
 ANCHO_FIJO = re.compile(r'\S {2,}(?=\S)')
 HTML_FILA = re.compile(r'<tr\b', re.I)
 RTF_FILA = re.compile(r'\\row\b')
@@ -191,18 +199,42 @@ def parece_tabla(texto, ruta):
         if moda >= 2 or sep in '|\t':
             return True
         unicos = [l.strip() for l in lineas if l.strip().count(sep) == 1]
-        if sep == ';' and sum(1 for l in unicos if not PYC_NO_COLUMNA.search(l)) >= 0.8 * len(lineas):
+        if sep == ';' and sum(1 for l in unicos if not es_sentencia(l)) >= 0.8 * len(lineas):
             return True
         if sep == ',' and dos_columnas_con_dato(unicos, sep):
             return True
     inicios = Counter(m.end() for l in lineas for m in ANCHO_FIJO.finditer(l.rstrip()))
     return sum(1 for n in inicios.values() if n >= minimo) >= 3
 
+def es_sentencia(linea):
+    """True si el único ; del renglón es código y no un separador de columnas."""
+    return bool(PYC_NO_COLUMNA.search(linea) or SQL_COMENTARIO.search(linea)
+                or (PYC_FIN.search(linea) and CODIGO_EN_RENGLON.search(linea)))
+
+def es_numeracion(valores, otra):
+    """True si la columna es una lista numerada (1, 2, 3...) de texto: enteros sin ceros a la izquierda que
+    empiezan en 0 o 1 y suben de uno en uno, junto a renglones de 3 palabras o más sin correos. Un ID
+    autoincremental (1000, 1001...) o con relleno (00001) junto a un nombre sigue siendo export."""
+    if not all(re.fullmatch(r'0|[1-9]\d*', v, re.ASCII) for v in valores):
+        return False
+    numeros = [int(v) for v in valores]
+    if numeros[0] not in (0, 1) or any(b != a + 1 for a, b in zip(numeros, numeros[1:])):
+        return False
+    # Prosa: 3 palabras o más, sin correo y con alguna en minúscula. `Juan Perez Lopez` es un nombre, no un paso
+    return sum(1 for t in otra if len(t.split()) >= 3 and '@' not in t
+               and any(w[:1].islower() for w in t.split())) >= 0.8 * len(otra)
+
 def dos_columnas_con_dato(unicos, sep):
-    """True si en el 80 % de los renglones (con un solo `sep`) alguna de las dos columnas es número o fecha."""
-    partes = [l.split(sep) for l in unicos]
-    return bool(partes) and any(
-        sum(1 for p in partes if CAMPO_DATO.fullmatch(p[i].strip().strip('"'))) >= 0.8 * len(partes) for i in (0, 1))
+    """True si en el 80 % de los renglones (con un solo `sep`) alguna de las dos columnas es número o fecha.
+    Una columna que solo numera los renglones (`1, paso`) no cuenta: es una lista, no un dato."""
+    partes = [[c.strip().strip('"') for c in l.split(sep)] for l in unicos]
+    if not partes:
+        return False
+    for i in (0, 1):
+        valores, otra = [p[i] for p in partes], [p[1 - i] for p in partes]
+        if sum(1 for v in valores if CAMPO_DATO.fullmatch(v)) >= 0.8 * len(partes) and not es_numeracion(valores, otra):
+            return True
+    return False
 
 def tiene_contrato(raiz, ruta, en_stage):
     """CONTRATO.md en la carpeta del archivo o en una de arriba (en disco o en el stage)."""
@@ -393,6 +425,32 @@ def self_test():
          'export de 2 columnas con coma y comillas'),
         ('export/folios.txt', ''.join(f'Cliente {i};#{4500 + i}\n' for i in range(30)), True,
          'export de 2 columnas con folio #'),
+        ('export/una_col.txt', ''.join(f'M{i:05d};\n' for i in range(30)), True,
+         'export con la última columna vacía (M00001;)'),
+        ('export/guiones.txt', ''.join(f'Cliente {i};--{4500 + i}\n' for i in range(30)), True,
+         'export de 2 columnas con -- y número'),
+        ('docs/pasos.txt', ''.join(f'{i}, paso del proceso número {i}\n' for i in range(1, 31)), False,
+         'lista numerada con coma'),
+        ('docs/sql.txt', ''.join(f'SELECT {i}; --nota {i}\n' for i in range(30)), False,
+         'SQL con comentario pegado al --'),
+        ('export/ids.txt', ''.join(f'{1000 + i}, Cliente {i}\n' for i in range(30)), True,
+         'export con ID autoincremental y nombre'),
+        ('export/relleno.txt', ''.join(f'{i + 1:05d}, Juan {i}\n' for i in range(30)), True,
+         'export con ID con ceros a la izquierda'),
+        ('export/correos.txt', ''.join(f'{i + 1},persona{i}@correo.com\n' for i in range(30)), True,
+         'export con numeración y correo'),
+        ('export/vacios.txt', ''.join(f'Cliente {i};--\n' for i in range(30)), True, 'export con -- como vacío'),
+        ('export/parentesis.txt', ''.join(f'Tornillo (M{i});\n' for i in range(30)), True,
+         'export con paréntesis y ; final'),
+        ('export/empleados.txt', ''.join(f'{i + 1}, Juan Perez Lopez {i}\n' for i in range(30)), True,
+         'lista numerada de nombres completos'),
+        ('export/horas.txt', ''.join(f'2026-01-05 08:{i:02d};\n' for i in range(30)), True,
+         'export de una columna con hora y ; final'),
+        ('docs/using.txt', ''.join(f'using System.Mod{i};\n' for i in range(30)), False, 'bloque de using en C#'),
+        ('docs/js.txt', ''.join(f'x{i}++;\n' for i in range(30)), False, 'JS x++;'),
+        ('docs/css.txt', ''.join(f'color: red{i};\n' for i in range(30)), False, 'CSS con ; final'),
+        ('docs/sql_fin.txt', ''.join(f'UPDATE t SET x = {i};\n' for i in range(30)), False,
+         'SQL con ; al final'),
         ('docs/capitulos.txt', ''.join(f'Capitulo {i}, ...\n' for i in range(30)), False,
          'texto con coma y puntos suspensivos'),
         ('docs/comentado.txt', ''.join(f'x{i} = {i}; // nota {i}\n' for i in range(30)), False,
