@@ -12,7 +12,8 @@ DETIENE el commit (exit 1):
   - secretos: llaves privadas, tokens (GitHub, AWS, Slack, Bearer), contraseñas o llaves en cadenas de
     conexión, archivos .env / .pem / .pfx / .key;
   - datos reales: Excel, CSV, parquet, bases de datos, comprimidos o JSON dentro de data/, salvo que la
-    carpeta (o una de arriba) tenga CONTRATO.md; cualquier cosa en data_real/ o config.local.json;
+    carpeta (o una de arriba) tenga CONTRATO.md; lo mismo con .txt/.dat/.prn/.xml que tengan forma de export
+    (lista ALV, tabla con separador, XML de hoja), también en UTF-16; cualquier cosa en data_real/ o config.local.json;
   - archivos de más de 10 MB;
   - material de la empresa: si existe el archivo privado de reglas del hook de copia
     (CANDADO_REGLAS o ~/.claude/hooks/copiar_skills_reglas.json; vive fuera del repo), sus patrones "prohibido" sobre las líneas agregadas;
@@ -44,7 +45,13 @@ LIMITE_DURO, LIMITE_AVISO = 10 * MB, 2 * MB
 REGLAS_PRIVADAS = Path(os.environ.get('CANDADO_REGLAS') or Path.home() / '.claude' / 'hooks' / 'copiar_skills_reglas.json')
 
 EXT_DATOS = ('.xlsx', '.xls', '.xlsm', '.xlsb', '.csv', '.tsv', '.parquet', '.avro', '.feather', '.pbix',
-             '.accdb', '.mdb', '.db', '.sqlite', '.sqlite3', '.zip', '.7z', '.rar', '.gz', '.tar')
+             '.accdb', '.mdb', '.db', '.sqlite', '.sqlite3', '.zip', '.7z', '.rar', '.gz', '.tar', '.prn')
+# Texto que a veces es un export (ALV de SAP, "Texto Unicode" de Excel, XML de hoja): se revisa el contenido
+EXT_TEXTO_DATOS = ('.txt', '.dat', '.xml')
+ANCHO_FIJO = re.compile(r'\S {2,}(?=\S)')
+MIN_FILAS_TABLA = 20
+XML_HOJA = re.compile(r'urn:schemas-microsoft-com:office:spreadsheet|<(ss:)?Workbook\b', re.I)
+XML_FILA = re.compile(r'<(ss:)?Row\b|<(row|record|item)\b', re.I)
 ARCH_SECRETOS = re.compile(r'(?i)(^|/)(\.env(\.[\w-]+)?|id_rsa|id_ed25519|[^/]+\.(pem|pfx|p12|key|jks|keystore))$')
 ENV_EJEMPLO = re.compile(r'(?i)\.env\.(example|ejemplo|sample|template)$')
 SECRETOS = [
@@ -123,6 +130,36 @@ def permitidos(raiz):
 def es_permitido(ruta, lista):
     return any(fnmatch.fnmatch(ruta, p) or ruta.startswith(p.rstrip('*').rstrip('/') + '/') for p, _ in lista)
 
+def decodificar(contenido):
+    """Texto del archivo, o None si es binario. Reconoce UTF-16 (con BOM o con un byte nulo de cada dos),
+    que es como Excel guarda "Texto Unicode" y como salen algunos exports: no se salta como binario."""
+    muestra = contenido[:8000]
+    if muestra.startswith((b'\xff\xfe', b'\xfe\xff')):
+        return contenido.decode('utf-16', 'replace')
+    if b'\0' in muestra:
+        pares, impares = muestra[0::2], muestra[1::2]
+        if impares and impares.count(0) > 0.9 * len(impares) and pares.count(0) < 0.1 * len(pares):
+            return contenido.decode('utf-16-le', 'replace')
+        if pares and pares.count(0) > 0.9 * len(pares) and impares.count(0) < 0.1 * len(impares):
+            return contenido.decode('utf-16-be', 'replace')
+        return None
+    return contenido.decode('utf-8', 'replace')
+
+def parece_tabla(texto, ruta):
+    """True si el texto tiene forma de export: XML de hoja de Excel o con muchas filas repetidas, o al menos
+    MIN_FILAS_TABLA renglones donde la mayoría trae el mismo separador (|, tabulador, ; o ,) varias veces, o
+    columnas de ancho fijo (spool de SAP sin barras): 3 o más huecos de 2 o más espacios entre valores."""
+    if ruta.endswith('.xml'):
+        return bool(XML_HOJA.search(texto)) or len(XML_FILA.findall(texto)) >= MIN_FILAS_TABLA
+    lineas = [l for l in texto.splitlines() if l.strip()]
+    if len(lineas) < MIN_FILAS_TABLA:
+        return False
+    minimo = 0.6 * len(lineas)
+    for sep in ('|', '\t', ';', ','):
+        if sum(1 for l in lineas if l.count(sep) >= 3) >= minimo:
+            return True
+    return sum(1 for l in lineas if len(ANCHO_FIJO.findall(l.strip())) >= 3) >= minimo
+
 def tiene_contrato(raiz, ruta, en_stage):
     """CONTRATO.md en la carpeta del archivo o en una de arriba (en disco o en el stage)."""
     partes = ruta.split('/')[:-1]
@@ -198,11 +235,17 @@ def revisar_stage(raiz):
             bloqueos.append(f'{ruta}: JSON en data/ sin CONTRATO.md (se trata como datos reales)')
             continue
         contenido = git('show', f':{ruta}', raiz=raiz, binario=True)
-        if b'\0' in contenido[:8000]:
+        texto = decodificar(contenido)
+        if texto is None:
             continue                                          # binario: ya se revisó por tipo y tamaño
+        utf16 = b'\0' in contenido[:8000]                     # git lo ve binario: su diff no trae líneas
+        if bajo.endswith(EXT_TEXTO_DATOS) and not contrato and parece_tabla(texto, bajo):
+            bloqueos.append(f'{ruta}: parece un export de datos (tabla, lista ALV o XML de Excel) '
+                            f'sin CONTRATO.md que diga que son inventados')
+            continue
         if VENDOR.search('/' + bajo):
             continue                                          # librería de terceros minificada: sus IDs y su código dan falsos positivos
-        agregadas = contenido.decode('utf-8', 'replace').splitlines() if ruta in nuevos else lineas_agregadas(raiz, ruta)
+        agregadas = texto.splitlines() if ruta in nuevos or utf16 else lineas_agregadas(raiz, ruta)
         for n, linea in enumerate(agregadas, 1):
             for motivo, patron in SECRETOS:
                 if patron.search(linea):
@@ -216,7 +259,7 @@ def revisar_stage(raiz):
                         bloqueos.append(f'{ruta}: {motivo} ({m.group(0)}) → material de la empresa')
         ext = os.path.splitext(bajo)[1]
         if not hibrido and ext in EXT_CODIGO and not SIN_FIRMA_RUTAS.search('/' + bajo):
-            if not FIRMA.search(contenido.decode('utf-8', 'replace')):
+            if not FIRMA.search(texto):
                 avisos.append(f'{ruta}: sin firma (Made by: Hazzard / Author: Haz / Updated by Haz)')
     if privados is None and not hibrido:
         if os.environ.get('CANDADO_REGLAS'):
@@ -262,6 +305,19 @@ def self_test():
         ('otro/data_real/meta.json', '{}', True, 'data_real/'),
         ('otro/config.local.json', '{}', True, 'config.local.json'),
         ('permitido/export.csv', 'a\n', False, 'excepción con motivo'),
+        ('export/mb52.txt', ''.join(f'|M{i:05d} |Product A |UN |PL01|  {i} |\n' for i in range(30)), True,
+         'lista ALV en .txt sin contrato'),
+        ('export/ventas.dat', ''.join(f'{i};A;B;{i * 2}\n' for i in range(30)), True, '.dat con ; sin contrato'),
+        ('export/hoja.xml', '<?xml version="1.0"?>\n<Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet">'
+         '</Workbook>\n', True, 'XML de hoja de Excel'),
+        ('proyecto/demo/source/alv.txt', ''.join(f'|M{i} |A |B |C |\n' for i in range(30)), False,
+         'lista ALV con contrato'),
+        ('app/requirements.txt', 'pandas==2.2.3\npyarrow==17.0.0\n', False, 'requirements.txt'),
+        ('export/spool.txt', ''.join(f'M{i:05d}    Product A      UN    PL01      {i:>6}\n' for i in range(30)), True,
+         'spool de ancho fijo en .txt'),
+        ('export/hoja.prn', 'M1    A    1\n', True, '.prn sin contrato'),
+        ('docs/notas.txt',''.join(f'renglón {i} de notas, con una coma\n' for i in range(30)), False,
+         'notas de texto con comas sueltas'),
     ]
     fallos = 0
     with tempfile.TemporaryDirectory() as t:
@@ -284,6 +340,20 @@ def self_test():
             ok = obtenido == debe
             fallos += not ok
             print(f"  {'ok ' if ok else 'FALLA'}  {'DETIENE' if obtenido else 'PASA   '}  {desc}")
+        # "Texto Unicode" de Excel (UTF-16 con tabuladores) y un secreto en UTF-16 sin BOM: no se saltan como binario
+        for ruta, datos, desc in [
+                ('export/unicode.txt', ''.join(f'M{i}\tA\tB\t{i}\n' for i in range(30)).encode('utf-16'),
+                 'Texto Unicode de Excel (UTF-16)'),
+                ('app/clave16.txt', ('API_KEY = "sk-' + '9f8e7d6c5b4a3210"\n').encode('utf-16-le'),
+                 'secreto en UTF-16 sin BOM')]:
+            git('reset', '-q', raiz=t)
+            p = Path(t, ruta)
+            p.parent.mkdir(parents=True, exist_ok=True)
+            p.write_bytes(datos)
+            git('add', '-f', ruta, raiz=t)
+            ok = any(b.startswith(ruta) for b in revisar_stage(t)[0])
+            fallos += not ok
+            print(f"  {'ok ' if ok else 'FALLA'}  {'DETIENE' if ok else 'PASA   '}  {desc}")
         # archivo grande
         git('reset', '-q', raiz=t)
         Path(t, 'grande.bin').write_bytes(b'\0' * (LIMITE_DURO + 1))
@@ -370,7 +440,7 @@ def self_test():
                           'avisa la configuración cambiada en disco')]:
             fallos += not ok
             print(f"  {'ok ' if ok else 'FALLA'}  {desc}")
-    total = len(casos) + 15
+    total = len(casos) + 17
     print(f"\n{'los ' + str(total) + ' casos pasaron' if not fallos else str(fallos) + ' casos FALLARON'}")
     return 1 if fallos else 0
 
