@@ -5,7 +5,7 @@ description: Prueba un tablero en el navegador integrado de la app (sin instalar
 
 # Probar tablero
 
-> **Navegador en Gemini / Antigravity:** las herramientas `mcp__Claude_Browser__*` de abajo son las de Claude Code. Usa el equivalente de tu agente (Playwright MCP o el navegador integrado). Si no hay navegador, la prueba queda **SIN EVIDENCIA**, no PASA.
+> **Navegador en Codex y Gemini / Antigravity:** las herramientas `mcp__Claude_Browser__*` de abajo son las de Claude Code. Usa el equivalente de tu agente (Playwright MCP o el navegador integrado). Si no hay navegador, la prueba queda **SIN EVIDENCIA**, no PASA.
 
 Inspirada en `playwright-cli` (snapshot con referencias, consola, red, capturas), pero con el
 **navegador integrado** (`mcp__Claude_Browser__*`): no se instala Node ni Playwright.

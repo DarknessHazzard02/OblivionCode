@@ -5,7 +5,7 @@ description: Revisión de seguridad y de código del diff en stage antes de un c
 
 # Revisar antes de commit
 
-> **Gemini / Antigravity no lanza subagentes como Claude.** Carga la skill `rol-<agente>` y haz cada revisión en una pasada aparte, juzgando solo el diff y los archivos, no lo que sabes de la conversación.
+> **Codex y Gemini / Antigravity no lanzan subagentes como Claude.** Carga la skill `rol-<agente>` y haz cada revisión en una pasada aparte, juzgando solo el diff y los archivos, no lo que sabes de la conversación.
 
 Junta dos ideas: `claude-code-security-review` (categorías de vulnerabilidad y filtro de falsos
 positivos) y el plugin `code-review` (pasadas en paralelo, solo hallazgos con confianza ≥ 80).
