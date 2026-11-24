@@ -48,7 +48,13 @@ REGLAS_PRIVADAS = Path(os.environ.get('CANDADO_REGLAS') or Path.home() / '.claud
 EXT_DATOS = ('.xlsx', '.xls', '.xlsm', '.xlsb', '.csv', '.tsv', '.parquet', '.avro', '.feather', '.pbix',
              '.accdb', '.mdb', '.db', '.sqlite', '.sqlite3', '.zip', '.7z', '.rar', '.gz', '.tar', '.prn')
 # Texto que a veces es un export (ALV de SAP, "Texto Unicode" de Excel, XML de hoja): se revisa el contenido
-EXT_TEXTO_DATOS = ('.txt', '.dat', '.xml', '.htm', '.rtf')
+EXT_TEXTO_DATOS = ('.txt', '.dat', '.xml', '.htm', '.html', '.rtf')
+# Campo de export: número (europeo, con signo al final, moneda o %) o fecha con hora opcional. Con una sola coma
+# por renglón separa una tabla de 2 columnas de la prosa, que trae una coma por renglón seguido.
+CAMPO_DATO = re.compile(r'[$€]?\s?-?(?=[\d.,]*\d)[\d.,]+-?\s?%?|\d{1,4}[/.-]\d{1,2}[/.-]\d{1,4}(?:[ T]\d{1,2}:\d{2}(?::\d{2})?)?')
+# Un solo ; por renglón que NO es columna: fin de sentencia (JS, SQL, C#) o marcador de entorno de requirements
+PYC_NO_COLUMNA = re.compile(r';\s*$|;\s*(//|/\*|--\s|#\s)|;\s*(python_version|python_full_version|sys_platform|platform_\w+|os_name|'
+                            r'implementation_\w+|extra)\b')
 ANCHO_FIJO = re.compile(r'\S {2,}(?=\S)')
 HTML_FILA = re.compile(r'<tr\b', re.I)
 RTF_FILA = re.compile(r'\\row\b')
@@ -154,13 +160,13 @@ def decodificar(contenido):
 
 def parece_tabla(texto, ruta):
     """True si el texto tiene forma de export: XML de hoja de Excel o con muchas filas repetidas, o al menos
-    MIN_FILAS_TABLA renglones donde la mayoría trae el mismo número de separadores (|, tabulador o ; al menos
-    una vez; coma, al menos dos), o columnas de ancho fijo (spool de SAP sin barras): 3 o más columnas que empiezan
+    MIN_FILAS_TABLA renglones donde la mayoría trae el mismo número de separadores (| o tabulador al menos una
+    vez; ; o coma, dos o más, o uno solo con una columna de números o fechas), o columnas de ancho fijo (spool de SAP sin barras): 3 o más columnas que empiezan
     en la misma posición en la mayoría de los renglones. El código alineado y la salida de --help alinean una o
     dos columnas, no tres. HTML y RTF de una descarga se miden por sus filas de tabla."""
     if ruta.endswith('.xml'):
         return bool(XML_HOJA.search(texto)) or len(XML_FILA.findall(texto)) >= MIN_FILAS_TABLA
-    if ruta.endswith('.htm'):
+    if ruta.endswith(('.htm', '.html')):
         return len(HTML_FILA.findall(texto)) >= MIN_FILAS_TABLA
     if ruta.endswith('.rtf'):
         if len(RTF_FILA.findall(texto)) >= MIN_FILAS_TABLA:
@@ -171,15 +177,32 @@ def parece_tabla(texto, ruta):
     if len(lineas) < MIN_FILAS_TABLA:
         return False
     minimo = 0.6 * len(lineas)
-    # Mismo número de separadores en casi todos los renglones = columnas. Con coma se piden 2 o más, porque la
-    # prosa trae una coma por renglón seguido; un export de 2 columnas con coma no se detecta.
-    for sep, desde in (('|', 1), ('\t', 1), (';', 1), (',', 2)):
+    # Mismo número de separadores en casi todos los renglones = columnas. Con un solo separador (2 columnas):
+    # el ; cuenta salvo que cierre la sentencia (JS) o abra un marcador de entorno (requirements), porque un
+    # export de texto puro (`Nombre;Correo`) también es dato; la coma pide además una columna de número o
+    # fecha, porque la prosa trae una coma por renglón seguido.
+    for sep in ('|', '\t', ';', ','):
         cuentas = [l.strip().count(sep) for l in lineas]
         moda = max(set(cuentas), key=cuentas.count)
-        if (moda >= desde and cuentas.count(moda) >= 0.8 * len(lineas)) or sum(1 for c in cuentas if c >= 3) >= minimo:
+        if sum(1 for c in cuentas if c >= 3) >= minimo:
+            return True
+        if moda < 1 or cuentas.count(moda) < 0.8 * len(lineas):
+            continue
+        if moda >= 2 or sep in '|\t':
+            return True
+        unicos = [l.strip() for l in lineas if l.strip().count(sep) == 1]
+        if sep == ';' and sum(1 for l in unicos if not PYC_NO_COLUMNA.search(l)) >= 0.8 * len(lineas):
+            return True
+        if sep == ',' and dos_columnas_con_dato(unicos, sep):
             return True
     inicios = Counter(m.end() for l in lineas for m in ANCHO_FIJO.finditer(l.rstrip()))
     return sum(1 for n in inicios.values() if n >= minimo) >= 3
+
+def dos_columnas_con_dato(unicos, sep):
+    """True si en el 80 % de los renglones (con un solo `sep`) alguna de las dos columnas es número o fecha."""
+    partes = [l.split(sep) for l in unicos]
+    return bool(partes) and any(
+        sum(1 for p in partes if CAMPO_DATO.fullmatch(p[i].strip().strip('"'))) >= 0.8 * len(partes) for i in (0, 1))
 
 def tiene_contrato(raiz, ruta, en_stage):
     """CONTRATO.md en la carpeta del archivo o en una de arriba (en disco o en el stage)."""
@@ -357,6 +380,30 @@ def self_test():
          'prosa con comas variables'),
         ('docs/notas.txt',''.join(f'renglón {i} de notas, con una coma\n' for i in range(30)), False,
          'notas de texto con comas sueltas'),
+        ('export/dos_comas.txt', ''.join(f'M{i:05d},{i * 3}\n' for i in range(30)), True, 'export de 2 columnas con coma'),
+        ('export/dos_pyc.txt', ''.join(f'Product {i};{i},50-\n' for i in range(30)), True,
+         'export de 2 columnas con ; y número europeo'),
+        ('export/fechas.txt', ''.join(f'M{i},2026-11-{i % 28 + 1:02d}\n' for i in range(30)), True,
+         'export de 2 columnas con fecha'),
+        ('export/contactos.txt', ''.join(f'Persona {i};persona{i}@example.com\n' for i in range(30)), True,
+         'export de 2 columnas de texto con ;'),
+        ('export/montos.txt', ''.join(f'Pedido {i},${i}.50\n' for i in range(30)), True,
+         'export de 2 columnas con coma y moneda'),
+        ('export/comillas.txt', ''.join(f'"M{i}","{i * 3}"\n' for i in range(30)), True,
+         'export de 2 columnas con coma y comillas'),
+        ('export/folios.txt', ''.join(f'Cliente {i};#{4500 + i}\n' for i in range(30)), True,
+         'export de 2 columnas con folio #'),
+        ('docs/capitulos.txt', ''.join(f'Capitulo {i}, ...\n' for i in range(30)), False,
+         'texto con coma y puntos suspensivos'),
+        ('docs/comentado.txt', ''.join(f'x{i} = {i}; // nota {i}\n' for i in range(30)), False,
+         'JS con comentario después del ;'),
+        ('docs/script.txt', ''.join(f'const valor{i} = calcula({i});\n' for i in range(30)), False,
+         'JS con un ; por renglón'),
+        ('docs/reqs.txt', ''.join(f'paquete{i}==1.{i}; python_version < "3.12"\n' for i in range(30)), False,
+         'requirements con marcadores'),
+        ('export/lista.html', '<!-- Made by: Hazzard --><table>' + ''.join(
+            f'<tr><td>M{i}</td><td>{i}</td></tr>' for i in range(30)) + '</table>', True, 'descarga guardada como .html'),
+        ('web/index.html', '<!-- Made by: Hazzard --><table><tr><td>KPI</td></tr></table>', False, 'tablero .html'),
     ]
     fallos = 0
     with tempfile.TemporaryDirectory() as t:
