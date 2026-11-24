@@ -1,0 +1,74 @@
+/* ── Celular (≤ 640px) ─────────────────────────────────────────
+   Va al FINAL del <style> del tablero, despues de theme.css.
+   Todo vive dentro del @media: el escritorio (1366 / 1280) no cambia. */
+@media (max-width: 640px) {
+  :root {
+    --fs-page-title: 18px;
+    --fs-kpi-value: 24px;
+    --kpi-height: 84px;
+    --grid-gap: 10px;
+  }
+
+  /* Encabezado: se acomoda en varios renglones en vez de encimarse.
+     Renglon 1: Portal + idioma. Renglon 2: titulo. Renglon 3: fechas y chips. */
+  .hdr {
+    height: auto; min-height: 56px; flex-wrap: wrap;
+    gap: 6px 10px; padding: 8px 12px; position: static;
+  }
+  .hdr > .btn-portal, .hdr > a:first-child { order: 0; }
+  .hdr .lang-toggle { order: 1; margin-left: auto; }
+  .hdr__title { order: 2; flex: 1 1 100%; line-height: 1.25; }
+  .hdr__meta {
+    order: 3; flex: 1 1 100%; flex-direction: row; flex-wrap: wrap;
+    align-items: baseline; gap: 2px 12px; text-align: left;
+  }
+  .hdr__chips { order: 4; flex: 1 1 100%; }
+
+  /* Pestanas: una sola tira que se recorre de lado, sin partir palabras. */
+  .tabs {
+    overflow-x: auto; flex-wrap: nowrap; scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+  .tabs::-webkit-scrollbar { display: none; }
+  .tabs > * { flex: 0 0 auto; white-space: nowrap; }
+
+  .app__main { padding: 10px; }
+
+  /* Panel de filtros abierto: cajon encima del contenido, no lo empuja. */
+  .filter-panel.is-open {
+    position: fixed; top: 0; left: 0; bottom: 0; z-index: 60;
+    width: min(88vw, 340px); flex-basis: auto;
+    box-shadow: 0 8px 24px rgba(0,0,0,.18);
+  }
+
+  /* Graficas y tarjetas: una por renglon, a todo lo ancho. */
+  .grid { grid-template-columns: 1fr; }
+  .grid > * { grid-column: 1 / -1 !important; min-width: 0; }
+
+  /* KPIs: dos por renglon. Cubre los nombres que usamos en el portal. */
+  #kpiRow, .kpi-row, .kpis, .kpi-grid, .kpi-strip {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 10px !important;
+  }
+  #kpiRow > *, .kpi-row > *, .kpis > *, .kpi-grid > *, .kpi-strip > * {
+    grid-column: auto !important; min-width: 0;
+  }
+
+  /* Tablas: la TABLA se recorre de lado; la pagina no.
+     Nunca overflow hidden en el contenedor: lo que no cabe se pierde. */
+  :where(div, section):has(> table) {
+    overflow-x: auto !important; max-width: 100%;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Panel de documentacion: pantalla completa. */
+  .doc-panel { width: 100%; max-width: 100%; }
+
+  /* Lo que se toca con el dedo: minimo 36px de alto. */
+  .tabs button, .seg__btn, .pager button, .lang-toggle button,
+  .btn-export, .btn-portal, .filter-clear { min-height: 36px; }
+
+  .card { padding: 12px; }
+  canvas { max-width: 100% !important; }
+}

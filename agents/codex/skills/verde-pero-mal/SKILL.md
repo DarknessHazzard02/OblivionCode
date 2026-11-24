@@ -1,0 +1,10 @@
+---
+name: verde-pero-mal
+description: Busca por qué algo salió en verde pero el dato está mal o no cambió. Úsala cuando Haz pida "verde-pero-mal" o algo equivalente.
+---
+
+# verde-pero-mal
+
+Algo "salió bien" (pipeline, ETL, refresh, commit) pero el dato está mal o no cambió. Revisa en este orden: ¿corrió sobre la fuente que se cree? (ruta, fecha del archivo), ¿la fecha de frescura sale del dato o de "hoy"?, ¿hay un default silencioso (0, vacío, OK) tapando un faltante?, ¿un filtro o join descartó o multiplicó filas?, ¿una bitácora saltó archivos ya procesados?, ¿el caché sirve una versión vieja?, ¿la última milla (lo que ve el usuario) se validó o solo el paso intermedio? Da la prueba concreta de cada punto.
+
+Cierra con `Lo que tienes que hacer`.

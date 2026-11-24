@@ -10,7 +10,7 @@ Public Sub OpenAllWorkbooks()
     '================================================================
     ' Initialize Variables
     '================================================================
-    RootFolderPath = "C:\Users\usuario\OneDrive\MASTER - MASTER\"
+    RootFolderPath = "C:\ruta\a\la\carpeta\"
 
     '================================================================
     ' Application Settings
@@ -21,14 +21,14 @@ Public Sub OpenAllWorkbooks()
     '================================================================
     ' Open Master Files
     '================================================================
-    Workbooks.Open RootFolderPath & "MASTER\Master_Template.xlsm"
-    Workbooks.Open RootFolderPath & "MASTER\Reports_All.xlsx"
+    Workbooks.Open RootFolderPath & "Master\Master_Template.xlsm"
+    Workbooks.Open RootFolderPath & "Master\Oracle_Reports.xlsx"
 
     '================================================================
     ' Open Net Available Files
     '================================================================
-    Workbooks.Open RootFolderPath & "Net Available\Master_Net_Avail_Echo.xlsm"
-    Workbooks.Open RootFolderPath & "Net Available\Net_Avail_Table_Alpha.xlsx"
+    Workbooks.Open RootFolderPath & "Net Available\Master_Net_Available.xlsm"
+    Workbooks.Open RootFolderPath & "Net Available\Net_Available_Table.xlsx"
 
     '================================================================
     ' Open Stockout Availability Files
@@ -38,7 +38,7 @@ Public Sub OpenAllWorkbooks()
     '================================================================
     ' Open Order Closure Files
     '================================================================
-    Workbooks.Open RootFolderPath & "Order Closure\NMC C15 Order Closure_V2.xlsx"
+    Workbooks.Open RootFolderPath & "Order Closure\Order_Closure.xlsx"
 
     '================================================================
     ' Restore Application Settings

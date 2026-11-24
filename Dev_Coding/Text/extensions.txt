@@ -37,11 +37,7 @@ chakrounanas.turbo-console-log
 wholroyd.jinja
 humao.rest-client
 
-# Azure, Cloud, Containers & Remote (8)
-ms-azuretools.vscode-azure-github-copilot
-ms-azuretools.vscode-azure-mcp-server
-ms-azuretools.vscode-azureresourcegroups
-ms-azuretools.vscode-azureappservice
+# Containers & Remote (4)
 ms-azuretools.vscode-containers
 ms-vscode.remote-explorer
 ms-vscode.remote-server

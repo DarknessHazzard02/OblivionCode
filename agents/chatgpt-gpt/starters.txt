@@ -1,0 +1,6 @@
+Aplica CORE a este proceso manual y dime qué automatizar primero.
+Escribe una macro VBA con manejo de errores para esta tarea.
+Escribe una consulta de Oracle EBS lista para Blitz Report.
+Define este KPI con fórmula, grano y medida DAX.
+Mi pipeline salió en verde pero el dato no cambió. ¿Qué reviso?
+Valida este dataset: faltantes, inconsistentes, fuera de rango y duplicados.

@@ -1,0 +1,15 @@
+{
+  "version": 1,
+  "hooks": {
+    "sessionStart": [
+      { "type": "command", "bash": "python -I agents/_comun/flujo/guardias.py inicio", "powershell": "python -I agents/_comun/flujo/guardias.py inicio", "timeoutSec": 20 }
+    ],
+    "preToolUse": [
+      { "type": "command", "bash": "python -I agents/_comun/flujo/guardias.py proteger", "powershell": "python -I agents/_comun/flujo/guardias.py proteger", "timeoutSec": 15 },
+      { "type": "command", "bash": "python -I agents/_comun/flujo/guardias.py push-main", "powershell": "python -I agents/_comun/flujo/guardias.py push-main", "timeoutSec": 15 }
+    ],
+    "postToolUse": [
+      { "type": "command", "bash": "python -I agents/_comun/flujo/guardias.py firma", "powershell": "python -I agents/_comun/flujo/guardias.py firma", "timeoutSec": 15 }
+    ]
+  }
+}
