@@ -25,7 +25,10 @@ AVISA, sin detener:
 
 Excepciones a propósito: `.candado-permitidos` en la raíz del repo, una por renglón:
     ruta/o/patron/*.csv   # por qué se permite
-Cada excepción lleva su motivo; sin motivo no cuenta.
+Cada excepción lleva su motivo; sin motivo no cuenta. Tampoco cuenta una con comodín en la carpeta de
+arriba (`*.csv`, `[!x]*`): se nombra la carpeta (`proyecto/export/*.csv`).
+`.candado-permitidos` y `.candado-modo` cuentan desde el último commit (HEAD). Un commit que los cambia
+se detiene; Haz lo confirma a mano con CANDADO_CAMBIO_CONFIG=1 en ese commit.
 """
 import fnmatch
 import json
@@ -74,16 +77,48 @@ def git(*args, raiz=None, binario=False):
         raise RuntimeError(r.stderr.decode('utf-8', 'replace').strip())
     return r.stdout if binario else r.stdout.decode('utf-8', 'replace')
 
+CONFIG_CANDADO = ('.candado-permitidos', '.candado-modo')
+# Rutas que ninguna excepción legítima cubre: si un patrón las cubre, es tan amplio que apaga el candado
+SONDAS = CONFIG_CANDADO + ('.env', 'config.local.json', 'zq9_sonda.zq9', 'zq9_sonda/zq9.zq9',
+                           'zq9/data_real/zq9.zq9', 'data_real/zq9.zq9')
+# Una excepción nombra su carpeta de arriba: con comodín ahí (`*`, `[!zc.]*`) cubre casi todo el repo
+COMODIN = re.compile(r'[*?\[]')
+
+# Variable con la que Haz confirma, a mano, un commit que cambia la configuración del candado
+VAR_CAMBIO_CONFIG = 'CANDADO_CAMBIO_CONFIG'
+
+def leer_config(raiz, nombre):
+    """(texto, aviso) de la configuración del candado. Cuenta la versión del último commit (HEAD), ni la
+    del disco ni la del índice: un cambio nunca vale en el mismo commit que lo usa, y escribirla por
+    cualquier vía (shell, script, sin `git add`) no apaga nada en silencio."""
+    try:
+        texto = git('show', f'HEAD:{nombre}', raiz=raiz)
+    except RuntimeError:
+        texto = None
+    en_disco = Path(raiz) / nombre
+    disco = en_disco.read_text(encoding='utf-8', errors='replace') if en_disco.is_file() else None
+    aviso = None
+    if disco is not None and disco.replace('\r\n', '\n') != (texto or '').replace('\r\n', '\n'):
+        aviso = f'{nombre}: la copia en disco no coincide con la del último commit; cuenta la del commit'
+    return texto, aviso
+
 def permitidos(raiz):
-    """[(patron, motivo)] de .candado-permitidos; un renglón sin motivo no cuenta."""
-    f = Path(raiz) / '.candado-permitidos'
-    salida = []
-    if f.is_file():
-        for linea in f.read_text(encoding='utf-8').splitlines():
-            patron, _, motivo = linea.partition('#')
-            if patron.strip() and motivo.strip():
-                salida.append((patron.strip(), motivo.strip()))
-    return salida
+    """([(patron, motivo)], [patrones ignorados], aviso) de .candado-permitidos.
+    No cuenta un renglón sin motivo ni uno que cubra alguna de las SONDAS (`*`, `**/*`, `[!.]*`,
+    `.candado-*`): con ellos se apagaría toda la revisión."""
+    texto, aviso = leer_config(raiz, '.candado-permitidos')
+    salida, ignorados = [], []
+    for linea in (texto or '').splitlines():
+        patron, _, motivo = linea.partition('#')
+        patron = patron.strip()
+        if not patron or not motivo.strip():
+            continue
+        primer_segmento = patron.lstrip('/').split('/', 1)[0]
+        if COMODIN.search(primer_segmento) or any(es_permitido(s, [(patron, '')]) for s in SONDAS):
+            ignorados.append(patron)
+            continue
+        salida.append((patron, motivo.strip()))
+    return salida, ignorados, aviso
 
 def es_permitido(ruta, lista):
     return any(fnmatch.fnmatch(ruta, p) or ruta.startswith(p.rstrip('*').rstrip('/') + '/') for p, _ in lista)
@@ -111,25 +146,33 @@ def lineas_agregadas(raiz, ruta):
     return [l[1:] for l in salida.splitlines() if l.startswith('+') and not l.startswith('+++')]
 
 def modo_repo(raiz):
-    """'personal' (default) o 'hibrido', del primer renglón de .candado-modo en la raíz del repo.
+    """('personal' (default) o 'hibrido', aviso), del primer renglón de .candado-modo en HEAD.
     hibrido = el repo también guarda trabajo de la empresa: no se revisa material de la empresa ni la
     firma personal (lo laboral va sin firma); lo demás se revisa igual."""
-    f = Path(raiz) / '.candado-modo'
-    if f.is_file():
-        primero = f.read_text(encoding='utf-8').split('#', 1)[0].strip().lower()
-        if primero in ('personal', 'hibrido'):
-            return primero
-    return 'personal'
+    texto, aviso = leer_config(raiz, '.candado-modo')
+    primero = (texto or '').split('#', 1)[0].strip().lower()
+    return (primero if primero in ('personal', 'hibrido') else 'personal'), aviso
 
 def revisar_stage(raiz):
     """(bloqueos, avisos): listas de textos."""
     nombres = [n for n in git('diff', '--cached', '--name-only', '-z', '--diff-filter=ACMR', raiz=raiz).split('\0') if n]
     en_stage = set(nombres)
     nuevos = {n for n in git('diff', '--cached', '--name-only', '-z', '--diff-filter=A', raiz=raiz).split('\0') if n}
-    excepciones = permitidos(raiz)
-    hibrido = modo_repo(raiz) == 'hibrido'
+    excepciones, ignorados, aviso_permitidos = permitidos(raiz)
+    modo, aviso_modo = modo_repo(raiz)
+    hibrido = modo == 'hibrido'
     privados = None if hibrido else patrones_privados()
-    bloqueos, avisos = [], []
+    bloqueos, avisos = [], [a for a in (aviso_permitidos, aviso_modo) if a]
+    for patron in ignorados:
+        avisos.append(f'.candado-permitidos: "{patron}" es demasiado amplio o cubre al candado; no cuenta')
+    confirmado = os.environ.get(VAR_CAMBIO_CONFIG) == '1'
+    for config in CONFIG_CANDADO:
+        if config in en_stage and not confirmado:
+            bloqueos.append(f'{config}: cambia lo que revisa el candado. Lo confirma Haz a mano, solo en ese commit: '
+                            f'$env:{VAR_CAMBIO_CONFIG}="1"; git commit ...; Remove-Item Env:{VAR_CAMBIO_CONFIG}  '
+                            f'(bash: {VAR_CAMBIO_CONFIG}=1 git commit ...)')
+        elif config in en_stage:
+            avisos.append(f'{config}: cambio de configuración confirmado con {VAR_CAMBIO_CONFIG}=1')
     for ruta in nombres:
         if es_permitido(ruta, excepciones):
             continue
@@ -176,7 +219,11 @@ def revisar_stage(raiz):
             if not FIRMA.search(contenido.decode('utf-8', 'replace')):
                 avisos.append(f'{ruta}: sin firma (Made by: Hazzard / Author: Haz / Updated by Haz)')
     if privados is None and not hibrido:
-        avisos.append('sin las reglas privadas del hook de copia: no se revisó material de la empresa')
+        if os.environ.get('CANDADO_REGLAS'):
+            bloqueos.append('CANDADO_REGLAS apunta a un archivo que no existe o no se lee: '
+                            'no se puede revisar material de la empresa')
+        else:
+            avisos.append('sin las reglas privadas del hook de copia: no se revisó material de la empresa')
     return bloqueos, avisos
 
 def revisar_mensaje(texto):
@@ -224,6 +271,8 @@ def self_test():
         Path(t, 'proyecto/demo').mkdir(parents=True)
         Path(t, 'proyecto/demo/CONTRATO.md').write_text('datos: inventados\n', encoding='utf-8')
         Path(t, '.candado-permitidos').write_text('permitido/*.csv   # export de prueba sin datos\n', encoding='utf-8')
+        git('add', '.candado-permitidos', raiz=t)               # cuenta la de HEAD: se fija en un commit base
+        git('commit', '-q', '-m', 'base', raiz=t)
         for ruta, contenido, debe, desc in casos:
             git('reset', '-q', raiz=t)
             p = Path(t, ruta)
@@ -252,7 +301,11 @@ def self_test():
     # modo hibrido: material de la empresa y firma no se revisan; secretos y datos sí
     with tempfile.TemporaryDirectory() as t:
         git('init', '-q', raiz=t)
+        git('config', 'user.email', 'prueba@example.com', raiz=t)
+        git('config', 'user.name', 'prueba', raiz=t)
         Path(t, '.candado-modo').write_text('hibrido   # trabajo y notas personales\n', encoding='utf-8')
+        git('add', '.candado-modo', raiz=t)
+        git('commit', '-q', '-m', 'base', raiz=t)
         Path(t, 'x.py').write_text('import os\n', encoding='utf-8')
         Path(t, 'y.csv').write_text('a\n1\n', encoding='utf-8')
         git('add', 'x.py', 'y.csv', raiz=t)
@@ -261,7 +314,63 @@ def self_test():
                          (any(b.startswith('y.csv') for b in bloqueos), 'híbrido: sigue deteniendo datos sin contrato')]:
             fallos += not ok
             print(f"  {'ok ' if ok else 'FALLA'}  {desc}")
-    total = len(casos) + 7
+    # excepciones demasiado amplias o que cubren al candado: no cuentan
+    with tempfile.TemporaryDirectory() as t:
+        git('init', '-q', raiz=t)
+        git('config', 'user.email', 'prueba@example.com', raiz=t)
+        git('config', 'user.name', 'prueba', raiz=t)
+        Path(t, '.candado-permitidos').write_text('*   # todo\n**/*   # todo\n.candado-*   # yo mismo\n',
+                                                  encoding='utf-8')
+        git('add', '.candado-permitidos', raiz=t)
+        git('commit', '-q', '-m', 'base', raiz=t)
+        Path(t, 'z.csv').write_text('a\n1\n', encoding='utf-8')
+        git('add', 'z.csv', raiz=t)
+        bloqueos, avisos = revisar_stage(t)
+        casos_config = [(any(b.startswith('z.csv') for b in bloqueos), 'permitidos con "*" no apaga el candado'),
+                        (sum('demasiado amplio' in a for a in avisos) == 3, 'avisa los 3 patrones ignorados')]
+        # cambiar la configuración en el stage: no vale en ese commit y se detiene sin la confirmación de Haz
+        Path(t, '.candado-permitidos').write_text('z.csv   # metido en el mismo commit\n', encoding='utf-8')
+        git('add', '.candado-permitidos', raiz=t)
+        anterior = os.environ.pop(VAR_CAMBIO_CONFIG, None)
+        bloqueos, _ = revisar_stage(t)
+        casos_config += [(any(b.startswith('.candado-permitidos') for b in bloqueos),
+                          'cambio de configuración sin confirmar se detiene'),
+                         (any(b.startswith('z.csv') for b in bloqueos),
+                          'la excepción nueva no vale en el mismo commit')]
+        os.environ[VAR_CAMBIO_CONFIG] = '1'
+        bloqueos, _ = revisar_stage(t)
+        casos_config.append((not any(b.startswith('.candado-permitidos') for b in bloqueos),
+                             f'con {VAR_CAMBIO_CONFIG}=1 el cambio pasa'))
+        os.environ.pop(VAR_CAMBIO_CONFIG)
+        if anterior is not None:
+            os.environ[VAR_CAMBIO_CONFIG] = anterior
+        for ok, desc in casos_config:
+            fallos += not ok
+            print(f"  {'ok ' if ok else 'FALLA'}  {desc}")
+    # clase de caracteres y configuración cambiada solo en disco
+    with tempfile.TemporaryDirectory() as t:
+        git('init', '-q', raiz=t)
+        git('config', 'user.email', 'prueba@example.com', raiz=t)
+        git('config', 'user.name', 'prueba', raiz=t)
+        Path(t, '.candado-permitidos').write_text('[!.]*   # todo lo que no empiece con punto\n'
+                                                  '[!zc.]*   # esquiva las sondas\n[d-y]*   # rango\n',
+                                                  encoding='utf-8')
+        git('add', '.candado-permitidos', raiz=t)
+        git('commit', '-q', '-m', 'base', raiz=t)
+        Path(t, 'w.csv').write_text('a\n1\n', encoding='utf-8')
+        git('add', 'w.csv', raiz=t)
+        ok = any(b.startswith('w.csv') for b in revisar_stage(t)[0])
+        fallos += not ok
+        print(f"  {'ok ' if ok else 'FALLA'}  clases de caracteres ([!.]*, [!zc.]*, [d-y]*) no apagan el candado")
+        Path(t, '.candado-permitidos').write_text('w.csv   # metido solo en disco\n', encoding='utf-8')
+        Path(t, '.candado-modo').write_text('hibrido   # solo en disco\n', encoding='utf-8')
+        bloqueos, avisos = revisar_stage(t)
+        for ok, desc in [(any(b.startswith('w.csv') for b in bloqueos), 'excepción solo en disco no cuenta'),
+                         (sum('no coincide con la del último commit' in a for a in avisos) == 2,
+                          'avisa la configuración cambiada en disco')]:
+            fallos += not ok
+            print(f"  {'ok ' if ok else 'FALLA'}  {desc}")
+    total = len(casos) + 15
     print(f"\n{'los ' + str(total) + ' casos pasaron' if not fallos else str(fallos) + ' casos FALLARON'}")
     return 1 if fallos else 0
 
