@@ -77,6 +77,9 @@ Odin projects that use a bundler or test framework in the original curriculum (w
 
 ```text
 OblivionCode
+├── agents                ← AI agent setup: one independent folder per agent (see agents/README.md)
+│   ├── claude, codex, copilot, gemini, chatgpt-gpt
+│   └── _comun            ← git lock, commit seals, guards and templates shared by all
 ├── Dev_Coding            ← single-language exercises
 │   └── <Language>        (Bash, C#, CSS, DAX, HTML, Java, JavaScript, JSON, PowerQuery,
 │                          PowerShell, Python, Ruby, SQL, Typescript, VBA, YAML)
@@ -106,6 +109,7 @@ Every project folder (all but the two placeholders) has its own README with what
 | Node exercises | `node <file>.js`; Battleship tests: `node --test` in its folder |
 | Ruby | `ruby <file>.rb` or `ruby <file>.rb --check`; specs: `rspec spec/<file>_spec.rb` from the project folder |
 | Bash + SQL | PostgreSQL with a `freecodecamp` user; steps in each project README |
+| AI agents | `powershell -File agents/<agent>/instalar.ps1` copies that agent's setup to where it reads it; `python agents/_comun/candado/instalar.py` installs the git lock |
 
 ---
 

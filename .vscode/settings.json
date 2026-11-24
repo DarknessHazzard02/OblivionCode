@@ -1,13 +1,9 @@
 {
     "chat.agentSkillsLocations": {
-        ".agents/skills": true,
         ".github/skills": true,
-        ".claude/skills": true,
-        "~/.agents/skills": true,
-        "~/.copilot/skills": true,
-        "~/.claude/skills": true,
-        "~/.vscode/extensions/synapsevscode.synapse-1.26.0/copilot/skills": true,
-        "~/.vscode/extensions/synapsevscode.synapse-1.28.0/copilot/skills": true
+        ".claude/skills": false,
+        ".agents/skills": false
     },
+    "files.exclude": { ".agentes-estado": true },
     "git.ignoreLimitWarning": true
 }

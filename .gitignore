@@ -28,3 +28,18 @@ dist/
 build/
 bin/
 obj/
+
+# Agent setup installed from agents/<agent>/ (edit there, not here)
+/CLAUDE.md
+/AGENTS.md
+/GEMINI.md
+/.claude/
+/.agents/
+/.gemini/
+/.github/copilot-instructions.md
+/.github/instructions/
+/.github/prompts/
+/.github/agents/
+/.github/skills/
+/.github/hooks/
+/.agentes-estado/
