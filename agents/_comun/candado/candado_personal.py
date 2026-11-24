@@ -38,6 +38,7 @@ import re
 import subprocess
 import sys
 import tempfile
+from collections import Counter
 from pathlib import Path
 
 MB = 1024 * 1024
@@ -47,8 +48,14 @@ REGLAS_PRIVADAS = Path(os.environ.get('CANDADO_REGLAS') or Path.home() / '.claud
 EXT_DATOS = ('.xlsx', '.xls', '.xlsm', '.xlsb', '.csv', '.tsv', '.parquet', '.avro', '.feather', '.pbix',
              '.accdb', '.mdb', '.db', '.sqlite', '.sqlite3', '.zip', '.7z', '.rar', '.gz', '.tar', '.prn')
 # Texto que a veces es un export (ALV de SAP, "Texto Unicode" de Excel, XML de hoja): se revisa el contenido
-EXT_TEXTO_DATOS = ('.txt', '.dat', '.xml')
+EXT_TEXTO_DATOS = ('.txt', '.dat', '.xml', '.htm', '.rtf')
 ANCHO_FIJO = re.compile(r'\S {2,}(?=\S)')
+HTML_FILA = re.compile(r'<tr\b', re.I)
+RTF_FILA = re.compile(r'\\row\b')
+RTF_RENGLON = re.compile(r'\\(par|line)\b ?')
+RTF_COLUMNA = re.compile(r'\\(tab|cell)\b ?')
+RTF_HEX = re.compile(r"\\'[0-9a-f]{2}", re.I)                 # \'e9 = é: un solo carácter, no tres
+RTF_CONTROL = re.compile(r'\\[a-z]+-?\d* ?|\\[^a-z]', re.I)
 MIN_FILAS_TABLA = 20
 XML_HOJA = re.compile(r'urn:schemas-microsoft-com:office:spreadsheet|<(ss:)?Workbook\b', re.I)
 XML_FILA = re.compile(r'<(ss:)?Row\b|<(row|record|item)\b', re.I)
@@ -147,18 +154,32 @@ def decodificar(contenido):
 
 def parece_tabla(texto, ruta):
     """True si el texto tiene forma de export: XML de hoja de Excel o con muchas filas repetidas, o al menos
-    MIN_FILAS_TABLA renglones donde la mayoría trae el mismo separador (|, tabulador, ; o ,) varias veces, o
-    columnas de ancho fijo (spool de SAP sin barras): 3 o más huecos de 2 o más espacios entre valores."""
+    MIN_FILAS_TABLA renglones donde la mayoría trae el mismo número de separadores (|, tabulador o ; al menos
+    una vez; coma, al menos dos), o columnas de ancho fijo (spool de SAP sin barras): 3 o más columnas que empiezan
+    en la misma posición en la mayoría de los renglones. El código alineado y la salida de --help alinean una o
+    dos columnas, no tres. HTML y RTF de una descarga se miden por sus filas de tabla."""
     if ruta.endswith('.xml'):
         return bool(XML_HOJA.search(texto)) or len(XML_FILA.findall(texto)) >= MIN_FILAS_TABLA
+    if ruta.endswith('.htm'):
+        return len(HTML_FILA.findall(texto)) >= MIN_FILAS_TABLA
+    if ruta.endswith('.rtf'):
+        if len(RTF_FILA.findall(texto)) >= MIN_FILAS_TABLA:
+            return True
+        texto = RTF_HEX.sub('?', RTF_COLUMNA.sub('\t', RTF_RENGLON.sub('\n', texto)))
+        texto = RTF_CONTROL.sub('', texto).replace('{', '').replace('}', '')
     lineas = [l for l in texto.splitlines() if l.strip()]
     if len(lineas) < MIN_FILAS_TABLA:
         return False
     minimo = 0.6 * len(lineas)
-    for sep in ('|', '\t', ';', ','):
-        if sum(1 for l in lineas if l.count(sep) >= 3) >= minimo:
+    # Mismo número de separadores en casi todos los renglones = columnas. Con coma se piden 2 o más, porque la
+    # prosa trae una coma por renglón seguido; un export de 2 columnas con coma no se detecta.
+    for sep, desde in (('|', 1), ('\t', 1), (';', 1), (',', 2)):
+        cuentas = [l.strip().count(sep) for l in lineas]
+        moda = max(set(cuentas), key=cuentas.count)
+        if (moda >= desde and cuentas.count(moda) >= 0.8 * len(lineas)) or sum(1 for c in cuentas if c >= 3) >= minimo:
             return True
-    return sum(1 for l in lineas if len(ANCHO_FIJO.findall(l.strip())) >= 3) >= minimo
+    inicios = Counter(m.end() for l in lineas for m in ANCHO_FIJO.finditer(l.rstrip()))
+    return sum(1 for n in inicios.values() if n >= minimo) >= 3
 
 def tiene_contrato(raiz, ruta, en_stage):
     """CONTRATO.md en la carpeta del archivo o en una de arriba (en disco o en el stage)."""
@@ -316,6 +337,24 @@ def self_test():
         ('export/spool.txt', ''.join(f'M{i:05d}    Product A      UN    PL01      {i:>6}\n' for i in range(30)), True,
          'spool de ancho fijo en .txt'),
         ('export/hoja.prn', 'M1    A    1\n', True, '.prn sin contrato'),
+        ('export/dos_cols.txt', ''.join(f'M{i}\t{i}\n' for i in range(30)), True, 'export de 2 columnas con tabulador'),
+        ('export/tres_cols.txt', ''.join(f'M{i};A;{i}\n' for i in range(30)), True, 'export de 3 columnas con ;'),
+        ('export/comas.txt', ''.join(f'M{i},A,{i}\n' for i in range(30)), True, 'export de 3 columnas con coma'),
+        ('export/lista.htm', '<table>' + ''.join(f'<tr><td>M{i}</td><td>{i}</td></tr>' for i in range(30)) + '</table>',
+         True, 'descarga HTML con tabla'),
+        ('export/lista.rtf', '{\\rtf1 ' + ''.join(f'M{i:05d}    Product A      UN    PL01\\par ' for i in range(30)) + '}',
+         True, 'descarga RTF de ancho fijo'),
+        ('export/tabs.rtf', '{\\rtf1 ' + ''.join(f'M{i}\\tab Product A\\tab UN\\tab {i}\\par ' for i in range(30)) + '}',
+         True, 'descarga RTF con \\tab'),
+        ('export/acentos.rtf', '{\\rtf1 ' + ''.join(
+            f'M{i:05d}    {"Pi\\\'f1on    " if i % 2 else "Product A"}      UN    PL01\\par ' for i in range(30)) + '}',
+         True, "descarga RTF con acentos (\\'f1)"),
+        ('docs/codigo.txt', ''.join(f'valor_{i:02d}  = {i}    # comentario\n' for i in range(30)), False,
+         'código alineado en .txt'),
+        ('docs/ayuda.txt', ''.join(f'  --opcion-{i:02d}    hace la cosa {i}\n' for i in range(30)), False,
+         'salida de --help en .txt'),
+        ('docs/prosa.txt', ''.join(f'Renglón {i}{", y algo más" * (i % 3)} aquí.\n' for i in range(30)), False,
+         'prosa con comas variables'),
         ('docs/notas.txt',''.join(f'renglón {i} de notas, con una coma\n' for i in range(30)), False,
          'notas de texto con comas sueltas'),
     ]
