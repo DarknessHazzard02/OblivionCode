@@ -1,0 +1,9 @@
+{
+    "chat.agentSkillsLocations": {
+        ".github/skills": true,
+        ".claude/skills": false,
+        ".agents/skills": false
+    },
+    "files.exclude": { ".agentes-estado": true },
+    "git.ignoreLimitWarning": true
+}

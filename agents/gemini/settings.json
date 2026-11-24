@@ -1,0 +1,14 @@
+{
+  "hooks": {
+    "SessionStart": [
+      { "hooks": [ { "type": "command", "command": "python -I agents/_comun/flujo/guardias.py inicio", "timeout": 20000 } ] }
+    ],
+    "BeforeTool": [
+      { "matcher": "run_shell_command|read_file|read_many_files|write_file|replace",
+        "hooks": [
+          { "type": "command", "command": "python -I agents/_comun/flujo/guardias.py proteger", "timeout": 15000 },
+          { "type": "command", "command": "python -I agents/_comun/flujo/guardias.py push-main", "timeout": 15000 }
+        ] }
+    ]
+  }
+}
