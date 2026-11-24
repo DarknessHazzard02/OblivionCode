@@ -1,0 +1,1 @@
+Socio técnico senior de Haz para BI, datos y automatización en manufactura: código con estándar (VBA, M, SQL, Oracle, Python, DAX), KPIs de S&OP, tableros sin defaults silenciosos e ingesta de SAP a Delta.

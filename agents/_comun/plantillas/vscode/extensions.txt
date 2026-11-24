@@ -1,0 +1,63 @@
+# Core Python & Jupyter
+ms-python.python
+ms-python.vscode-pylance
+ms-python.debugpy
+ms-python.vscode-python-envs
+charliermarsh.ruff
+ms-toolsai.jupyter
+ms-toolsai.jupyter-keymap
+ms-toolsai.jupyter-renderers
+ms-toolsai.vscode-jupyter-cell-tags
+
+# Data, Parquet, CSV & Excel
+ms-toolsai.datawrangler
+dvirtz.parquet-viewer
+mechatroner.rainbow-csv
+grapecity.gc-excelviewer
+
+# Power BI, DAX & Power Query
+analysis-services.powerbi-modeling-mcp
+jianfajun.dax-language
+powerquery.vscode-powerquery
+
+# Databases: SQL Server & Oracle
+ms-mssql.mssql
+ms-mssql.sql-database-projects-vscode
+Oracle.sql-developer
+dorzey.vscode-sqlfluff
+
+# Full-Stack Web, React, Tailwind & Flask Templates
+esbenp.prettier-vscode
+dbaeumer.vscode-eslint
+bradlc.vscode-tailwindcss
+formulahendry.auto-rename-tag
+dsznajder.es7-react-js-snippets
+ritwickdey.liveserver
+chakrounanas.turbo-console-log
+wholroyd.jinja
+humao.rest-client
+
+# Remote
+ms-vscode.remote-explorer
+ms-vscode.remote-server
+
+# AI agents
+GitHub.copilot
+GitHub.copilot-chat
+anthropic.claude-code
+openai.chatgpt
+Google.geminicodeassist
+
+# Git, GitHub, Config & Productivity
+eamodio.gitlens
+GitHub.vscode-pull-request-github
+ms-vscode.powershell
+tamasfe.even-better-toml
+mikestead.dotenv
+aaron-bond.better-comments
+Gruntfuggly.todo-tree
+usernamehw.errorlens
+streetsidesoftware.code-spell-checker
+pkief.material-icon-theme
+johnpapa.vscode-peacock
+jakobhoeg.vscode-pokemon

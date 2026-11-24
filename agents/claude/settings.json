@@ -1,0 +1,55 @@
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "f=\"$CLAUDE_PROJECT_DIR/agents/_comun/flujo/guardias.py\"; [ -f \"$f\" ] || f=\"$(git rev-parse --show-toplevel 2>/dev/null)/agents/_comun/flujo/guardias.py\"; [ -f \"$f\" ] || { echo \"guardias.py: no encontre el script; este guardia no corrio\" >&2; exit 0; }; exec python -I \"$f\" inicio",
+            "timeout": 20
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Bash|PowerShell",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "f=\"$CLAUDE_PROJECT_DIR/agents/_comun/flujo/exigir_antes_de_commit.py\"; [ -f \"$f\" ] || f=\"$(git rev-parse --show-toplevel 2>/dev/null)/agents/_comun/flujo/exigir_antes_de_commit.py\"; [ -f \"$f\" ] || { echo \"exigir_antes_de_commit.py: no encontre el script; este guardia no corrio\" >&2; exit 0; }; exec python -I \"$f\"",
+            "timeout": 30,
+            "statusMessage": "Revisando sellos antes del commit"
+          },
+          {
+            "type": "command",
+            "command": "f=\"$CLAUDE_PROJECT_DIR/agents/_comun/flujo/guardias.py\"; [ -f \"$f\" ] || f=\"$(git rev-parse --show-toplevel 2>/dev/null)/agents/_comun/flujo/guardias.py\"; [ -f \"$f\" ] || { echo \"guardias.py: no encontre el script; este guardia no corrio\" >&2; exit 0; }; exec python -I \"$f\" push-main",
+            "timeout": 15
+          }
+        ]
+      },
+      {
+        "matcher": "Bash|PowerShell|Read|Edit|Write|Grep",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "f=\"$CLAUDE_PROJECT_DIR/agents/_comun/flujo/guardias.py\"; [ -f \"$f\" ] || f=\"$(git rev-parse --show-toplevel 2>/dev/null)/agents/_comun/flujo/guardias.py\"; [ -f \"$f\" ] || { echo \"guardias.py: no encontre el script; este guardia no corrio\" >&2; exit 0; }; exec python -I \"$f\" proteger",
+            "timeout": 15
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "f=\"$CLAUDE_PROJECT_DIR/agents/_comun/flujo/guardias.py\"; [ -f \"$f\" ] || f=\"$(git rev-parse --show-toplevel 2>/dev/null)/agents/_comun/flujo/guardias.py\"; [ -f \"$f\" ] || { echo \"guardias.py: no encontre el script; este guardia no corrio\" >&2; exit 0; }; exec python -I \"$f\" firma",
+            "timeout": 15
+          }
+        ]
+      }
+    ]
+  }
+}

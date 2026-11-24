@@ -1,0 +1,16 @@
+# Datos reales y configuración local
+data_real/
+data_semi/
+Output/
+config.local.json
+.env
+*.xlsx
+*.xlsm
+*.csv
+*.parquet
+!demo/source/*.csv
+# Entorno
+.venv/
+__pycache__/
+# Estado de los agentes
+.agentes-estado/

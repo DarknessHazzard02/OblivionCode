@@ -1,0 +1,7 @@
+Schedule Adherence % =
+// Made by: Hazzard
+VAR PlannedQty = SUM ( FactSchedule[PlannedQty] )
+VAR CappedActual =
+    SUMX ( FactSchedule, MIN ( FactSchedule[ActualQty], FactSchedule[PlannedQty] ) )
+RETURN
+    DIVIDE ( CappedActual, PlannedQty )
