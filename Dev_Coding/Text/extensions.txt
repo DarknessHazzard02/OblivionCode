@@ -1,4 +1,4 @@
-# Core Python & Jupyter (9)
+# Core Python & Jupyter (10)
 ms-python.python
 ms-python.vscode-pylance
 ms-python.debugpy
@@ -8,6 +8,7 @@ ms-toolsai.jupyter
 ms-toolsai.jupyter-keymap
 ms-toolsai.jupyter-renderers
 ms-toolsai.vscode-jupyter-cell-tags
+ms-toolsai.vscode-jupyter-slideshow
 
 # Data Engineering, Parquet, CSV & Excel (4)
 ms-toolsai.datawrangler
@@ -15,37 +16,46 @@ dvirtz.parquet-viewer
 mechatroner.rainbow-csv
 grapecity.gc-excelviewer
 
-# Power BI, DAX & Power Query (3)
-analysis-services.powerbi-modeling-mcp
+# Power BI, DAX & Power Query (2)
 jianfajun.dax-language
 powerquery.vscode-powerquery
 
 # Databases: SQL Server & Oracle (4)
 ms-mssql.mssql
 ms-mssql.sql-database-projects-vscode
+ms-mssql.data-workspace-vscode
 Oracle.sql-developer
-dorzey.vscode-sqlfluff
 
-# Full-Stack Web, React, Tailwind & Flask Templates (9)
+# Full-Stack Web, React, Tailwind & Flask Templates (5)
 esbenp.prettier-vscode
 dbaeumer.vscode-eslint
-bradlc.vscode-tailwindcss
 formulahendry.auto-rename-tag
-dsznajder.es7-react-js-snippets
-ritwickdey.liveserver
-chakrounanas.turbo-console-log
 wholroyd.jinja
 humao.rest-client
 
-# Containers & Remote (4)
-ms-azuretools.vscode-containers
-ms-vscode.remote-explorer
-ms-vscode.remote-server
+# Java (7)
+vscjava.vscode-java-pack
+redhat.java
+vscjava.vscode-java-debug
+vscjava.vscode-java-dependency
+vscjava.vscode-java-test
+vscjava.vscode-maven
+vscjava.vscode-gradle
+
+# C# & .NET (2)
+ms-dotnettools.csharp
 ms-dotnettools.vscode-dotnet-runtime
 
-# Git, GitHub, Config & Productivity (12)
+# Containers & Remote (2)
+ms-vscode.remote-explorer
+ms-vscode.remote-server
+
+# Git, GitHub, Config & Productivity (14)
+DavidAnson.vscode-markdownlint
+redhat.vscode-yaml
 eamodio.gitlens
 GitHub.vscode-pull-request-github
+github.vscode-github-actions
 ms-vscode.powershell
 tamasfe.even-better-toml
 mikestead.dotenv
@@ -55,4 +65,3 @@ usernamehw.errorlens
 streetsidesoftware.code-spell-checker
 pkief.material-icon-theme
 johnpapa.vscode-peacock
-jakobhoeg.vscode-pokemon
